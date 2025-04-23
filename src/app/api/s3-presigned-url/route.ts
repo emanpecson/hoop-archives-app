@@ -37,29 +37,34 @@ export async function GET(req: NextRequest) {
 		);
 	}
 
-	if (query.bucketMethod === "PUT") {
-		const command = new PutObjectCommand({
-			Bucket: process.env.AWS_S3_BUCKET,
-			Key: query.filename,
-		});
-		const presignedUrl = await getSignedUrl(s3, command, {
-			expiresIn: oneHourInSeconds,
-		});
+	try {
+		if (query.bucketMethod === "PUT") {
+			const command = new PutObjectCommand({
+				Bucket: process.env.AWS_S3_BUCKET,
+				Key: query.filename,
+			});
+			const presignedUrl = await getSignedUrl(s3, command, {
+				expiresIn: oneHourInSeconds,
+			});
 
-		return NextResponse.json({ presignedUrl }, { status: 200 });
+			return NextResponse.json({ presignedUrl }, { status: 200 });
+		}
+
+		if (query.bucketMethod === "GET") {
+			const command = new GetObjectCommand({
+				Bucket: process.env.AWS_S3_BUCKET,
+				Key: query.filename,
+			});
+			const presignedUrl = await getSignedUrl(s3, command, {
+				expiresIn: oneDayInSeconds,
+			});
+
+			return NextResponse.json({ presignedUrl }, { status: 200 });
+		}
+	} catch (error) {
+		return NextResponse.json(
+			{ error, message: "Server error" },
+			{ status: 500 }
+		);
 	}
-
-	if (query.bucketMethod === "GET") {
-		const command = new GetObjectCommand({
-			Bucket: process.env.AWS_S3_BUCKET,
-			Key: query.filename,
-		});
-		const presignedUrl = await getSignedUrl(s3, command, {
-			expiresIn: oneDayInSeconds,
-		});
-
-		return NextResponse.json({ presignedUrl }, { status: 200 });
-	}
-
-	return NextResponse.json({ message: "Server error" }, { status: 500 });
 }
