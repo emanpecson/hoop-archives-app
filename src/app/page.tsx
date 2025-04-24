@@ -37,7 +37,7 @@ export default function HomePage() {
 		filename: string,
 		bucketMethod: "GET" | "PUT"
 	) => {
-		return `/api/s3-presigned-url?filename=${filename}&bucketMethod=${bucketMethod}`;
+		return `/api/s3/presigned-url?filename=${filename}&bucketMethod=${bucketMethod}`;
 	};
 
 	const uploadToBucket = async (vid: File) => {
