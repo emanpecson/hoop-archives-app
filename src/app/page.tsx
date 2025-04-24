@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import VideoClipper from "@/components/video-clipper/video-clipper";
+import React, { useState } from "react";
 
 export default function HomePage() {
-	// programmatic access to video elem
-	const videoRef = useRef<HTMLVideoElement>(null);
 	const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
 	const handleFileChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,11 +44,11 @@ export default function HomePage() {
 		const bucketMethod = "PUT";
 
 		try {
-			const presignedUrlResponse = await fetch(
+			const res = await fetch(
 				s3PresignedUrlEndpointBuilder(vid.name, bucketMethod)
 			);
 
-			const { presignedUrl } = await presignedUrlResponse.json();
+			const { presignedUrl } = await res.json();
 
 			const bucketPutResponse = await fetch(presignedUrl, {
 				method: bucketMethod,
@@ -69,11 +68,11 @@ export default function HomePage() {
 		const bucketMethod = "GET";
 
 		try {
-			const presignedUrlResponse = await fetch(
+			const res = await fetch(
 				s3PresignedUrlEndpointBuilder(filename, bucketMethod)
 			);
 
-			const { presignedUrl } = await presignedUrlResponse.json();
+			const { presignedUrl } = await res.json();
 
 			return presignedUrl;
 		} catch (error) {
@@ -84,7 +83,7 @@ export default function HomePage() {
 	return (
 		<div className="flex justify-center place-items-center h-screen">
 			{videoUrl ? (
-				<video ref={videoRef} src={videoUrl} width={600} controls />
+				<VideoClipper src={videoUrl} />
 			) : (
 				<div>
 					<p>Upload video</p>
