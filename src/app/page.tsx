@@ -1,10 +1,12 @@
 "use client";
 
 import VideoClipper from "@/components/video-clipper/video-clipper";
+import { S3Uploader } from "@/utils/s3-uploader";
 import React, { useState } from "react";
 
 export default function HomePage() {
 	const [videoUrl, setVideoUrl] = useState<string | null>(null);
+	const s3Uploader = new S3Uploader();
 
 	const handleFileChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
 		try {
@@ -13,7 +15,7 @@ export default function HomePage() {
 			if (vid) {
 				throwInvalidVideo(vid);
 
-				await uploadToBucket(vid);
+				await s3Uploader.handleUpload(vid);
 				const src = await getVideoSourceFromBucket(vid.name);
 
 				setVideoUrl(src);
@@ -38,30 +40,6 @@ export default function HomePage() {
 		bucketMethod: "GET" | "PUT"
 	) => {
 		return `/api/s3/presigned-url?filename=${filename}&bucketMethod=${bucketMethod}`;
-	};
-
-	const uploadToBucket = async (vid: File) => {
-		const bucketMethod = "PUT";
-
-		try {
-			const res = await fetch(
-				s3PresignedUrlEndpointBuilder(vid.name, bucketMethod)
-			);
-
-			const { presignedUrl } = await res.json();
-
-			const bucketPutResponse = await fetch(presignedUrl, {
-				method: bucketMethod,
-				headers: { "Content-Type": vid.type },
-				body: vid,
-			});
-
-			if (!bucketPutResponse.ok) {
-				throw new Error("Unable to process this video");
-			}
-		} catch (error) {
-			console.log(error);
-		}
 	};
 
 	const getVideoSourceFromBucket = async (filename: string) => {
