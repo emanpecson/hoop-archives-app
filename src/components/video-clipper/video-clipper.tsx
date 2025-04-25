@@ -44,7 +44,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 	};
 
 	const handleDelete = (index: number) => {
-		setClips((og) => og.filter((_clip, i) => i !== index));
+		setClips((og) => og.filter((_, i) => i !== index));
 	};
 
 	return (
