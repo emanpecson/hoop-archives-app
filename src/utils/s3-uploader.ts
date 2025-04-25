@@ -3,12 +3,16 @@ export class S3Uploader {
 		// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
 		const partSize = 10 * 1024 * 1024;
 
+		console.time("uploadTimer");
+
 		const { uploadId, presignedUrls, key } = await this.startUpload(
 			vid,
 			partSize
 		);
 		const uploadParts = await this.uploadByParts(vid, partSize, presignedUrls);
 		await this.completeUpload(uploadId, key, uploadParts);
+
+		console.timeEnd("uploadTimer");
 	};
 
 	private startUpload = async (vid: File, partSize: number) => {
