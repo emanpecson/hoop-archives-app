@@ -77,7 +77,12 @@ export default function VideoClipper(props: VideoClipperProps) {
 				Current: {currentTime.toFixed(2)}s / {duration.toFixed(2)}s
 			</div>
 
-			<ClipSetter clips={clips} currentTime={currentTime} setClips={setClips} />
+			<ClipSetter
+				clips={clips}
+				setClips={setClips}
+				currentTime={currentTime}
+				duration={duration}
+			/>
 
 			<ClipManager clips={clips} handleDelete={handleDelete} />
 		</div>

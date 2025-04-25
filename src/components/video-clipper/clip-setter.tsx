@@ -8,6 +8,7 @@ interface ClipSetterProps {
 	clips: ClipTime[];
 	setClips: Dispatch<SetStateAction<ClipTime[]>>;
 	currentTime: number;
+	duration: number;
 }
 
 export default function ClipSetter(props: ClipSetterProps) {
@@ -39,6 +40,9 @@ export default function ClipSetter(props: ClipSetterProps) {
 
 	const setStart = () => {
 		try {
+			if (props.currentTime === props.duration)
+				throw new Error("Can't start clip at end");
+
 			throwOnOverlappingPoint(props.currentTime);
 
 			setCurrentStart(props.currentTime);
