@@ -89,7 +89,7 @@ export default function ClipSetter(props: ClipSetterProps) {
 	});
 
 	return (
-		<div className="flex gap-4">
+		<div className="flex gap-dashboard">
 			{!pendingClipEnd ? (
 				<button
 					className="bg-green-600 text-white px-4 py-1 rounded"

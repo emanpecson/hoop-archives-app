@@ -4,7 +4,7 @@ import VideoClipper from "@/components/video-clipper/video-clipper";
 import { S3Uploader } from "@/utils/s3-uploader";
 import React, { useState } from "react";
 
-export default function HomePage() {
+export default function VideoUploader() {
 	const [videoUrl, setVideoUrl] = useState<string | null>(null);
 	const s3Uploader = new S3Uploader();
 
