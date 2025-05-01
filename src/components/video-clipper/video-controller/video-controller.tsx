@@ -1,10 +1,4 @@
-import {
-	ChangeEvent,
-	Dispatch,
-	RefObject,
-	SetStateAction,
-	useState,
-} from "react";
+import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import DashboardCard from "../../dashboard/dashboard-card";
 import TimelineWorkspace from "./timeline-workspace";
 import { ClipTime } from "@/types/clip-time";
