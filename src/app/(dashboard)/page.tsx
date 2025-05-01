@@ -1,3 +1,5 @@
+import VideoUploader from "@/components/video-clipper/temp/video-uploader";
+
 export default function HomePage() {
-	return <div>home page</div>;
+	return <VideoUploader />;
 }

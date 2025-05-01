@@ -59,7 +59,7 @@ export default function VideoUploader() {
 	};
 
 	return (
-		<div className="flex justify-center place-items-center h-screen">
+		<div className="flex justify-center place-items-center h-full">
 			{videoUrl ? (
 				<VideoClipper src={videoUrl} />
 			) : (

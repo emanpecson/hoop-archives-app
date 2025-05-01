@@ -10,6 +10,8 @@ export default function GameDetails() {
 			<DashboardCardHeader text="Game Details" />
 			<Input Icon={FolderPenIcon} placeholder="Enter game title..." />
 			<DateInput />
+
+			<hr className="opacity-25" />
 		</DashboardCard>
 	);
 }

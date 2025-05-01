@@ -6,7 +6,7 @@ export default function useKeyboardShortcut(
 ) {
 	useEffect(() => {
 		const handleKeyDown = (ev: KeyboardEvent) => {
-			const isModifierPressed = ev.ctrlKey;
+			const isModifierPressed = ev.metaKey;
 			if (ev.key === key && isModifierPressed) {
 				ev.preventDefault();
 				callback();
