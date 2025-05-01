@@ -9,6 +9,7 @@ import DashboardCard from "../../dashboard/dashboard-card";
 import TimelineWorkspace from "./timeline-workspace";
 import { ClipTime } from "@/types/clip-time";
 import ClipButton from "./clip-button";
+import { Slider } from "@/components/ui/slider";
 
 interface VideoControllerProps {
 	clips: ClipTime[];
@@ -16,26 +17,20 @@ interface VideoControllerProps {
 	currentTime: number;
 	duration: number;
 	setClips: Dispatch<SetStateAction<ClipTime[]>>;
-	onSliderChange: (ev: React.ChangeEvent<HTMLInputElement>) => void;
+	onSliderChange: (value: number[]) => void;
 }
 
 export default function VideoController(props: VideoControllerProps) {
 	const [zoom, setZoom] = useState(1);
 
-	const handleZoomChange = (ev: ChangeEvent<HTMLInputElement>) => {
-		setZoom(parseFloat(ev.target.value));
+	const handleZoomChange = (value: number[]) => {
+		setZoom(value[0]);
 	};
 
 	return (
 		<div className="flex w-full h-24 gap-dashboard">
 			<DashboardCard className="w-32">
-				<input
-					type="range"
-					min={1}
-					step={0.1}
-					max={5}
-					onChange={handleZoomChange}
-				/>
+				<Slider min={1} max={5} step={0.1} onValueChange={handleZoomChange} />
 			</DashboardCard>
 			<DashboardCard className="w-32">
 				<ClipButton

@@ -4,6 +4,7 @@ import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import VideoOverlayWrapper from "./video-overlay-wrapper";
 import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Slider } from "@/components/ui/slider";
 
 interface VideoPlayerProps {
 	videoRef: RefObject<HTMLVideoElement | null>;
@@ -12,7 +13,7 @@ interface VideoPlayerProps {
 	duration: number;
 	setCurrentTime: Dispatch<SetStateAction<number>>;
 	setDuration: Dispatch<SetStateAction<number>>;
-	onSliderChange: (ev: React.ChangeEvent<HTMLInputElement>) => void;
+	onSliderChange: (value: number[]) => void;
 }
 
 export default function VideoPlayer(props: VideoPlayerProps) {
@@ -82,14 +83,12 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 
 					<div className="w-full">
 						<VideoOverlayWrapper>
-							<input
-								type="range"
+							<Slider
 								min={0}
 								max={props.duration}
-								step="0.1"
-								value={props.currentTime}
-								onChange={props.onSliderChange}
-								className="w-full z-10"
+								step={0.1}
+								value={[props.currentTime]}
+								onValueChange={props.onSliderChange}
 							/>
 						</VideoOverlayWrapper>
 					</div>

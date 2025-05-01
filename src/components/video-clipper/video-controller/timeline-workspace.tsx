@@ -1,3 +1,4 @@
+import { Slider } from "@/components/ui/slider";
 import { ClipTime } from "@/types/clip-time";
 import { useEffect, useState } from "react";
 
@@ -5,7 +6,7 @@ interface TimelineWorkspaceProps {
 	zoom: number;
 	currentTime: number;
 	duration: number;
-	onSliderChange: (ev: React.ChangeEvent<HTMLInputElement>) => void;
+	onSliderChange: (value: number[]) => void;
 	clips: ClipTime[];
 }
 
@@ -48,14 +49,12 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 	return (
 		<div className="relative" style={{ width: `${props.zoom * 100}%` }}>
 			{/* Timeline with clip markers */}
-			<input
-				type="range"
+			<Slider
+				step={0.1}
 				min={0}
 				max={props.duration}
-				step="0.1"
-				value={props.currentTime}
-				onChange={props.onSliderChange}
-				className="w-full z-10"
+				value={[props.currentTime]}
+				onValueChange={props.onSliderChange}
 			/>
 
 			{/* Visual Clip Segments */}

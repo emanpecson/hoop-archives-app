@@ -18,11 +18,10 @@ export default function VideoClipper(props: VideoClipperProps) {
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
 
-	const handleSliderChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-		const newTime = parseFloat(ev.target.value);
-		setCurrentTime(newTime);
+	const handleSliderChange = (value: number[]) => {
+		setCurrentTime(value[0]);
 		if (videoRef.current) {
-			videoRef.current.currentTime = newTime;
+			videoRef.current.currentTime = value[0];
 		}
 	};
 
