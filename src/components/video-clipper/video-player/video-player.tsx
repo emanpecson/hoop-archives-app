@@ -5,6 +5,7 @@ import VideoOverlayWrapper from "./video-overlay-wrapper";
 import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
+import { getTimestamp } from "@/utils/time";
 
 interface VideoPlayerProps {
 	videoRef: RefObject<HTMLVideoElement | null>;
@@ -18,7 +19,9 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer(props: VideoPlayerProps) {
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const time = `${props.currentTime.toFixed(2)} / ${props.duration.toFixed(2)}`;
+	const time = `${getTimestamp(props.currentTime)} / ${getTimestamp(
+		props.duration
+	)}`;
 
 	const handleLoadedMetadata = () => {
 		if (props.videoRef.current) {
