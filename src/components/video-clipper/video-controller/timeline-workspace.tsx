@@ -79,13 +79,14 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 					data-slot="slider-thumb"
 					className="bg-white block w-1.5 h-20 shrink-0 rounded-full cursor-pointer pointer-events-auto"
 				/>
+
 				{/* Visual Clip Segments */}
 				<div className="absolute top-14 left-0 w-full h-full transform -translate-y-1/2 z-10">
 					{props.clips.map((clip, i) =>
 						clip.end ? (
 							<div
 								key={i}
-								className="absolute h-20 rounded-lg border-4 border-yellow-400"
+								className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"
 								style={{
 									left: `${getTimestampPosition(clip.start)}%`,
 									width: `${
@@ -98,9 +99,9 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 							// If end not set yet, show a vertical marker
 							<div
 								key={i}
-								className="absolute bg-yellow-400 h-20 w-1.5 rounded-full"
+								className="absolute -top-2 bg-yellow-400 h-full w-1 rounded-full"
 								style={{
-									left: `${getTimestampPosition(clip.start) * props.zoom}%`,
+									left: `${getTimestampPosition(clip.start)}%`,
 								}}
 							/>
 						)
