@@ -1,9 +1,10 @@
-import { Slider } from "@/components/ui/slider";
 import { ClipTime } from "@/types/clip-time";
 import { useEffect, useState } from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+import { getTimestamp } from "@/utils/time";
 
 interface TimelineWorkspaceProps {
-	zoom: number;
+	zoom: number; // magnify rate
 	currentTime: number;
 	duration: number;
 	onSliderChange: (value: number[]) => void;
@@ -12,98 +13,100 @@ interface TimelineWorkspaceProps {
 
 export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 	const [timestamps, setTimestamps] = useState<number[]>([]);
+	const pixelsPerSecond = 48;
+	const secondsGap = 2;
 
-	const getMarkerSpacing = (duration: number, zoom: number) => {
-		const approxVisibleMarkers = 10; // ideal number of markers at current zoom
-		const base = duration / (approxVisibleMarkers * zoom);
-
-		// Round to nearest multiple of 5/10/30/60 for readability
-		if (base < 10) return 5;
-		if (base < 30) return 10;
-		if (base < 60) return 30;
-		if (base < 180) return 60;
-		return 300; // 5 mins
-	};
+	const timelinePixels = props.duration * pixelsPerSecond * props.zoom;
+	const timestampGap = secondsGap / props.zoom;
 
 	useEffect(() => {
-		const spacing = getMarkerSpacing(props.duration, props.zoom);
+		setTimestamps(() => {
+			const newTimestamps: number[] = [];
+			for (let second = 0; second <= props.duration; second += timestampGap) {
+				newTimestamps.push(second);
+			}
+			return newTimestamps;
+		});
+	}, [timestampGap, props.duration]);
 
-		const newTimestamps: number[] = [];
-		for (let t = 0; t <= props.duration; t += spacing) {
-			newTimestamps.push(t);
-		}
-		setTimestamps(newTimestamps);
-	}, [props.duration, props.zoom]);
-
-	const calcPercent = (value: number) => {
-		return props.duration > 0 ? (value / props.duration) * 100 : 0;
-	};
-
-	const formatTime = (sec: number) => {
-		const mins = Math.floor(sec / 60);
-		const secs = Math.floor(sec % 60);
-
-		return `${mins}:${secs.toString().padStart(2, "0")}`;
+	/**
+	 * Gets the position of where a time exists within the duration
+	 * of the video
+	 *
+	 * i.e. 20s / 100s -> position 20% of the width of the timeline
+	 *
+	 * @param {number} time
+	 * @returns {number} Position of timestamp as a percentage (i.e. returned 20 means 20%)
+	 */
+	const getTimestampPosition = (time: number): number => {
+		return props.duration > 0 ? (time / props.duration) * 100 : 0;
 	};
 
 	return (
-		<div className="relative" style={{ width: `${props.zoom * 100}%` }}>
-			{/* Timeline with clip markers */}
-			<Slider
+		<div className="w-full h-full border border-card-border rounded-2xl relative overflow-x-auto">
+			<SliderPrimitive.Root
+				data-slot="slider"
+				value={[props.currentTime]}
+				onValueChange={props.onSliderChange}
 				step={0.1}
 				min={0}
 				max={props.duration}
-				value={[props.currentTime]}
-				onValueChange={props.onSliderChange}
-			/>
-
-			{/* Visual Clip Segments */}
-			<div className="absolute top-2.5 left-0 w-full h-[6px] transform -translate-y-1/2 pointer-events-none z-10">
-				{props.clips.map((clip, i) =>
-					clip.end !== null ? (
-						<div
-							key={i}
-							className="absolute bg-orange-500 h-full rounded"
-							style={{
-								left: `${calcPercent(clip.start) * props.zoom}%`,
-								width: `${
-									(calcPercent(clip.end) - calcPercent(clip.start)) * props.zoom
-								}%`,
-							}}
-						/>
-					) : (
-						// If end not set yet, show a vertical marker
-						<div
-							key={i}
-							className="absolute bg-yellow-400 h-full"
-							style={{
-								left: `${calcPercent(clip.start) * props.zoom}%`,
-								width: "3px",
-							}}
-						/>
-					)
-				)}
-			</div>
-
-			{/* timestamps */}
-			<div
-				className="top-full left-0 mt-1 text-xs w-full pointer-events-none h-8"
-				style={{ width: `${100 * props.zoom}%` }}
+				className="absolute flex touch-none items-center select-none h-full bg-card-background inset-shadow-sm inset-shadow-neutral-800/60"
+				style={{ width: `${timelinePixels}px` }}
 			>
-				{timestamps.map((time, i) => (
+				<SliderPrimitive.Track
+					data-slot="slider-track"
+					className="rounded-full w-full h-1.5 bg-neutral-700 relative"
+				>
+					{/* timestamps */}
 					<div
-						key={i}
-						className="absolute flex flex-col items-center"
-						style={{
-							left: `${calcPercent(time) * props.zoom}%`,
-							transform: "translateX(-50%)",
-						}}
+						className="top-5 w-full"
+						style={{ width: `${100 * props.zoom}%` }}
 					>
-						<div className="w-px h-2 bg-red-500 mb-1" />
-						<div>{formatTime(time)}</div>
+						{timestamps.map((time, i) => (
+							<div
+								key={i}
+								className="absolute -translate-x-1/2" // offset so that content appears at middle
+								style={{ left: `${getTimestampPosition(time)}%` }}
+							>
+								{getTimestamp(time)}
+							</div>
+						))}
 					</div>
-				))}
-			</div>
+				</SliderPrimitive.Track>
+
+				<SliderPrimitive.Thumb
+					data-slot="slider-thumb"
+					className="bg-white block w-1.5 h-20 shrink-0 rounded-full cursor-pointer pointer-events-auto"
+				/>
+				{/* Visual Clip Segments */}
+				<div className="absolute top-14 left-0 w-full h-full transform -translate-y-1/2 z-10">
+					{props.clips.map((clip, i) =>
+						clip.end ? (
+							<div
+								key={i}
+								className="absolute h-20 rounded-lg border-4 border-yellow-400"
+								style={{
+									left: `${getTimestampPosition(clip.start)}%`,
+									width: `${
+										getTimestampPosition(clip.end) -
+										getTimestampPosition(clip.start)
+									}%`,
+								}}
+							/>
+						) : (
+							// If end not set yet, show a vertical marker
+							<div
+								key={i}
+								className="absolute bg-yellow-400 h-20 w-1.5 rounded-full"
+								style={{
+									left: `${getTimestampPosition(clip.start) * props.zoom}%`,
+								}}
+							/>
+						)
+					)}
+				</div>
+			</SliderPrimitive.Root>
 		</div>
 	);
 }

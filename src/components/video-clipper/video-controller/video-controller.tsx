@@ -15,7 +15,7 @@ interface VideoControllerProps {
 }
 
 export default function VideoController(props: VideoControllerProps) {
-	const [zoom, setZoom] = useState(1);
+	const [zoom, setZoom] = useState(1); // 1x-4x
 
 	const handleZoomChange = (value: number[]) => {
 		setZoom(value[0]);
@@ -23,10 +23,11 @@ export default function VideoController(props: VideoControllerProps) {
 
 	return (
 		<div className="flex w-full h-24 gap-dashboard">
-			<DashboardCard className="w-32">
-				<Slider min={1} max={5} step={0.1} onValueChange={handleZoomChange} />
+			<DashboardCard className="w-32 shrink-0">
+				<Slider min={1} max={4} step={1} onValueChange={handleZoomChange} />
 			</DashboardCard>
-			<DashboardCard className="w-32">
+
+			<DashboardCard className="w-32 shrink-0">
 				<ClipButton
 					clips={props.clips}
 					setClips={props.setClips}
@@ -34,15 +35,14 @@ export default function VideoController(props: VideoControllerProps) {
 					duration={props.duration}
 				/>
 			</DashboardCard>
-			<DashboardCard className="w-full overflow-x-auto">
-				<TimelineWorkspace
-					zoom={zoom}
-					currentTime={props.currentTime}
-					duration={props.duration}
-					onSliderChange={props.onSliderChange}
-					clips={props.clips}
-				/>
-			</DashboardCard>
+
+			<TimelineWorkspace
+				zoom={zoom}
+				currentTime={props.currentTime}
+				duration={props.duration}
+				onSliderChange={props.onSliderChange}
+				clips={props.clips}
+			/>
 		</div>
 	);
 }
