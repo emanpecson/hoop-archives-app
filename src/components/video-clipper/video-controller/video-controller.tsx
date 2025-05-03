@@ -16,6 +16,7 @@ interface VideoControllerProps {
 
 export default function VideoController(props: VideoControllerProps) {
 	const [zoom, setZoom] = useState(1); // 1x-4x
+	const [pendingClipTime, setPendingClipTime] = useState<number | null>(null);
 
 	const handleZoomChange = (value: number[]) => {
 		setZoom(value[0]);
@@ -33,6 +34,8 @@ export default function VideoController(props: VideoControllerProps) {
 					setClips={props.setClips}
 					currentTime={props.currentTime}
 					duration={props.duration}
+					pendingClipTime={pendingClipTime}
+					setPendingClipTime={setPendingClipTime}
 				/>
 			</DashboardCard>
 
@@ -42,6 +45,7 @@ export default function VideoController(props: VideoControllerProps) {
 				duration={props.duration}
 				onSliderChange={props.onSliderChange}
 				clips={props.clips}
+				pendingClipTime={pendingClipTime}
 			/>
 		</div>
 	);

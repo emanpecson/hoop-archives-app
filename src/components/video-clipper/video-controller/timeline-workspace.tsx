@@ -9,6 +9,7 @@ interface TimelineWorkspaceProps {
 	duration: number;
 	onSliderChange: (value: number[]) => void;
 	clips: ClipTime[];
+	pendingClipTime: number | null;
 }
 
 export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
@@ -80,33 +81,32 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 					className="bg-white block w-1.5 h-20 shrink-0 rounded-full cursor-pointer pointer-events-auto"
 				/>
 
-				{/* Visual Clip Segments */}
+				{/* clip segments */}
 				<div className="absolute top-14 left-0 w-full h-full transform -translate-y-1/2 z-10">
-					{props.clips.map((clip, i) =>
-						clip.end ? (
-							<div
-								key={i}
-								className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"
-								style={{
-									left: `${getTimestampPosition(clip.start)}%`,
-									width: `${
-										getTimestampPosition(clip.end) -
-										getTimestampPosition(clip.start)
-									}%`,
-								}}
-							/>
-						) : (
-							// If end not set yet, show a vertical marker
-							<div
-								key={i}
-								className="absolute -top-2 bg-yellow-400 h-full w-1 rounded-full"
-								style={{
-									left: `${getTimestampPosition(clip.start)}%`,
-								}}
-							/>
-						)
-					)}
+					{props.clips.map((clip, i) => (
+						<div
+							key={i}
+							className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"
+							style={{
+								left: `${getTimestampPosition(clip.start)}%`,
+								width: `${
+									getTimestampPosition(clip.end) -
+									getTimestampPosition(clip.start)
+								}%`,
+							}}
+						/>
+					))}
 				</div>
+
+				{/* single marker on pending clip */}
+				{props.pendingClipTime && (
+					<div
+						className="absolute -top-2 bg-yellow-400 h-full w-1 rounded-full"
+						style={{
+							left: `${getTimestampPosition(props.pendingClipTime)}%`,
+						}}
+					/>
+				)}
 			</SliderPrimitive.Root>
 		</div>
 	);
