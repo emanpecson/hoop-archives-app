@@ -3,7 +3,7 @@ import DashboardCard from "../../dashboard/dashboard-card";
 import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
 import ClipDetailsCard from "./clip-details-card";
-import { ClipTag } from "@/types/clip-tag-enum";
+import { ClipTag } from "@/types/enum/clip-tag";
 import ScoreDivider from "./score-divider";
 
 export default function ClipDetails() {

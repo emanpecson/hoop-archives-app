@@ -3,6 +3,7 @@
 import VideoClipper from "@/components/video-clipper/video-clipper";
 import { S3Uploader } from "@/utils/s3-uploader";
 import React, { useState } from "react";
+import NewGameDialog from "../new-game/new-game-dialog";
 
 export default function VideoUploader() {
 	const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -68,6 +69,8 @@ export default function VideoUploader() {
 					<input type="file" accept="video/*" onChange={handleFileChange} />
 				</div>
 			)}
+
+			<NewGameDialog />
 		</div>
 	);
 }

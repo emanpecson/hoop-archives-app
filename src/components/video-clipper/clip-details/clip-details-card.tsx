@@ -1,5 +1,5 @@
 import CardButton from "@/components/card-button";
-import { ClipTag } from "@/types/clip-tag-enum";
+import { ClipTag } from "@/types/enum/clip-tag";
 
 interface ClipDetailsCardProps {
 	statement: string;
