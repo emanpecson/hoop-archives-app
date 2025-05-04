@@ -23,20 +23,20 @@ export interface FormSectionProps {
 
 export default function FormSection(props: FormSectionProps) {
 	// save data and proceed to the next step
-	const submit = () => {
-		return props.handleSubmit!(
-			(data) => {
-				props.saveData(data);
-				props.setStep(props.step + 1);
-			},
-			(errors) => console.log("Error:", errors)
-		);
-	};
+	const onNext = props.handleSubmit
+		? props.handleSubmit(
+				(data) => {
+					props.saveData(data);
+					props.setStep(props.step + 1);
+				},
+				(errors) => console.log("Error:", errors)
+		  )
+		: () => props.setStep(props.step + 1);
 
 	return (
 		<form
 			className={cn(!props.active && "hidden", "space-y-4")}
-			onSubmit={props.handleSubmit ? props.handleSubmit(submit) : undefined}
+			onSubmit={onNext}
 		>
 			<div className="flex justify-between w-full px-2">
 				{props.sections.map((section: FormSection, i: number) => {
@@ -77,9 +77,7 @@ export default function FormSection(props: FormSectionProps) {
 					type="button"
 					size="sm"
 					disabled={props.step === props.sections.length - 1}
-					onClick={() =>
-						props.handleSubmit ? submit()() : props.setStep(props.step + 1)
-					}
+					onClick={onNext}
 				>
 					<span>Next</span>
 					<ChevronRightIcon />
