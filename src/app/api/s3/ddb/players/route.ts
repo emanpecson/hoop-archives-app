@@ -26,6 +26,8 @@ export async function GET(req: NextRequest) {
 	};
 
 	try {
+		// if query provided, search entire table by first name via gsi
+		// note: query must match exactly
 		if (query.search) {
 			const params: QueryCommandInput = {
 				TableName: process.env.AWS_DDB_PLAYERS_TABLE,
@@ -39,13 +41,14 @@ export async function GET(req: NextRequest) {
 				),
 			};
 
-			console.log("params:", params);
-
 			const { Items, LastEvaluatedKey } = await docClient.send(
 				new QueryCommand(params)
 			);
 			return NextResponse.json({ Items, LastEvaluatedKey }, { status: 200 });
-		} else {
+		}
+
+		// get data w/o search query
+		else {
 			const params: ScanCommandInput = {
 				TableName: process.env.AWS_DDB_PLAYERS_TABLE,
 				Limit: 4,
