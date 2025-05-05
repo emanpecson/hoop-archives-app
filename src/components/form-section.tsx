@@ -26,6 +26,7 @@ export default function FormSection(props: FormSectionProps) {
 	const onNext = props.handleSubmit
 		? props.handleSubmit(
 				(data) => {
+					console.log("data:", data);
 					props.saveData(data);
 					props.setStep(props.step + 1);
 				},

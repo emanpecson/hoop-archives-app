@@ -19,7 +19,7 @@ const buttonVariants = cva(
 					"hover:bg-neutral-100/50 dark:hover:bg-neutral-800 hover:text-neutral-50 dark:dark:hover:bg-neutral-800/50",
 				link: "text-neutral-900 underline-offset-4 hover:underline dark:text-neutral-50",
 				input:
-					"flex w-full min-w-0 rounded-md px-3 py-1 outline-none disabled:opacity-50 text-sm bg-input-background border border-input-border font-medium place-items-center inset-shadow-sm inset-shadow-input-border/60",
+					"flex w-full min-w-0 rounded-md px-3 py-1 outline-none disabled:opacity-50 text-sm bg-input-background/70 hover:bg-input-background border border-input-border font-medium place-items-center inset-shadow-sm inset-shadow-input-border/40",
 			},
 			size: {
 				sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",

@@ -1,12 +1,13 @@
 import FormSection, { FormSectionProps } from "@/components/form-section";
 import DateInput from "@/components/input/date-input";
+import PlayerSelect from "@/components/input/game-type-select";
 import { Input } from "@/components/ui/input";
 import {
 	GameDetailsFormFields,
 	gameDetailsSchema,
 } from "@/types/schema/game-details";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FolderPenIcon, SwordsIcon } from "lucide-react";
+import { FolderPenIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function GameDetailsSection(props: FormSectionProps) {
@@ -28,15 +29,16 @@ export default function GameDetailsSection(props: FormSectionProps) {
 				error={!!errors.title}
 			/>
 			<Controller
-				name={"date"}
+				name="date"
 				control={control}
 				render={({ field }) => <DateInput {...field} error={!!errors.date} />}
 			/>
-			<Input
-				Icon={SwordsIcon}
-				{...register("type")}
-				placeholder="Select gasme type..."
-				error={!!errors.type}
+			<Controller
+				name="type"
+				control={control}
+				render={({ field }) => (
+					<PlayerSelect {...field} error={!!errors.type} />
+				)}
 			/>
 		</FormSection>
 	);
