@@ -1,16 +1,29 @@
 import { Player } from "@/types/model/player";
-
 import { ChangeEvent, useEffect, useState } from "react";
 import { Input } from "./ui/input";
-import { SearchIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useDebounceCallback } from "usehooks-ts";
+import { Skeleton } from "./ui/skeleton";
+
+type PageKey = {
+	playerId: string;
+};
 
 export default function PlayerList() {
+	const [isLoading, setIsLoading] = useState(true);
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [search, setSearch] = useState("");
 	const [tempSearch, setTempSearch] = useState("");
-	const [lastEvaluatedKey, setLastEvaluatedKey] = useState();
+
+	// maintain for n+1 pages;
+	// first page is undefined to not specify a start-key;
+	// an index w/ a key means there's data to be displayed past the init page;
+	// last page is undefined to indicate there's no more data to dipslay;
+	const [pageKeys, setPageKeys] = useState<(PageKey | undefined)[]>([
+		undefined,
+	]);
+	const [page, setPage] = useState(0);
 
 	const debounceSetSearch = useDebounceCallback(setSearch, 300);
 
@@ -19,23 +32,43 @@ export default function PlayerList() {
 		debounceSetSearch(ev.target.value);
 	};
 
-	const fetchPlayers = async () => {
-		// encode param so it can later be parsed as an object
-		const res = await fetch(
-			`/api/s3/ddb/players?search=${search}&exclusiveStartKey=${encodeURIComponent(
-				JSON.stringify(lastEvaluatedKey)
-			)}`
-		);
-		const { Items, LastEvaluatedKey } = await res.json();
+	const fetchPlayers = async (key: PageKey | undefined) => {
+		try {
+			setIsLoading(true);
 
-		console.log("data:", Items, LastEvaluatedKey);
-		setPlayers(Items);
-		setLastEvaluatedKey(LastEvaluatedKey);
+			// encode param so it can later be parsed as an object
+			const res = await fetch(
+				`/api/s3/ddb/players?search=${search}&exclusiveStartKey=${encodeURIComponent(
+					JSON.stringify(key)
+				)}`
+			);
+			const { Items, LastEvaluatedKey } = await res.json();
+
+			setPlayers(Items);
+			setPageKeys((prevKeys) => {
+				// case 1: if we're at the last item, append to end
+				if (page === prevKeys.length - 1) {
+					return [...prevKeys, LastEvaluatedKey];
+				}
+
+				// case 2: the next key should overwrite at an existing index
+				else {
+					const newKeys = [...prevKeys];
+					newKeys[page + 1] = LastEvaluatedKey;
+					return newKeys;
+				}
+			});
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	useEffect(() => {
-		fetchPlayers();
-	}, [search]);
+		fetchPlayers(pageKeys[page]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [page, search]);
 
 	return (
 		<div className="rounded-md bg-input-background/70 border border-input-border inset-shadow-sm inset-shadow-input-border/40 divide-y divide-input-border">
@@ -50,26 +83,56 @@ export default function PlayerList() {
 
 			{/* list body */}
 			<ul>
-				{players.map((player, i) => (
-					<li
-						key={i}
-						className="px-3 py-2 flex place-items-center justify-between"
-					>
-						<div className="flex place-items-center gap-2">
-							<div className="rounded-full w-6 h-6 bg-neutral-800" />
-							<span>
-								{player.firstName} {player.lastName}
-							</span>
-						</div>
+				{isLoading ? (
+					new Array(4).fill(0).map((_, i) => (
+						<li key={i}>
+							<Skeleton />
+						</li>
+					))
+				) : players.length > 0 ? (
+					players.map((player, i) => (
+						<li
+							key={i}
+							className="px-3 py-2 flex place-items-center justify-between"
+						>
+							<div className="flex place-items-center gap-2">
+								<div className="rounded-full w-6 h-6 bg-neutral-800" />
+								<span>
+									{player.firstName} {player.lastName}
+								</span>
+							</div>
 
-						{/* actions */}
-						<div>
-							<Button type="button">Team 1</Button>
-							<Button type="button">Team 2</Button>
-						</div>
-					</li>
-				))}
+							{/* actions */}
+							<div>
+								<Button type="button">Team 1</Button>
+								<Button type="button">Team 2</Button>
+							</div>
+						</li>
+					))
+				) : (
+					<div>No data</div>
+				)}
 			</ul>
+
+			{/* pagination */}
+			<div className="py-1 px-2 flex justify-end gap-1">
+				<Button
+					type="button"
+					variant="outline"
+					onClick={() => setPage(page - 1)}
+					disabled={page === 0}
+				>
+					<ChevronLeftIcon />
+				</Button>
+				<Button
+					type="button"
+					variant="outline"
+					onClick={() => setPage(page + 1)}
+					disabled={!pageKeys[page + 1]}
+				>
+					<ChevronRightIcon />
+				</Button>
+			</div>
 		</div>
 	);
 }

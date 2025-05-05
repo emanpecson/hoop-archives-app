@@ -15,15 +15,8 @@ export async function GET(req: NextRequest) {
 		search: req.nextUrl.searchParams.get("search"),
 	};
 
-	// if (!query.exclusiveStartKey) {
-	// 	return NextResponse.json(
-	// 		{ message: "Missing query: exclusiveStartKey" },
-	// 		{ status: 400 }
-	// 	);
-	// }
-
 	const params: ScanCommandInput = {
-		TableName: "Players",
+		TableName: process.env.AWS_DDB_PLAYERS_TABLE,
 		Limit: 4, // items per page
 		ExclusiveStartKey:
 			query.exclusiveStartKey !== "undefined"
@@ -31,9 +24,7 @@ export async function GET(req: NextRequest) {
 				: undefined,
 	};
 
-	console.log("params:", params);
-
-	// Add filter if search query is provided
+	// filter by first/last name
 	if (query.search) {
 		params.FilterExpression =
 			"begins_with(#firstName, :q) OR begins_with(#lastName, :q)";
