@@ -11,7 +11,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Player } from "@/types/model/player";
-import { createPlayersSchema } from "@/types/schema/new-game-form/players";
+import { createPlayersSchema } from "@/types/schema/new-game-form/add-players";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,7 @@ type DynamicPlayersForm = {
 	players?: (Player | null)[];
 };
 
-export default function PlayersSection(props: FormSectionProps) {
+export default function AddPlayersSection(props: FormSectionProps) {
 	const [playerAddIsOpen, setPlayerAddIsOpen] = useState(false);
 	const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 

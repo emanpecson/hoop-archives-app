@@ -47,7 +47,7 @@ export default function FormSection(props: FormSectionProps) {
 						<div
 							key={i}
 							className={cn(
-								"flex space-x-1 pointer-events-none",
+								"flex space-x-1 pointer-events-none text-sm",
 								isActive ? "text-white" : "text-white/25"
 							)}
 						>

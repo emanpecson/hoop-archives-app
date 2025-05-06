@@ -102,7 +102,7 @@ export default function PlayerList(props: PlayerListProps) {
 						>
 							<div className="flex place-items-center gap-2">
 								<div className="rounded-full w-6 h-6 bg-neutral-800" />
-								<span>
+								<span className="text-sm">
 									{player.firstName} {player.lastName}
 								</span>
 							</div>

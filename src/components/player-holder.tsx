@@ -17,7 +17,7 @@ export default function PlayerHolder(props: PlayerHolderProps) {
 				)}
 			>
 				<UserCircle2Icon size={16} />
-				<p>
+				<p className="text-sm">
 					{props.player
 						? `${props.player.firstName} ${props.player.lastName}`
 						: "Player not selected"}
