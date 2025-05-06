@@ -19,6 +19,7 @@ export interface FormSectionProps {
 		onInvalid?: SubmitErrorHandler<any> | undefined
 	) => (e?: React.BaseSyntheticEvent) => Promise<void>;
 	saveData: (data: any) => void;
+	form: any;
 }
 
 export default function FormSection(props: FormSectionProps) {

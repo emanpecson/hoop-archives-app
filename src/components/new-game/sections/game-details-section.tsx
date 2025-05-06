@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import {
 	GameDetailsFormFields,
 	gameDetailsSchema,
-} from "@/types/schema/game-details";
+} from "@/types/schema/new-game-form/game-details";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPenIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";

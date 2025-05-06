@@ -10,7 +10,11 @@ type PageKey = {
 	playerId: string;
 };
 
-export default function PlayerList() {
+interface PlayerListProps {
+	onSelect: (player: Player) => void;
+}
+
+export default function PlayerList(props: PlayerListProps) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [search, setSearch] = useState("");
@@ -93,19 +97,14 @@ export default function PlayerList() {
 					players.map((player, i) => (
 						<li
 							key={i}
-							className="px-3 py-2 flex place-items-center justify-between"
+							className="px-3 py-2 flex place-items-center justify-between hover:bg-neutral-800/20 cursor-pointer"
+							onClick={() => props.onSelect(player)}
 						>
 							<div className="flex place-items-center gap-2">
 								<div className="rounded-full w-6 h-6 bg-neutral-800" />
 								<span>
 									{player.firstName} {player.lastName}
 								</span>
-							</div>
-
-							{/* actions */}
-							<div>
-								<Button type="button">Team 1</Button>
-								<Button type="button">Team 2</Button>
 							</div>
 						</li>
 					))
