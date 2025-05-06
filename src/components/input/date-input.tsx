@@ -25,7 +25,7 @@ export default function DateInput(props: DateInputProps) {
 					<CalendarIcon
 						className={cn(
 							"absolute top-2 left-3",
-							props.error ? "text-input-error" : "text-input-muted"
+							props.error ? "text-error-foreground" : "text-input-muted"
 						)}
 						size={20}
 					/>
@@ -33,13 +33,13 @@ export default function DateInput(props: DateInputProps) {
 						type="button"
 						size="md"
 						variant="input"
-						className={cn(props.error && "border border-input-error/50")}
+						className={cn(props.error && "border border-error-foreground/50")}
 					>
 						<span
 							className={cn(
 								"absolute left-10",
 								props.error
-									? "text-input-error"
+									? "text-error-foreground"
 									: props.value
 									? "text-white"
 									: "text-input-muted"

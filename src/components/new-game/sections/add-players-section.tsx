@@ -37,7 +37,7 @@ export default function AddPlayersSection(props: FormSectionProps) {
 	const {
 		handleSubmit,
 		watch,
-		// formState: { errors },
+		formState: { errors },
 		setValue,
 	} = useForm<DynamicPlayersForm>({
 		resolver: zodResolver(dyanmicPlayersSchema),
@@ -75,11 +75,11 @@ export default function AddPlayersSection(props: FormSectionProps) {
 		if (form.team1 && targetArray === "team1") {
 			const updateTeam = [...form.team1];
 			updateTeam[form.team1.indexOf(null)] = selectedPlayer;
-			setValue("team1", updateTeam);
+			setValue("team1", updateTeam, { shouldValidate: true });
 		} else if (form.team2 && targetArray === "team2") {
 			const updateTeam = [...form.team2];
 			updateTeam[form.team2.indexOf(null)] = selectedPlayer;
-			setValue("team2", updateTeam);
+			setValue("team2", updateTeam, { shouldValidate: true });
 		} else {
 			console.log("unhandled (addPlayer)"); // ! to handle
 		}
@@ -89,11 +89,11 @@ export default function AddPlayersSection(props: FormSectionProps) {
 		if (form.team1 && targetArray === "team1") {
 			const updateTeam = [...form.team1];
 			updateTeam[index] = null;
-			setValue("team1", updateTeam);
+			setValue("team1", updateTeam, { shouldValidate: true });
 		} else if (form.team2 && targetArray === "team2") {
 			const updateTeam = [...form.team2];
 			updateTeam[index] = null;
-			setValue("team2", updateTeam);
+			setValue("team2", updateTeam, { shouldValidate: true });
 		} else {
 			console.log("unhandled case (removePlayer)"); // ! to handle
 		}
@@ -106,7 +106,14 @@ export default function AddPlayersSection(props: FormSectionProps) {
 				{form.team1 && form.team2 ? (
 					<div className="flex justify-between gap-2 w-full">
 						<div className="flex flex-col gap-2 w-full">
-							<label className="text-sm">Team 1</label>
+							<div className="flex text-sm gap-2">
+								<label>Team 1</label>
+								{!!errors.team1 && (
+									<span className="text-red-400 px-2 bg-red-700/10 rounded-md border border-red-700/20">
+										{form.team1.length} players required
+									</span>
+								)}
+							</div>
 							{form.team1.map((player, i) => (
 								<PlayerHolder
 									player={player}
@@ -116,7 +123,14 @@ export default function AddPlayersSection(props: FormSectionProps) {
 							))}
 						</div>
 						<div className="flex flex-col gap-2 w-full">
-							<label className="text-sm">Team 2</label>
+							<div className="flex text-sm gap-2">
+								<label className="text-sm">Team 2</label>
+								{!!errors.team2 && (
+									<span className="text-red-400 px-2 bg-red-700/10 rounded-md border border-red-700/20">
+										{form.team2.length} players required
+									</span>
+								)}
+							</div>
 							{form.team2.map((player, i) => (
 								<PlayerHolder
 									player={player}

@@ -26,7 +26,7 @@ function Input({ className, type, Icon, error, ...props }: CustomInputProps) {
 					"focus-visible:ring-[3px] placeholder:text-input-muted",
 					"text-sm bg-input-background/70 border border-input-border pl-10 font-medium inset-shadow-sm inset-shadow-input-border/40",
 					error
-						? "text-input-error border-input-error/50 ring-input-error/40"
+						? "text-error-foreground border-error-foretext-error-foreground/50 ring-error-foretext-error-foreground/40"
 						: "text-white focus-visible:border-neutral-950 focus-visible:ring-neutral-500/30",
 					className
 				)}

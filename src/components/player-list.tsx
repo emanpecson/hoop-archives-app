@@ -81,7 +81,7 @@ export default function PlayerList(props: PlayerListProps) {
 				onChange={handleSearch}
 				value={tempSearch}
 				Icon={SearchIcon}
-				placeholder="Search player"
+				placeholder="Search player (then click player to add)"
 				className="rounded-b-none bg-none border-none"
 			/>
 
