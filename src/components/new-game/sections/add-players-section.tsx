@@ -1,31 +1,17 @@
-import ErrorLabel from "@/components/error-label";
 import FormSection, { FormSectionProps } from "@/components/form-section";
-import PlayerHolder from "@/components/player-holder";
 import PlayerList from "@/components/player-list";
-import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+import PlayersPreview from "@/components/players-preview";
 import { Player } from "@/types/model/player";
-import { createPlayersSchema } from "@/types/schema/new-game-form/add-players";
+import {
+	createPlayersSchema,
+	DynamicPlayersForm,
+} from "@/types/schema/new-game-form/add-players";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type DynamicPlayersForm = {
-	team1?: (Player | null)[];
-	team2?: (Player | null)[];
-	players?: (Player | null)[];
-};
-
 export default function AddPlayersSection(props: FormSectionProps) {
-	const [playerAddIsOpen, setPlayerAddIsOpen] = useState(false);
 	const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
 	// computes schema before useForm calls (useEffect is too late)
@@ -54,6 +40,11 @@ export default function AddPlayersSection(props: FormSectionProps) {
 	// initialize arrays for teams/players
 	useEffect(() => {
 		if (props.form) {
+			// flush old data
+			if (form.team1) setValue("team1", undefined);
+			if (form.team2) setValue("team2", undefined);
+			if (form.players) setValue("players", undefined);
+
 			if (["2v2", "3v3", "4v4"].includes(props.form.type)) {
 				const teamLength = parseInt(props.form.type[0]);
 				setValue("team1", new Array(teamLength).fill(null));
@@ -67,101 +58,53 @@ export default function AddPlayersSection(props: FormSectionProps) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.form.type]);
 
-	const handlePlayerSelect = (player: Player) => {
-		setSelectedPlayer(player);
-		setPlayerAddIsOpen(true);
-	};
-
-	const addPlayer = (targetArray: string) => {
-		if (form.team1 && targetArray === "team1") {
-			const updateTeam = [...form.team1];
-			updateTeam[form.team1.indexOf(null)] = selectedPlayer;
-			setValue("team1", updateTeam, { shouldValidate: true });
-		} else if (form.team2 && targetArray === "team2") {
-			const updateTeam = [...form.team2];
-			updateTeam[form.team2.indexOf(null)] = selectedPlayer;
-			setValue("team2", updateTeam, { shouldValidate: true });
-		} else {
-			console.log("unhandled (addPlayer)"); // ! to handle
-		}
-	};
-
-	const removePlayer = (targetArray: string, index: number) => {
-		if (form.team1 && targetArray === "team1") {
-			const updateTeam = [...form.team1];
-			updateTeam[index] = null;
-			setValue("team1", updateTeam, { shouldValidate: true });
-		} else if (form.team2 && targetArray === "team2") {
-			const updateTeam = [...form.team2];
-			updateTeam[index] = null;
-			setValue("team2", updateTeam, { shouldValidate: true });
-		} else {
-			console.log("unhandled case (removePlayer)"); // ! to handle
-		}
+	// sets slot to player or null
+	const updatePlayer = (
+		targetArray: (Player | null)[],
+		targetName: keyof DynamicPlayersForm,
+		index: number
+	) => {
+		const updateTeam = [...targetArray];
+		updateTeam[index] = selectedPlayer;
+		setValue(targetName, updateTeam, { shouldValidate: true });
+		setSelectedPlayer(null);
 	};
 
 	return (
-		<>
-			<FormSection {...props} handleSubmit={handleSubmit}>
-				<PlayerList onSelect={handlePlayerSelect} />
-				{form.team1 && form.team2 ? (
-					<div className="flex justify-between gap-2 w-full">
-						<div className="flex flex-col gap-2 w-full">
-							<div className="flex text-sm gap-2">
-								<label>Team 1</label>
-								{errors.team1 && errors.team1.message && (
-									<ErrorLabel text={errors.team1.message} />
-								)}
-							</div>
-							{form.team1.map((player, i) => (
-								<PlayerHolder
-									player={player}
-									key={i}
-									onRemove={() => removePlayer("team1", i)}
-								/>
-							))}
-						</div>
-						<div className="flex flex-col gap-2 w-full">
-							<div className="flex text-sm gap-2">
-								<label className="text-sm">Team 2</label>
-								{errors.team2 && errors.team2.message && (
-									<ErrorLabel text={errors.team2.message} />
-								)}
-							</div>
-							{form.team2.map((player, i) => (
-								<PlayerHolder
-									player={player}
-									key={i}
-									onRemove={() => removePlayer("team2", i)}
-								/>
-							))}
-						</div>
-					</div>
-				) : (
-					<p>unhandled</p> // ! to handle
-				)}
-			</FormSection>
-
-			<Dialog open={playerAddIsOpen} onOpenChange={setPlayerAddIsOpen}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Add player</DialogTitle>
-						<DialogDescription>Select player placement</DialogDescription>
-					</DialogHeader>
-					{form.team1 && form.team2 ? (
-						<div>
-							<DialogClose asChild>
-								<Button onClick={() => addPlayer("team1")}>Team 1</Button>
-							</DialogClose>
-							<DialogClose asChild>
-								<Button onClick={() => addPlayer("team2")}>Team 2</Button>
-							</DialogClose>
-						</div>
-					) : (
-						<p>unhandled</p> // ! to handle
-					)}
-				</DialogContent>
-			</Dialog>
-		</>
+		<FormSection {...props} handleSubmit={handleSubmit}>
+			<PlayerList
+				onSelect={setSelectedPlayer}
+				selectedPlayerId={selectedPlayer ? selectedPlayer.playerId : null}
+			/>
+			{form.team1 && form.team2 ? (
+				<div className="flex justify-between gap-2 w-full">
+					<PlayersPreview
+						label="Team 1"
+						targetName="team1"
+						targetArray={form.team1}
+						errors={errors}
+						selectedPlayer={selectedPlayer}
+						onUpdate={updatePlayer}
+					/>
+					<PlayersPreview
+						label="Team 2"
+						targetName="team2"
+						targetArray={form.team2}
+						errors={errors}
+						selectedPlayer={selectedPlayer}
+						onUpdate={updatePlayer}
+					/>
+				</div>
+			) : (
+				<PlayersPreview
+					label="Players"
+					targetName="players"
+					targetArray={form.players!}
+					errors={errors}
+					selectedPlayer={selectedPlayer}
+					onUpdate={updatePlayer}
+				/>
+			)}
+		</FormSection>
 	);
 }

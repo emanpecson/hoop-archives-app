@@ -11,7 +11,8 @@ type PageKey = {
 };
 
 interface PlayerListProps {
-	onSelect: (player: Player) => void;
+	onSelect: (player: Player | null) => void;
+	selectedPlayerId: string | null;
 }
 
 export default function PlayerList(props: PlayerListProps) {
@@ -98,13 +99,22 @@ export default function PlayerList(props: PlayerListProps) {
 						<li
 							key={i}
 							className="px-3 py-2 flex place-items-center justify-between hover:bg-neutral-800/20 cursor-pointer"
-							onClick={() => props.onSelect(player)}
+							onClick={() =>
+								props.onSelect(
+									props.selectedPlayerId === player.playerId ? null : player
+								)
+							}
 						>
 							<div className="flex place-items-center gap-2">
 								<div className="rounded-full w-6 h-6 bg-neutral-800" />
-								<span className="text-sm">
-									{player.firstName} {player.lastName}
-								</span>
+								<p className="text-sm flex gap-2">
+									<span>
+										{player.firstName} {player.lastName}
+									</span>
+									{props.selectedPlayerId === player.playerId && (
+										<span>(Selected)</span>
+									)}
+								</p>
 							</div>
 						</li>
 					))
