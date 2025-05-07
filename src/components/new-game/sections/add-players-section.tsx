@@ -1,3 +1,4 @@
+import ErrorLabel from "@/components/error-label";
 import FormSection, { FormSectionProps } from "@/components/form-section";
 import PlayerHolder from "@/components/player-holder";
 import PlayerList from "@/components/player-list";
@@ -108,10 +109,8 @@ export default function AddPlayersSection(props: FormSectionProps) {
 						<div className="flex flex-col gap-2 w-full">
 							<div className="flex text-sm gap-2">
 								<label>Team 1</label>
-								{!!errors.team1 && (
-									<span className="text-red-400 px-2 bg-red-700/10 rounded-md border border-red-700/20">
-										{errors.team1.message}
-									</span>
+								{errors.team1 && errors.team1.message && (
+									<ErrorLabel text={errors.team1.message} />
 								)}
 							</div>
 							{form.team1.map((player, i) => (
@@ -125,10 +124,8 @@ export default function AddPlayersSection(props: FormSectionProps) {
 						<div className="flex flex-col gap-2 w-full">
 							<div className="flex text-sm gap-2">
 								<label className="text-sm">Team 2</label>
-								{!!errors.team2 && (
-									<span className="text-red-400 px-2 bg-red-700/10 rounded-md border border-red-700/20">
-										{errors.team2.message}
-									</span>
+								{errors.team2 && errors.team2.message && (
+									<ErrorLabel text={errors.team2.message} />
 								)}
 							</div>
 							{form.team2.map((player, i) => (
