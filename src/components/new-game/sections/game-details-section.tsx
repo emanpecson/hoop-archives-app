@@ -23,12 +23,14 @@ export default function GameDetailsSection(props: FormSectionProps) {
 	return (
 		<FormSection {...props} handleSubmit={handleSubmit}>
 			<Input
+				defaultValue={props.videoFile.name}
 				Icon={FolderPenIcon}
 				{...register("title")}
 				placeholder="Enter title..."
 				error={!!errors.title}
 			/>
 			<Controller
+				defaultValue={new Date()}
 				name="date"
 				control={control}
 				render={({ field }) => <DateInput {...field} error={!!errors.date} />}
