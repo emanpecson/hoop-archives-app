@@ -110,7 +110,7 @@ export default function AddPlayersSection(props: FormSectionProps) {
 								<label>Team 1</label>
 								{!!errors.team1 && (
 									<span className="text-red-400 px-2 bg-red-700/10 rounded-md border border-red-700/20">
-										{form.team1.length} players required
+										{errors.team1.message}
 									</span>
 								)}
 							</div>
@@ -127,7 +127,7 @@ export default function AddPlayersSection(props: FormSectionProps) {
 								<label className="text-sm">Team 2</label>
 								{!!errors.team2 && (
 									<span className="text-red-400 px-2 bg-red-700/10 rounded-md border border-red-700/20">
-										{form.team2.length} players required
+										{errors.team2.message}
 									</span>
 								)}
 							</div>
