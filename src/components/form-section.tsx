@@ -1,26 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
-import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { Button } from "./ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import type { FormSection } from "@/types/form-section";
-import { Dispatch, SetStateAction } from "react";
+import type { FormSection, FormSectionProps } from "@/types/form-section";
 
 // handle switching between different sections
-
-export interface FormSectionProps {
-	active: boolean;
-	step: number;
-	setStep: Dispatch<SetStateAction<number>>;
-	sections: FormSection[];
-	children?: React.ReactNode;
-	handleSubmit?: (
-		onValid: SubmitHandler<any>,
-		onInvalid?: SubmitErrorHandler<any> | undefined
-	) => (e?: React.BaseSyntheticEvent) => Promise<void>;
-	saveData: (data: any) => void;
-	form: any;
-}
 
 export default function FormSection(props: FormSectionProps) {
 	// save data and proceed to the next step
@@ -41,7 +24,7 @@ export default function FormSection(props: FormSectionProps) {
 			onSubmit={onNext}
 		>
 			<div className="flex justify-between w-full px-2">
-				{props.sections.map((section: FormSection, i: number) => {
+				{props.sections.map((section, i: number) => {
 					const isActive = section.step === props.step;
 					return (
 						<div

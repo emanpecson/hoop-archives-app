@@ -7,9 +7,15 @@ import {
 } from "../ui/dialog";
 import { useState } from "react";
 import { newGameSections } from "@/data/sections";
-import { FormSection } from "@/types/form-section";
+import { NewGameFormSection } from "@/types/form-section";
 
-export default function NewGameDialog() {
+interface NewGameDialogProps {
+	videoFile: File | null;
+	open: boolean;
+	// setOpen: () => void;
+}
+
+export default function NewGameDialog(props: NewGameDialogProps) {
 	const [step, setStep] = useState(0);
 	const [newGameForm, setNewGameForm] = useState({});
 
@@ -26,14 +32,14 @@ export default function NewGameDialog() {
 	};
 
 	return (
-		<Dialog open>
+		<Dialog open={props.open}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>New Game</DialogTitle>
 					<DialogDescription>Setup game details and players</DialogDescription>
 				</DialogHeader>
 
-				{newGameSections.map((section: FormSection, i: number) => (
+				{newGameSections.map((section: NewGameFormSection, i: number) => (
 					<section.component
 						key={i}
 						active={section.step === step}
@@ -42,6 +48,7 @@ export default function NewGameDialog() {
 						sections={newGameSections}
 						saveData={handleSaveData}
 						form={newGameForm}
+						videoFile={props.videoFile} // extended
 					/>
 				))}
 			</DialogContent>

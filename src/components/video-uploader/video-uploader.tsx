@@ -1,30 +1,19 @@
 "use client";
 
-import VideoClipper from "@/components/video-clipper/video-clipper";
-import { S3Uploader } from "@/utils/s3-uploader";
 import React, { useState } from "react";
 import NewGameDialog from "../new-game/new-game-dialog";
 
 export default function VideoUploader() {
-	const [videoUrl, setVideoUrl] = useState<string | null>(null);
-	const s3Uploader = new S3Uploader();
+	const [videoFile, setVideoFile] = useState<File | null>(null);
 
 	const handleFileChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
-		try {
-			const vid = ev.target.files?.[0];
+		const vid = ev.target.files?.[0];
 
-			if (vid) {
-				throwInvalidVideo(vid);
-
-				await s3Uploader.handleUpload(vid);
-				const src = await getVideoSourceFromBucket(vid.name);
-
-				setVideoUrl(src);
-			} else {
-				throw new Error("Video not found");
-			}
-		} catch (error) {
-			console.log(error);
+		if (vid) {
+			throwInvalidVideo(vid);
+			setVideoFile(vid);
+		} else {
+			throw new Error("Video not found");
 		}
 	};
 
@@ -36,41 +25,22 @@ export default function VideoUploader() {
 		}
 	};
 
-	const s3PresignedUrlEndpointBuilder = (
-		filename: string,
-		bucketMethod: "GET" | "PUT"
-	) => {
-		return `/api/s3/presigned-url?filename=${filename}&bucketMethod=${bucketMethod}`;
-	};
-
-	const getVideoSourceFromBucket = async (filename: string) => {
-		const bucketMethod = "GET";
-
-		try {
-			const res = await fetch(
-				s3PresignedUrlEndpointBuilder(filename, bucketMethod)
-			);
-
-			const { presignedUrl } = await res.json();
-
-			return presignedUrl;
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	return (
 		<div className="flex justify-center place-items-center h-full w-full">
-			{videoUrl ? (
+			{/* {videoUrl ? (
 				<VideoClipper src={videoUrl} />
 			) : (
 				<div>
 					<p>Upload video</p>
 					<input type="file" accept="video/*" onChange={handleFileChange} />
 				</div>
-			)}
+			)} */}
+			<div>
+				<p>Upload video</p>
+				<input type="file" accept="video/*" onChange={handleFileChange} />
+			</div>
 
-			<NewGameDialog />
+			<NewGameDialog videoFile={videoFile} open={!!videoFile} />
 		</div>
 	);
 }
