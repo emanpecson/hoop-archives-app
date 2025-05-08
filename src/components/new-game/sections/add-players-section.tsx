@@ -1,6 +1,7 @@
-import FormSection, { FormSectionProps } from "@/components/form-section";
+import FormSection from "@/components/form-section";
 import PlayerList from "@/components/player-list";
 import PlayersPreview from "@/components/players-preview";
+import { NewGameFormSectionProps } from "@/types/form-section";
 import { Player } from "@/types/model/player";
 import {
 	createPlayersSchema,
@@ -11,7 +12,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export default function AddPlayersSection(props: FormSectionProps) {
+export default function AddPlayersSection(props: NewGameFormSectionProps) {
 	const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
 	// computes schema before useForm calls (useEffect is too late)

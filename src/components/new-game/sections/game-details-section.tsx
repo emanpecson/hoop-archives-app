@@ -1,7 +1,8 @@
-import FormSection, { FormSectionProps } from "@/components/form-section";
+import FormSection from "@/components/form-section";
 import DateInput from "@/components/input/date-input";
 import PlayerSelect from "@/components/input/game-type-select";
 import { Input } from "@/components/ui/input";
+import { NewGameFormSectionProps } from "@/types/form-section";
 import {
 	GameDetailsFormFields,
 	gameDetailsSchema,
@@ -10,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPenIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 
-export default function GameDetailsSection(props: FormSectionProps) {
+export default function GameDetailsSection(props: NewGameFormSectionProps) {
 	const {
 		handleSubmit,
 		register,
@@ -23,7 +24,7 @@ export default function GameDetailsSection(props: FormSectionProps) {
 	return (
 		<FormSection {...props} handleSubmit={handleSubmit}>
 			<Input
-				defaultValue={props.videoFile.name}
+				defaultValue={props.videoFile!.name}
 				Icon={FolderPenIcon}
 				{...register("title")}
 				placeholder="Enter title..."

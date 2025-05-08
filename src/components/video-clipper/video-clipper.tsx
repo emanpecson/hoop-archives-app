@@ -7,17 +7,19 @@ import GameDetails from "./game-details";
 import VideoController from "./video-controller/video-controller";
 import VideoPlayer from "./video-player/video-player";
 import { ClipTime } from "@/types/clip-time";
+import { Draft } from "@/types/model/draft";
 
 interface VideoClipperProps {
 	filename: string;
 }
 
 export default function VideoClipper(props: VideoClipperProps) {
+	const [draft, setDraft] = useState<Draft | null>(null);
 	const [source, setSource] = useState<string | null>(null);
-	const videoRef = useRef<HTMLVideoElement>(null);
 	const [clips, setClips] = useState<ClipTime[]>([]);
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
+	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const s3PresignedUrlEndpointBuilder = (
 		filename: string,
