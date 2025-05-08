@@ -28,7 +28,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 		return `/api/s3/presigned-url?filename=${filename}&bucketMethod=${bucketMethod}`;
 	};
 
-	const setVideoSourceFromBucket = async (filename: string) => {
+	const getVideoSource = async (filename: string) => {
 		const bucketMethod = "GET";
 
 		try {
@@ -39,7 +39,18 @@ export default function VideoClipper(props: VideoClipperProps) {
 			const { presignedUrl } = await res.json();
 			setSource(presignedUrl);
 		} catch (error) {
-			console.log(error);
+			console.log(error); //  TODO: notify
+		}
+	};
+
+	const getDraft = async (filename: string) => {
+		try {
+			const res = await fetch(`/api/ddb/drafts?filename=${filename}`);
+			const data = await res.json();
+			console.log("draft data:", data);
+			setDraft(data);
+		} catch (error) {
+			console.log(error); // TODO: notify
 		}
 	};
 
@@ -52,7 +63,8 @@ export default function VideoClipper(props: VideoClipperProps) {
 
 	useEffect(() => {
 		if (props.filename) {
-			setVideoSourceFromBucket(props.filename);
+			getVideoSource(props.filename);
+			getDraft(props.filename);
 		}
 	}, [props.filename]);
 

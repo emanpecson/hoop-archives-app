@@ -13,6 +13,7 @@
     "@aws-sdk/client-s3": "^3.787.0",
     "@aws-sdk/lib-dynamodb": "^3.799.0",
     "@aws-sdk/s3-request-presigner": "^3.787.0",
+    "@aws-sdk/util-dynamodb": "^3.804.0",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-popover": "^1.1.11",
