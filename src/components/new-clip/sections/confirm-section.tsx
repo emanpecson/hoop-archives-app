@@ -10,6 +10,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 				startTime: props.clipTime.start,
 				endTime: props.clipTime.end,
 				tags: props.form.tags,
+				teamBeneficiary: props.form.teamBeneficiary,
 				offense:
 					props.form.play === "offense"
 						? {

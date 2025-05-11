@@ -3,35 +3,63 @@ import DashboardCard from "../../dashboard/dashboard-card";
 import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
 import ClipDetailsCard from "./clip-details-card";
-import { ClipTag } from "@/types/enum/clip-tag";
 import ScoreDivider from "./score-divider";
+import { GameDraft } from "@/types/model/game-draft";
+import { ClipDetails as ClipDetailsType } from "@/types/clip-details";
+import { ClipTag } from "@/types/enum/clip-tag";
 
-export default function ClipDetails() {
+interface ClipDetailsProps {
+	draft: GameDraft | null;
+}
+
+export default function ClipDetails(props: ClipDetailsProps) {
+	const clipHeadline = (clip: ClipDetailsType) => {
+		if (clip.offense) {
+			const scorer = `${clip.offense.playerScoring.firstName}`;
+			const playmaker = clip.offense.playerAssisting
+				? `${clip.offense.playerAssisting.firstName}`
+				: undefined;
+			const defenders = clip.offense.playersDefending.map(
+				(p) => `${p.firstName}`
+			);
+
+			let headline = `${
+				clip.teamBeneficiary ? `${clip.teamBeneficiary}:` : ""
+			} ${scorer} scored a ${clip.offense.pointsAdded}`;
+			if (playmaker) {
+				headline += `, assisted by ${playmaker}`;
+			}
+			if (defenders.length > 0) {
+				headline += `, defended by ${defenders.join(", ")}`;
+			}
+			return headline;
+		} else if (clip.defense) {
+			const defender = `${clip.defense.playerDefending.firstName}`;
+			const opponent = `${clip.defense.playerStopped.firstName}`;
+
+			return `${defender} stopped ${opponent}`;
+		}
+		return "N/A";
+	};
+
 	return (
 		<DashboardCard className="w-72 h-full space-y-4 flex flex-col">
 			<DashboardCardHeader text="Clip Details" />
 			<Input Icon={SearchIcon} placeholder="Search clip..." />
 
 			<div className="grow overflow-y-scroll space-y-4">
-				<ClipDetailsCard
-					statement="L. Morales (Team 1) scored"
-					tags={[ClipTag.LAYUP, ClipTag.CONTESTED]}
-				/>
-				<ScoreDivider score="1-0" />
-				<ClipDetailsCard
-					statement="E. Pecson (Team 1) scored"
-					tags={[ClipTag.DEEP, ClipTag.OFF_THE_DRIBBLE, ClipTag.HIGHLIGHT]}
-				/>
-				<ScoreDivider score="3-0" />
-				<ClipDetailsCard
-					statement="E. Pecson (Team 1) scored"
-					tags={[ClipTag.DEEP, ClipTag.OFF_THE_DRIBBLE, ClipTag.HIGHLIGHT]}
-				/>
-				<ScoreDivider score="3-0" />
-				<ClipDetailsCard
-					statement="E. Pecson (Team 1) scored"
-					tags={[ClipTag.DEEP, ClipTag.OFF_THE_DRIBBLE, ClipTag.HIGHLIGHT]}
-				/>
+				{props.draft ? (
+					props.draft.clipsDetails.map((clip, i) => (
+						<ClipDetailsCard
+							key={i}
+							headline={clipHeadline(clip)}
+							tags={clip.tags as ClipTag[]}
+						/>
+					))
+				) : (
+					<div>Loading data</div>
+				)}
+
 				<ScoreDivider score="3-0" />
 			</div>
 		</DashboardCard>

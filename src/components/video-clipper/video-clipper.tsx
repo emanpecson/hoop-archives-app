@@ -37,6 +37,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 		try {
 			const res = await fetch(s3PresignedUrlEndpointBuilder(key, "GET"));
 			const { presignedUrl } = await res.json();
+			console.log("source:", presignedUrl);
 			setSource(presignedUrl);
 		} catch (error) {
 			console.log(error); //  TODO: notify
@@ -49,8 +50,6 @@ export default function VideoClipper(props: VideoClipperProps) {
 			const data = (await res.json()) as GameDraft;
 			console.log("draft data:", data);
 			setDraft(data);
-
-			getVideoSource(data.bucketKey);
 		} catch (error) {
 			console.log(error); // TODO: notify
 		}
@@ -81,12 +80,18 @@ export default function VideoClipper(props: VideoClipperProps) {
 			getDraft(props.title);
 		}
 	}, [props.title]);
+
+	useEffect(() => {
+		if (draft) {
+			getVideoSource(draft.bucketKey);
+		}
+	}, [draft]);
 	return (
 		<>
 			<div className="flex w-full h-full gap-dashboard">
 				<div className="flex flex-col w-full h-full gap-dashboard">
 					<div className="flex w-full gap-dashboard h-full min-h-0">
-						<ClipDetails />
+						<ClipDetails draft={draft} />
 						{source && (
 							<VideoPlayer
 								videoRef={videoRef}

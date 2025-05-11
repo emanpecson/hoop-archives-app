@@ -5,6 +5,7 @@ export interface ClipDetails {
 	endTime: number;
 	tags: string[];
 
+	teamBeneficiary?: string;
 	offense?: OffensivePlay;
 	defense?: DefensivePlay;
 }

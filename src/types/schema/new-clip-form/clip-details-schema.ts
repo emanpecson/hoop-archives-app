@@ -7,6 +7,7 @@ export const offensivePlaySchema = z.object({
 	playerScoring: playerSchema,
 	playerAssisting: playerSchema.optional(),
 	playersDefending: z.array(playerSchema),
+	teamBeneficiary: z.string().optional(),
 	tags: z.array(z.string()).min(1, "Required"),
 });
 

@@ -14,6 +14,7 @@ import {
 } from "@/types/schema/new-clip-form/clip-details-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PointsAdded } from "@/types/enum/points-added";
+import { Player } from "@/types/model/player";
 
 export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 	const {
@@ -42,6 +43,14 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 		return [];
 	};
 
+	const defineTeamBeneficiary = (player: Player) => {
+		if (props.draft.team1 && props.draft.team1.includes(player)) {
+			setValue("teamBeneficiary", "Team 1");
+		} else if (props.draft.team2) {
+			setValue("teamBeneficiary", "Team 2");
+		}
+	};
+
 	return (
 		<FormSection {...props} handleSubmit={handleSubmit}>
 			<div className="flex divide-x divide-neutral-700">
@@ -66,15 +75,18 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 				<div className="pl-6 w-full">
 					{selectedPlay === "offense" ? (
 						<OffenseDetails
-							players={getPlayerOptions()}
+							playerOptions={getPlayerOptions()}
+							draft={props.draft}
 							control={control as Control<OffensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<OffensivePlayFormFields>>}
+							onPrimaryPlayer={defineTeamBeneficiary}
 						/>
 					) : (
 						<DefenseDetails
-							players={getPlayerOptions()}
+							playerOptions={getPlayerOptions()}
 							control={control as Control<DefensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<DefensivePlayFormFields>>}
+							onPrimaryPlayer={defineTeamBeneficiary}
 						/>
 					)}
 				</div>

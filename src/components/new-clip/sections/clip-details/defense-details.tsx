@@ -6,9 +6,10 @@ import PlayerSelect from "@/components/input/player-select";
 import TagsCombobox from "@/components/input/tags-combobox";
 
 interface DefenseDetailsProps {
-	players: Player[];
+	playerOptions: Player[];
 	control: Control<DefensivePlayFormFields>;
 	errors: Partial<FieldErrors<DefensivePlayFormFields>>;
+	onPrimaryPlayer: (player: Player) => void;
 }
 
 export default function DefenseDetails(props: DefenseDetailsProps) {
@@ -24,7 +25,11 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									playerOptions={props.players}
+									onChange={(player) => {
+										field.onChange(player);
+										props.onPrimaryPlayer(player);
+									}}
+									playerOptions={props.playerOptions}
 									error={!!props.errors.playerDefending}
 								/>
 							)}
@@ -40,7 +45,7 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									playerOptions={props.players}
+									playerOptions={props.playerOptions}
 									error={!!props.errors.playerStopped}
 								/>
 							)}

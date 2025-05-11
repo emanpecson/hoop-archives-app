@@ -7,11 +7,14 @@ import PlayerMultiSelect from "@/components/input/player-multi-select";
 import ToggleSelect from "@/components/input/toggle-select";
 import TagsCombobox from "@/components/input/tags-combobox";
 import { PointsAdded } from "@/types/enum/points-added";
+import { GameDraft } from "@/types/model/game-draft";
 
 interface OffenseDetailsProps {
-	players: Player[];
+	playerOptions: Player[];
 	control: Control<OffensivePlayFormFields>;
 	errors: Partial<FieldErrors<OffensivePlayFormFields>>;
+	draft: GameDraft;
+	onPrimaryPlayer: (player: Player) => void;
 }
 
 export default function OffenseDetails(props: OffenseDetailsProps) {
@@ -43,7 +46,11 @@ export default function OffenseDetails(props: OffenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									playerOptions={props.players}
+									onChange={(player) => {
+										field.onChange(player);
+										props.onPrimaryPlayer(player);
+									}}
+									playerOptions={props.playerOptions}
 									error={!!props.errors.playerScoring}
 								/>
 							)}
@@ -59,7 +66,7 @@ export default function OffenseDetails(props: OffenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									playerOptions={props.players}
+									playerOptions={props.playerOptions}
 									error={!!props.errors.playerAssisting}
 								/>
 							)}
@@ -75,7 +82,7 @@ export default function OffenseDetails(props: OffenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerMultiSelect
 									{...field}
-									playerOptions={props.players}
+									playerOptions={props.playerOptions}
 									error={!!props.errors.playersDefending}
 								/>
 							)}
