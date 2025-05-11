@@ -23,9 +23,6 @@ export default function VideoClipper(props: VideoClipperProps) {
 	const [currentTime, setCurrentTime] = useState(0);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
-	// "completed" clips // TODO: populate w/ saved draft.clipsDetails data (if exists)
-	const [clips, setClips] = useState<ClipDetailsType[]>([]);
-
 	// for defining further clip details
 	const [newClipTime, setNewClipTime] = useState<ClipTime | null>(null);
 
@@ -69,8 +66,11 @@ export default function VideoClipper(props: VideoClipperProps) {
 		setNewClipDialogOpen(true);
 	};
 
-	const handleClipCreate = (clip: ClipDetailsType) => {
-		setClips((prevClips) => [...prevClips, clip]);
+	const handleClipCreate = (newClip: ClipDetailsType) => {
+		setDraft((prevDraft) => ({
+			...prevDraft!,
+			clipsDetails: [...prevDraft!.clipsDetails, newClip],
+		}));
 		setNewClipTime(null);
 	};
 
@@ -102,7 +102,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 					<div className="h-fit flex flex-col gap-dashboard">
 						{draft && source && (
 							<VideoController
-								clips={clips}
+								clips={draft.clipsDetails}
 								videoRef={videoRef}
 								currentTime={currentTime}
 								duration={duration}
