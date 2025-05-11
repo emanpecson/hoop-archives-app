@@ -9,18 +9,32 @@ import {
 	SelectValue,
 } from "../ui/select";
 import { GameType } from "@/types/enum/game-type";
+import { useState } from "react";
 
-interface PlayerSelectProps {
+interface GameTypeSelectProps {
 	error?: boolean;
 	value: string;
 	onChange: (value: string) => void;
 }
 
-export default function GameTypeSelect(props: PlayerSelectProps) {
+export default function GameTypeSelect(props: GameTypeSelectProps) {
+	const [placeholder, setPlaceholder] = useState<string | null>(
+		"Select game type"
+	);
+
+	const handleSelect = (value: string) => {
+		setPlaceholder(null);
+		props.onChange(value);
+	};
+
 	return (
-		<Select onValueChange={props.onChange} value={props.value}>
-			<SelectTrigger Icon={SwordsIcon} error={props.error}>
-				<SelectValue placeholder="Select a game type" />
+		<Select onValueChange={handleSelect} value={props.value}>
+			<SelectTrigger
+				Icon={SwordsIcon}
+				error={props.error}
+				placeholder={placeholder}
+			>
+				<SelectValue />
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>

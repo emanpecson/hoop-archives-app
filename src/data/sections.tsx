@@ -1,10 +1,15 @@
-import ConfirmSection from "@/components/new-game/sections/confirm-section";
+import { ConfirmSection as NewGameConfirmSection } from "@/components/new-game/sections/confirm-section";
 import GameDetailsSection from "@/components/new-game/sections/game-details-section";
 import AddPlayersSection from "@/components/new-game/sections/add-players-section";
 import {
+	NewClipFormSection,
+	NewClipFormSectionProps,
 	NewGameFormSection,
 	NewGameFormSectionProps,
 } from "@/types/form-section";
+import ReviewClipSection from "@/components/new-clip/sections/review-clip-section";
+import ClipDetailsSection from "@/components/new-clip/sections/clip-details/clip-details-section";
+import { ConfirmSection as NewClipConfirmSection } from "@/components/new-clip/sections/confirm-section";
 
 export const newGameSections: NewGameFormSection[] = [
 	{
@@ -23,7 +28,31 @@ export const newGameSections: NewGameFormSection[] = [
 	},
 	{
 		component: (props: NewGameFormSectionProps) => (
-			<ConfirmSection {...props} />
+			<NewGameConfirmSection {...props} />
+		),
+		label: "Confirm",
+		step: 2,
+	},
+];
+
+export const newClipSections: NewClipFormSection[] = [
+	{
+		component: (props: NewClipFormSectionProps) => (
+			<ReviewClipSection {...props} />
+		),
+		label: "Review clip",
+		step: 0,
+	},
+	{
+		component: (props: NewClipFormSectionProps) => (
+			<ClipDetailsSection {...props} />
+		),
+		label: "Clip details",
+		step: 1,
+	},
+	{
+		component: (props: NewClipFormSectionProps) => (
+			<NewClipConfirmSection {...props} />
 		),
 		label: "Confirm",
 		step: 2,

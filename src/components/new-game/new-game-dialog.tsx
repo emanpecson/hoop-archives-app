@@ -27,8 +27,6 @@ export default function NewGameDialog(props: NewGameDialogProps) {
 		} else {
 			console.log("Error: Missing form data");
 		}
-
-		console.log("Saved invoice:", newGameForm);
 	};
 
 	return (

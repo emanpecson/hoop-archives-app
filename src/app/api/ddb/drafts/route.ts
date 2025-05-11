@@ -1,5 +1,4 @@
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import { Draft } from "@/types/model/draft";
 import { Player } from "@/types/model/player";
 import {
 	AttributeValue,
@@ -8,15 +7,16 @@ import {
 	PutItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
+import { GameDraft } from "@/types/model/game-draft";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 export async function GET(req: NextRequest) {
-	const query = { filename: req.nextUrl.searchParams.get("filename") };
+	const query = { title: req.nextUrl.searchParams.get("title") };
 
-	if (!query.filename) {
+	if (!query.title) {
 		return NextResponse.json(
-			{ error: "Missing query param: filename" },
+			{ error: "Missing query param: title" },
 			{ status: 400 }
 		);
 	}
@@ -25,8 +25,8 @@ export async function GET(req: NextRequest) {
 		const command = new GetItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
 			Key: {
-				filename: {
-					S: query.filename,
+				title: {
+					S: query.title,
 				},
 			},
 		});
@@ -48,21 +48,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-	const draft: Draft = await req.json();
+	const draft: GameDraft = await req.json();
 	console.log("Draft body request:", draft);
-
-	const query = { filename: req.nextUrl.searchParams.get("filename") };
 
 	if (!draft) {
 		return NextResponse.json(
 			{ error: "Missing body request" },
-			{ status: 400 }
-		);
-	}
-
-	if (!query.filename) {
-		return NextResponse.json(
-			{ error: "Missing query param: filename" },
 			{ status: 400 }
 		);
 	}
@@ -79,7 +70,6 @@ export async function PUT(req: NextRequest) {
 
 	try {
 		const item: Record<string, AttributeValue> = {
-			filename: { S: query.filename },
 			title: { S: draft.title },
 			date: { S: draft.date },
 			type: { S: draft.type },

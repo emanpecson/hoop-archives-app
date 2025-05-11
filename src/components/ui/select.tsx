@@ -30,7 +30,11 @@ function SelectValue({
 }
 
 interface CustomSelectTriggerProps
-	extends React.ComponentProps<typeof SelectPrimitive.Trigger> {
+	extends Omit<
+		React.ComponentProps<typeof SelectPrimitive.Trigger>,
+		"placeholder"
+	> {
+	placeholder?: string | null;
 	size?: "sm" | "default";
 	error?: boolean;
 	Icon: LucideIcon;
@@ -42,6 +46,7 @@ function SelectTrigger({
 	children,
 	error,
 	Icon,
+	placeholder,
 	...props
 }: CustomSelectTriggerProps) {
 	return (
@@ -49,24 +54,40 @@ function SelectTrigger({
 			data-slot="select-trigger"
 			data-size={size}
 			className={cn(
-				"bg-input-background/70 hover:bg-input-background duration-200 flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-neutral-400 focus-visible:border-neutral-300 focus-visible:ring-neutral-300/50 cursor-pointer placeholder:text-input-muted",
+				"bg-input-background/70 hover:bg-input-background duration-200 flex w-full items-start justify-between gap-2 rounded-md border px-3 py-2 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:text-red-500 *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-neutral-400 focus-visible:border-neutral-300 focus-visible:ring-neutral-300/50 cursor-pointer",
 				error
 					? "text-error-foreground border-error-foreground/50 ring-error-foreground/40"
-					: "text-white border-input-border",
+					: placeholder
+					? "text-white border-input-border"
+					: "text-input-muted border-input-border",
 				className
 			)}
 			{...props}
 		>
-			<div className="flex place-items-center gap-2">
+			<div className="flex place-items-start gap-2">
 				<SelectPrimitive.Icon asChild>
 					<Icon
 						className={cn(
-							error ? "text-red-300" : "text-input-muted",
+							error
+								? "text-error-foreground"
+								: placeholder
+								? "text-input-muted"
+								: "text-white",
 							"size-5"
 						)}
 					/>
 				</SelectPrimitive.Icon>
-				<span>{children}</span>
+				<div
+					className={cn(
+						error
+							? "text-error-foreground"
+							: placeholder
+							? "text-input-muted"
+							: "text-white"
+					)}
+				>
+					{placeholder || children}
+				</div>
 			</div>
 			<SelectPrimitive.Icon asChild>
 				<ChevronDownIcon className="size-4 opacity-50" />
@@ -126,11 +147,12 @@ function SelectLabel({
 	);
 }
 
-function SelectItem({
-	className,
-	children,
-	...props
-}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+interface CustomSelectItemProps
+	extends React.ComponentProps<typeof SelectPrimitive.Item> {
+	active?: number;
+}
+
+function SelectItem({ className, children, ...props }: CustomSelectItemProps) {
 	return (
 		<SelectPrimitive.Item
 			data-slot="select-item"

@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, JSX, SetStateAction } from "react";
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+import { ClipTime } from "./clip-time";
+import { ClipDetails } from "./clip-details";
+import { GameDraft } from "./model/game-draft";
 
+// base form props
 export interface FormSectionProps {
 	active: boolean;
 	step: number;
 	setStep: Dispatch<SetStateAction<number>>;
-	sections: FormSection[] | NewGameFormSection[];
+	sections: FormSection[] | NewGameFormSection[] | NewClipFormSection[];
 	children?: React.ReactNode;
 	handleSubmit?: (
 		onValid: SubmitHandler<any>,
@@ -22,14 +26,33 @@ export interface FormSection {
 	step: number;
 }
 
+// ----------------------------------------------------- //
+
+// override sections + include video file
 export interface NewGameFormSectionProps
 	extends Omit<FormSectionProps, "sections"> {
 	videoFile: File | null;
 	sections: NewGameFormSection[];
 }
 
-export interface NewGameFormSection {
+// override component
+export interface NewGameFormSection extends Omit<FormSection, "component"> {
 	component: (props: NewGameFormSectionProps) => JSX.Element;
-	label: string;
-	step: number;
+}
+
+// ----------------------------------------------------- //
+
+// override sections + include clip time + video source url
+export interface NewClipFormSectionProps
+	extends Omit<FormSectionProps, "sections"> {
+	clipTime: ClipTime;
+	videoSource: string;
+	sections: NewClipFormSection[];
+	draft: GameDraft;
+	onClipCreate: (clipDetails: ClipDetails) => void;
+}
+
+// override component
+export interface NewClipFormSection extends Omit<FormSection, "component"> {
+	component: (props: NewClipFormSectionProps) => JSX.Element;
 }

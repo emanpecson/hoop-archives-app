@@ -6,7 +6,7 @@ import { Player } from "@/types/model/player";
 import {
 	createPlayersSchema,
 	DynamicPlayersForm,
-} from "@/types/schema/new-game-form/add-players";
+} from "@/types/schema/new-game-form/add-players-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";

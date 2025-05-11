@@ -41,11 +41,11 @@ export default function FormSection(props: FormSectionProps) {
 				})}
 			</div>
 
-			<hr className="border-neutral-800" />
+			<hr className="border-neutral-700" />
 
 			<div className="space-y-4">{props.children}</div>
 
-			<hr className="border-neutral-800" />
+			<hr className="border-neutral-700" />
 
 			{/* footer */}
 			<div className="flex justify-between place-items-center w-full">

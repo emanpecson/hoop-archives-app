@@ -1,15 +1,15 @@
-import { ClipTime } from "@/types/clip-time";
 import { useEffect, useState } from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { getTimestamp } from "@/utils/time";
+import { ClipDetails } from "@/types/clip-details";
 
 interface TimelineWorkspaceProps {
 	zoom: number; // magnify rate
 	currentTime: number;
 	duration: number;
 	onSliderChange: (value: number[]) => void;
-	clips: ClipTime[];
-	pendingClipTime: number | null;
+	clips: ClipDetails[];
+	hangingClipTime: number | null;
 }
 
 export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
@@ -88,10 +88,10 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 							key={i}
 							className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"
 							style={{
-								left: `${getTimestampPosition(clip.start)}%`,
+								left: `${getTimestampPosition(clip.startTime)}%`,
 								width: `${
-									getTimestampPosition(clip.end) -
-									getTimestampPosition(clip.start)
+									getTimestampPosition(clip.endTime) -
+									getTimestampPosition(clip.startTime)
 								}%`,
 							}}
 						/>
@@ -99,11 +99,11 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 				</div>
 
 				{/* single marker on pending clip */}
-				{props.pendingClipTime && (
+				{props.hangingClipTime && (
 					<div
 						className="absolute -top-2 bg-yellow-400 h-full w-1 rounded-full"
 						style={{
-							left: `${getTimestampPosition(props.pendingClipTime)}%`,
+							left: `${getTimestampPosition(props.hangingClipTime)}%`,
 						}}
 					/>
 				)}

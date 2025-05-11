@@ -17,18 +17,16 @@ const s3 = new S3Client({
 const oneHourInSeconds = 60 * 60;
 
 export async function POST(req: NextRequest) {
-	const body = await req.json();
+	const { title, fileSize, partSize } = await req.json();
 
-	if (!body.fileName || !body.fileSize || !body.partSize) {
+	if (!title || !fileSize || !partSize) {
 		return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 	}
-
-	const { fileName, fileSize, partSize } = body;
 
 	try {
 		const command = new CreateMultipartUploadCommand({
 			Bucket: process.env.AWS_S3_BUCKET,
-			Key: fileName,
+			Key: title,
 		});
 
 		const res = await s3.send(command);
@@ -41,7 +39,7 @@ export async function POST(req: NextRequest) {
 		for (let partNumber = 1; partNumber <= partsCount; partNumber++) {
 			const command = new UploadPartCommand({
 				Bucket: process.env.AWS_S3_BUCKET,
-				Key: fileName,
+				Key: title,
 				UploadId: res.UploadId,
 				PartNumber: partNumber,
 			});
@@ -55,7 +53,7 @@ export async function POST(req: NextRequest) {
 
 		console.log("Upload parts generated:", presignedUrls.length);
 		return NextResponse.json(
-			{ uploadId: res.UploadId, key: fileName, presignedUrls },
+			{ uploadId: res.UploadId, key: title, presignedUrls },
 			{ status: 200 }
 		);
 	} catch (err) {

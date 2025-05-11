@@ -1,12 +1,12 @@
 import FormSection from "@/components/form-section";
 import DateInput from "@/components/input/date-input";
-import PlayerSelect from "@/components/input/game-type-select";
+import GameTypeSelect from "@/components/input/game-type-select";
 import { Input } from "@/components/ui/input";
 import { NewGameFormSectionProps } from "@/types/form-section";
 import {
 	GameDetailsFormFields,
 	gameDetailsSchema,
-} from "@/types/schema/new-game-form/game-details";
+} from "@/types/schema/new-game-form/game-details-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPenIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
@@ -32,15 +32,15 @@ export default function GameDetailsSection(props: NewGameFormSectionProps) {
 			/>
 			<Controller
 				defaultValue={new Date()}
-				name="date"
 				control={control}
+				name="date"
 				render={({ field }) => <DateInput {...field} error={!!errors.date} />}
 			/>
 			<Controller
-				name="type"
 				control={control}
+				name="type"
 				render={({ field }) => (
-					<PlayerSelect {...field} error={!!errors.type} />
+					<GameTypeSelect {...field} error={!!errors.type} />
 				)}
 			/>
 		</FormSection>

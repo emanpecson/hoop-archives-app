@@ -1,22 +1,23 @@
 import useKeyboardShortcut from "@/hooks/use-keyboard-shortcut";
+import { ClipDetails } from "@/types/clip-details";
 import { ClipTime } from "@/types/clip-time";
 import { Dispatch, SetStateAction } from "react";
 
 interface ClipButtonProps {
-	clips: ClipTime[];
-	setClips: Dispatch<SetStateAction<ClipTime[]>>;
+	clips: ClipDetails[];
 	currentTime: number;
 	duration: number;
-	pendingClipTime: number | null;
-	setPendingClipTime: Dispatch<SetStateAction<number | null>>;
+	hangingClipTime: number | null;
+	setHangingClipTime: Dispatch<SetStateAction<number | null>>;
+	onClipTime: (clipTime: ClipTime) => void;
 }
 
 export default function ClipButton(props: ClipButtonProps) {
 	const throwOnOverlappingPoint = (time: number) => {
 		for (const clip of props.clips) {
-			if (clip.start <= time && time <= clip.end!) {
+			if (clip.startTime <= time && time <= clip.endTime) {
 				throw new Error(
-					`Overlapping point ${time} on [${clip.start}, ${clip.end}]`
+					`Overlapping point ${time} on [${clip.startTime}, ${clip.endTime}]`
 				);
 			}
 		}
@@ -25,11 +26,11 @@ export default function ClipButton(props: ClipButtonProps) {
 	const throwOnOverlappingClip = (startTime: number, endTime: number) => {
 		for (const clip of props.clips) {
 			// skip current clip
-			if (clip.start === startTime) continue;
+			if (clip.startTime === startTime) continue;
 
-			if (startTime <= clip.start && clip.end! <= endTime) {
+			if (startTime <= clip.startTime && clip.endTime <= endTime) {
 				throw new Error(
-					`Overlapping clip [${startTime}, ${endTime}] on [${clip.start}, ${clip.end}]`
+					`Overlapping clip [${startTime}, ${endTime}] on [${clip.startTime}, ${clip.endTime}]`
 				);
 			}
 		}
@@ -40,31 +41,31 @@ export default function ClipButton(props: ClipButtonProps) {
 			throwOnOverlappingPoint(props.currentTime);
 
 			// complete clip
-			if (props.pendingClipTime) {
-				let newClip = null;
+			if (props.hangingClipTime) {
+				let newClipTime = null;
 
 				// define start/end time
-				if (props.currentTime < props.pendingClipTime) {
-					throwOnOverlappingClip(props.currentTime, props.pendingClipTime);
-					newClip = {
+				if (props.currentTime < props.hangingClipTime) {
+					throwOnOverlappingClip(props.currentTime, props.hangingClipTime);
+					newClipTime = {
 						start: props.currentTime,
-						end: props.pendingClipTime,
+						end: props.hangingClipTime,
 					} as ClipTime;
 				} else {
-					throwOnOverlappingClip(props.pendingClipTime, props.currentTime);
-					newClip = {
-						start: props.pendingClipTime,
+					throwOnOverlappingClip(props.hangingClipTime, props.currentTime);
+					newClipTime = {
+						start: props.hangingClipTime,
 						end: props.currentTime,
 					} as ClipTime;
 				}
 
-				props.setClips((prevClips) => [...prevClips, newClip]);
-				props.setPendingClipTime(null);
+				props.setHangingClipTime(null);
+				props.onClipTime(newClipTime);
 			}
 
 			// init new clip
 			else {
-				props.setPendingClipTime(props.currentTime);
+				props.setHangingClipTime(props.currentTime);
 			}
 		} catch (error) {
 			// TODO: notify error
@@ -74,5 +75,9 @@ export default function ClipButton(props: ClipButtonProps) {
 
 	useKeyboardShortcut({ key: "k" }, defineClip);
 
-	return <button onClick={defineClip}>clip</button>;
+	return (
+		<>
+			<button onClick={defineClip}>clip</button>
+		</>
+	);
 }

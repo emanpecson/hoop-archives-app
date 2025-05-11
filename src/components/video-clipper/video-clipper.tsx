@@ -7,35 +7,38 @@ import GameDetails from "./game-details";
 import VideoController from "./video-controller/video-controller";
 import VideoPlayer from "./video-player/video-player";
 import { ClipTime } from "@/types/clip-time";
-import { Draft } from "@/types/model/draft";
+import { GameDraft } from "@/types/model/game-draft";
+import NewClipDialog from "../new-clip/new-clip-dialog";
+import { ClipDetails as ClipDetailsType } from "@/types/clip-details";
 
 interface VideoClipperProps {
-	filename: string;
+	title: string;
 }
 
 export default function VideoClipper(props: VideoClipperProps) {
-	const [draft, setDraft] = useState<Draft | null>(null);
+	const [newClipDialogOpen, setNewClipDialogOpen] = useState(false);
+	const [draft, setDraft] = useState<GameDraft | null>(null);
 	const [source, setSource] = useState<string | null>(null);
-	const [clips, setClips] = useState<ClipTime[]>([]);
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
+	// "completed" clips // TODO: populate w/ saved draft.clipsDetails data (if exists)
+	const [clips, setClips] = useState<ClipDetailsType[]>([]);
+
+	// for defining further clip details
+	const [newClipTime, setNewClipTime] = useState<ClipTime | null>(null);
+
 	const s3PresignedUrlEndpointBuilder = (
-		filename: string,
+		key: string,
 		bucketMethod: "GET" | "PUT"
 	) => {
-		return `/api/s3/presigned-url?filename=${filename}&bucketMethod=${bucketMethod}`;
+		return `/api/s3/presigned-url?key=${key}&bucketMethod=${bucketMethod}`;
 	};
 
-	const getVideoSource = async (filename: string) => {
-		const bucketMethod = "GET";
-
+	const getVideoSource = async (title: string) => {
 		try {
-			const res = await fetch(
-				s3PresignedUrlEndpointBuilder(filename, bucketMethod)
-			);
-
+			const res = await fetch(s3PresignedUrlEndpointBuilder(title, "GET"));
 			const { presignedUrl } = await res.json();
 			setSource(presignedUrl);
 		} catch (error) {
@@ -43,9 +46,9 @@ export default function VideoClipper(props: VideoClipperProps) {
 		}
 	};
 
-	const getDraft = async (filename: string) => {
+	const getDraft = async (title: string) => {
 		try {
-			const res = await fetch(`/api/ddb/drafts?filename=${filename}`);
+			const res = await fetch(`/api/ddb/drafts?title=${title}`);
 			const data = await res.json();
 			console.log("draft data:", data);
 			setDraft(data);
@@ -61,43 +64,69 @@ export default function VideoClipper(props: VideoClipperProps) {
 		}
 	};
 
+	const handleClipTime = (clipTime: ClipTime) => {
+		setNewClipTime(clipTime);
+		setNewClipDialogOpen(true);
+	};
+
+	const handleClipCreate = (clip: ClipDetailsType) => {
+		setClips((prevClips) => [...prevClips, clip]);
+		setNewClipTime(null);
+	};
+
 	useEffect(() => {
-		if (props.filename) {
-			getVideoSource(props.filename);
-			getDraft(props.filename);
+		if (props.title) {
+			getVideoSource(props.title);
+			getDraft(props.title);
 		}
-	}, [props.filename]);
+	}, [props.title]);
 
 	return (
-		<div className="flex w-full h-full gap-dashboard">
-			<div className="flex flex-col w-full h-full gap-dashboard">
-				<div className="flex w-full gap-dashboard h-full min-h-0">
-					<ClipDetails />
-					{source && (
-						<VideoPlayer
-							videoRef={videoRef}
-							src={source}
-							currentTime={currentTime}
-							duration={duration}
-							setCurrentTime={setCurrentTime}
-							setDuration={setDuration}
-							onSliderChange={handleSliderChange}
-						/>
-					)}
+		<>
+			<div className="flex w-full h-full gap-dashboard">
+				<div className="flex flex-col w-full h-full gap-dashboard">
+					<div className="flex w-full gap-dashboard h-full min-h-0">
+						<ClipDetails />
+						{source && (
+							<VideoPlayer
+								videoRef={videoRef}
+								src={source}
+								currentTime={currentTime}
+								duration={duration}
+								setCurrentTime={setCurrentTime}
+								setDuration={setDuration}
+								onSliderChange={handleSliderChange}
+							/>
+						)}
+					</div>
+					<div className="h-fit flex flex-col gap-dashboard">
+						{draft && source && (
+							<VideoController
+								clips={clips}
+								videoRef={videoRef}
+								currentTime={currentTime}
+								duration={duration}
+								onSliderChange={handleSliderChange}
+								draft={draft}
+								onClipTime={handleClipTime}
+							/>
+						)}
+						<ClipController />
+					</div>
 				</div>
-				<div className="h-fit flex flex-col gap-dashboard">
-					<VideoController
-						clips={clips}
-						setClips={setClips}
-						videoRef={videoRef}
-						currentTime={currentTime}
-						duration={duration}
-						onSliderChange={handleSliderChange}
-					/>
-					<ClipController />
-				</div>
+				<GameDetails />
 			</div>
-			<GameDetails />
-		</div>
+
+			{newClipTime && source && draft && (
+				<NewClipDialog
+					open={newClipDialogOpen}
+					clipTime={newClipTime}
+					videoSource={source}
+					draft={draft}
+					onClipCreate={handleClipCreate}
+					onClose={setNewClipDialogOpen}
+				/>
+			)}
+		</>
 	);
 }

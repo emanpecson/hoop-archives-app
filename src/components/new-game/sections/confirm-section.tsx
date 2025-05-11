@@ -6,14 +6,14 @@ import { S3Uploader } from "@/utils/s3-uploader";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ConfirmSection(props: NewGameFormSectionProps) {
+export function ConfirmSection(props: NewGameFormSectionProps) {
 	const [isComplete, setIsComplete] = useState(false);
 	const s3Uploader = new S3Uploader();
 	const router = useRouter();
 
 	const uploadVideo = async (videoFile: File) => {
 		try {
-			await s3Uploader.handleUpload(videoFile);
+			await s3Uploader.handleUpload(props.form.title, videoFile);
 			setIsComplete(true);
 		} catch (error) {
 			console.log(error); // TODO: notify
@@ -21,18 +21,15 @@ export default function ConfirmSection(props: NewGameFormSectionProps) {
 	};
 
 	// upload form data to ddb
-	const createDraft = async (filename: string) => {
+	const createDraft = async (title: string) => {
 		try {
-			const res = await fetch(
-				`/api/ddb/drafts?filename=${props.videoFile!.name}`,
-				{
-					method: "PUT",
-					body: JSON.stringify(props.form),
-				}
-			);
+			const res = await fetch(`/api/ddb/drafts`, {
+				method: "PUT",
+				body: JSON.stringify(props.form),
+			});
 
 			if (res.ok) {
-				router.push(`/video-clipper/${filename}`);
+				router.push(`/video-clipper/${title}`);
 			} else {
 				throw new Error("Failed to save game");
 			}
@@ -42,19 +39,16 @@ export default function ConfirmSection(props: NewGameFormSectionProps) {
 	};
 
 	useEffect(() => {
-		if (props.videoFile) {
+		if (props.form.title && props.videoFile) {
 			uploadVideo(props.videoFile);
 		}
-	}, [props.videoFile]);
+	}, [props.videoFile, props.form]);
 
 	return (
 		<FormSection {...props} handleSubmit={undefined}>
 			{isComplete && props.videoFile ? (
 				<div>
-					<button
-						type="button"
-						onClick={() => createDraft(props.videoFile!.name)}
-					>
+					<button type="button" onClick={() => createDraft(props.form.title)}>
 						Create project
 					</button>
 				</div>

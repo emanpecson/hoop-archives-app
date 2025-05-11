@@ -19,13 +19,13 @@ export async function GET(req: NextRequest) {
 	const oneDayInSeconds = oneHourInSeconds * 24;
 
 	const query = {
-		filename: req.nextUrl.searchParams.get("filename"),
+		key: req.nextUrl.searchParams.get("key"),
 		bucketMethod: req.nextUrl.searchParams.get("bucketMethod"),
 	};
 
-	if (!query.filename) {
+	if (!query.key) {
 		return NextResponse.json(
-			{ message: "Missing query: filename" },
+			{ message: "Missing query: key" },
 			{ status: 400 }
 		);
 	}
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 		if (query.bucketMethod === "PUT") {
 			const command = new PutObjectCommand({
 				Bucket: process.env.AWS_S3_BUCKET,
-				Key: query.filename,
+				Key: query.key,
 			});
 			const presignedUrl = await getSignedUrl(s3, command, {
 				expiresIn: oneHourInSeconds,
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
 		if (query.bucketMethod === "GET") {
 			const command = new GetObjectCommand({
 				Bucket: process.env.AWS_S3_BUCKET,
-				Key: query.filename,
+				Key: query.key,
 			});
 			const presignedUrl = await getSignedUrl(s3, command, {
 				expiresIn: oneDayInSeconds,

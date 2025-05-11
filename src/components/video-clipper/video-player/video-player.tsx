@@ -59,7 +59,6 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 				<source src={props.src} type="video/mp4" />
 			</video>
 
-			{/* {props.videoRef.current && props.src && ( */}
 			{props.videoRef.current && (
 				<div
 					className={cn(

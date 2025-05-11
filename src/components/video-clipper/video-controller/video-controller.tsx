@@ -1,22 +1,25 @@
-import { Dispatch, RefObject, SetStateAction, useState } from "react";
+import { RefObject, useState } from "react";
 import DashboardCard from "../../dashboard/dashboard-card";
 import TimelineWorkspace from "./timeline-workspace";
 import { ClipTime } from "@/types/clip-time";
 import ClipButton from "./clip-button";
 import { Slider } from "@/components/ui/slider";
+import { GameDraft } from "@/types/model/game-draft";
+import { ClipDetails } from "@/types/clip-details";
 
 interface VideoControllerProps {
-	clips: ClipTime[];
+	clips: ClipDetails[];
 	videoRef: RefObject<HTMLVideoElement | null>;
 	currentTime: number;
 	duration: number;
-	setClips: Dispatch<SetStateAction<ClipTime[]>>;
+	draft: GameDraft;
 	onSliderChange: (value: number[]) => void;
+	onClipTime: (clipTime: ClipTime) => void;
 }
 
 export default function VideoController(props: VideoControllerProps) {
 	const [zoom, setZoom] = useState(1); // 1x-4x
-	const [pendingClipTime, setPendingClipTime] = useState<number | null>(null);
+	const [hangingClipTime, setHangingClipTime] = useState<number | null>(null);
 
 	const handleZoomChange = (value: number[]) => {
 		setZoom(value[0]);
@@ -31,11 +34,11 @@ export default function VideoController(props: VideoControllerProps) {
 			<DashboardCard className="w-32 shrink-0">
 				<ClipButton
 					clips={props.clips}
-					setClips={props.setClips}
 					currentTime={props.currentTime}
 					duration={props.duration}
-					pendingClipTime={pendingClipTime}
-					setPendingClipTime={setPendingClipTime}
+					hangingClipTime={hangingClipTime}
+					setHangingClipTime={setHangingClipTime}
+					onClipTime={props.onClipTime}
 				/>
 			</DashboardCard>
 
@@ -45,7 +48,7 @@ export default function VideoController(props: VideoControllerProps) {
 				duration={props.duration}
 				onSliderChange={props.onSliderChange}
 				clips={props.clips}
-				pendingClipTime={pendingClipTime}
+				hangingClipTime={hangingClipTime}
 			/>
 		</div>
 	);

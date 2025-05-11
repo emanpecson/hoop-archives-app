@@ -1,11 +1,6 @@
 import { Player } from "@/types/model/player";
 import { z } from "zod";
-
-const playerSchema = z.object({
-	playerId: z.string(),
-	firstName: z.string(),
-	lastName: z.string(),
-});
+import { playerSchema } from "../player-schema";
 
 export type DynamicPlayersForm = {
 	team1?: (Player | null)[];
