@@ -29,7 +29,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 			} as ClipDetails;
 
 			const res = await fetch(
-				`/api/ddb/drafts/clip-details?title=${props.draft.title}`,
+				`/api/ddb/game-drafts/clip-details?title=${props.draft.title}`,
 				{
 					method: "PUT",
 					body: JSON.stringify(newClip),

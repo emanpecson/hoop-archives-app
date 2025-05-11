@@ -45,7 +45,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 
 	const getDraft = async (title: string) => {
 		try {
-			const res = await fetch(`/api/ddb/drafts?title=${title}`);
+			const res = await fetch(`/api/ddb/game-drafts?title=${title}`);
 			const data = await res.json();
 			console.log("draft data:", data);
 			setDraft(data);

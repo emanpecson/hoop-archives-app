@@ -23,7 +23,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 	// upload form data to ddb
 	const createDraft = async (title: string) => {
 		try {
-			const res = await fetch(`/api/ddb/drafts`, {
+			const res = await fetch(`/api/ddb/game-drafts`, {
 				method: "PUT",
 				body: JSON.stringify(props.form),
 			});
