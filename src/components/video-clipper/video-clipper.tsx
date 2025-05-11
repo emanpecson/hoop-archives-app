@@ -33,9 +33,9 @@ export default function VideoClipper(props: VideoClipperProps) {
 		return `/api/s3/presigned-url?key=${key}&bucketMethod=${bucketMethod}`;
 	};
 
-	const getVideoSource = async (title: string) => {
+	const getVideoSource = async (key: string) => {
 		try {
-			const res = await fetch(s3PresignedUrlEndpointBuilder(title, "GET"));
+			const res = await fetch(s3PresignedUrlEndpointBuilder(key, "GET"));
 			const { presignedUrl } = await res.json();
 			setSource(presignedUrl);
 		} catch (error) {
@@ -46,9 +46,11 @@ export default function VideoClipper(props: VideoClipperProps) {
 	const getDraft = async (title: string) => {
 		try {
 			const res = await fetch(`/api/ddb/game-drafts?title=${title}`);
-			const data = await res.json();
+			const data = (await res.json()) as GameDraft;
 			console.log("draft data:", data);
 			setDraft(data);
+
+			getVideoSource(data.bucketKey);
 		} catch (error) {
 			console.log(error); // TODO: notify
 		}
@@ -76,11 +78,9 @@ export default function VideoClipper(props: VideoClipperProps) {
 
 	useEffect(() => {
 		if (props.title) {
-			getVideoSource(props.title);
 			getDraft(props.title);
 		}
 	}, [props.title]);
-
 	return (
 		<>
 			<div className="flex w-full h-full gap-dashboard">
@@ -102,7 +102,6 @@ export default function VideoClipper(props: VideoClipperProps) {
 					<div className="h-fit flex flex-col gap-dashboard">
 						{draft && source && (
 							<VideoController
-								clips={draft.clipsDetails}
 								videoRef={videoRef}
 								currentTime={currentTime}
 								duration={duration}
@@ -114,7 +113,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 						<ClipController />
 					</div>
 				</div>
-				<GameDetails />
+				<GameDetails draft={draft} />
 			</div>
 
 			{newClipTime && source && draft && (

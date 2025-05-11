@@ -5,6 +5,7 @@ import { Player } from "./player";
 export interface GameDraft {
 	// * defined in new-game
 	title: string; // partition key
+	bucketKey: string;
 	date: string;
 	type: GameType;
 	team1?: Player[];

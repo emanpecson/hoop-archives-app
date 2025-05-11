@@ -5,10 +5,8 @@ import { ClipTime } from "@/types/clip-time";
 import ClipButton from "./clip-button";
 import { Slider } from "@/components/ui/slider";
 import { GameDraft } from "@/types/model/game-draft";
-import { ClipDetails } from "@/types/clip-details";
 
 interface VideoControllerProps {
-	clips: ClipDetails[];
 	videoRef: RefObject<HTMLVideoElement | null>;
 	currentTime: number;
 	duration: number;
@@ -33,7 +31,7 @@ export default function VideoController(props: VideoControllerProps) {
 
 			<DashboardCard className="w-32 shrink-0">
 				<ClipButton
-					clips={props.clips}
+					clips={props.draft.clipsDetails}
 					currentTime={props.currentTime}
 					duration={props.duration}
 					hangingClipTime={hangingClipTime}
@@ -47,7 +45,7 @@ export default function VideoController(props: VideoControllerProps) {
 				currentTime={props.currentTime}
 				duration={props.duration}
 				onSliderChange={props.onSliderChange}
-				clips={props.clips}
+				clips={props.draft.clipsDetails}
 				hangingClipTime={hangingClipTime}
 			/>
 		</div>

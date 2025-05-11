@@ -71,9 +71,10 @@ export async function PUT(req: NextRequest) {
 	try {
 		const item: Record<string, AttributeValue> = {
 			title: { S: draft.title },
+			bucketKey: { S: draft.bucketKey },
 			date: { S: draft.date },
 			type: { S: draft.type },
-			clipDetails: { L: [] },
+			clipsDetails: { L: [] },
 		};
 
 		if (draft.players) item.players = mapPlayersToAttributeValue(draft.players);

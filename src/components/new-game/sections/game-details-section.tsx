@@ -21,17 +21,24 @@ export default function GameDetailsSection(props: NewGameFormSectionProps) {
 		resolver: zodResolver(gameDetailsSchema),
 	});
 
+	// filename w/o extension
+	const getDefaultTitle = () => {
+		const filename = props.videoFile!.name;
+		const dotIndex = filename.indexOf(".");
+		return filename.substring(0, dotIndex);
+	};
+
 	return (
 		<FormSection {...props} handleSubmit={handleSubmit}>
 			<Input
-				defaultValue={props.videoFile!.name}
+				defaultValue={getDefaultTitle()}
 				Icon={FolderPenIcon}
 				{...register("title")}
 				placeholder="Enter title..."
 				error={!!errors.title}
 			/>
 			<Controller
-				defaultValue={new Date()}
+				defaultValue={new Date(props.videoFile!.lastModified)}
 				control={control}
 				name="date"
 				render={({ field }) => <DateInput {...field} error={!!errors.date} />}

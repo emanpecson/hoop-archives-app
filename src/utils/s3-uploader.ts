@@ -1,12 +1,12 @@
 export class S3Uploader {
-	public handleUpload = async (title: string, vid: File) => {
+	public handleUpload = async (key: string, vid: File) => {
 		// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
 		const partSize = 10 * 1024 * 1024;
 
 		console.time("uploadTimer");
 
-		const { uploadId, presignedUrls, key } = await this.startUpload(
-			title,
+		const { uploadId, presignedUrls } = await this.startUpload(
+			key,
 			vid,
 			partSize
 		);
@@ -16,11 +16,11 @@ export class S3Uploader {
 		console.timeEnd("uploadTimer");
 	};
 
-	private startUpload = async (title: string, vid: File, partSize: number) => {
+	private startUpload = async (key: string, vid: File, partSize: number) => {
 		const res = await fetch("/api/s3/start-upload", {
 			method: "POST",
 			body: JSON.stringify({
-				title,
+				key,
 				fileSize: vid.size,
 				partSize,
 			}),
