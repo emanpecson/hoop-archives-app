@@ -13,6 +13,7 @@ import {
 	OffensivePlayFormFields,
 } from "@/types/schema/new-clip-form/clip-details-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PointsAdded } from "@/types/enum/points-added";
 
 export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 	const {
@@ -23,7 +24,7 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 		formState: { errors },
 	} = useForm<ClipDetailsFormFields>({
 		resolver: zodResolver(clipDetailsSchema),
-		defaultValues: { play: "offense" },
+		defaultValues: { play: "offense", pointsAdded: PointsAdded.TWO_POINTER },
 	});
 
 	const selectedPlay = watch("play"); // Let form state track this

@@ -6,6 +6,7 @@ import PlayerSelect from "@/components/input/player-select";
 import PlayerMultiSelect from "@/components/input/player-multi-select";
 import ToggleSelect from "@/components/input/toggle-select";
 import TagsCombobox from "@/components/input/tags-combobox";
+import { PointsAdded } from "@/types/enum/points-added";
 
 interface OffenseDetailsProps {
 	players: Player[];
@@ -26,8 +27,8 @@ export default function OffenseDetails(props: OffenseDetailsProps) {
 							render={({ field }) => (
 								<ToggleSelect
 									{...field}
-									value={field.value || "2-pointer"}
-									options={["2-pointer", "3-pointer"]}
+									value={field.value}
+									options={Object.values(PointsAdded)}
 								/>
 							)}
 						/>

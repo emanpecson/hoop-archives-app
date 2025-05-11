@@ -12,5 +12,5 @@ export interface GameDraft {
 	players?: Player[];
 
 	// * defined in video-clipper (new-clip)
-	clipsDetails?: ClipDetails[];
+	clipsDetails: ClipDetails[];
 }

@@ -73,6 +73,7 @@ export async function PUT(req: NextRequest) {
 			title: { S: draft.title },
 			date: { S: draft.date },
 			type: { S: draft.type },
+			clipDetails: { L: [] },
 		};
 
 		if (draft.players) item.players = mapPlayersToAttributeValue(draft.players);
