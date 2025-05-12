@@ -3,7 +3,7 @@ import { playerSchema } from "../player-schema";
 
 export const offensivePlaySchema = z.object({
 	play: z.literal("offense"),
-	pointsAdded: z.string(),
+	pointsAdded: z.number(),
 	playerScoring: playerSchema,
 	playerAssisting: playerSchema.optional(),
 	playersDefending: z.array(playerSchema),

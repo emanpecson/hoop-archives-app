@@ -2,17 +2,17 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 interface ToggleSelectProps {
-	value: string;
-	onChange: (value: string) => void;
-	options: string[];
+	value: string | number;
+	onChange: (value: string | number) => void;
+	options: { label: string; value: string | number }[];
 }
 
 export default function ToggleSelect(props: ToggleSelectProps) {
 	const [value, setValue] = useState(props.value);
 
-	const handleSelect = (option: string) => {
-		props.onChange(option);
-		setValue(option);
+	const handleSelect = (val: string | number) => {
+		props.onChange(val);
+		setValue(val);
 	};
 
 	return (
@@ -24,13 +24,13 @@ export default function ToggleSelect(props: ToggleSelectProps) {
 						key={i}
 						className={cn(
 							"w-full h-full border rounded-md cursor-pointer border-neutral-900 duration-150",
-							value === option
+							value === option.value
 								? "text-white bg-neutral-800 inset-shadow-sm inset-shadow-neutral-700/60"
 								: "text-input-muted bg-none hover:text-white"
 						)}
-						onClick={() => handleSelect(option)}
+						onClick={() => handleSelect(option.value)}
 					>
-						{option}
+						{option.label}
 					</button>
 				))}
 			</div>

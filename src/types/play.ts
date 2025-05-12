@@ -1,7 +1,7 @@
 import { Player } from "./model/player";
 
 export interface OffensivePlay {
-	pointsAdded: string;
+	pointsAdded: number;
 	playerScoring: Player;
 	playerAssisting?: Player;
 	playersDefending: Player[];

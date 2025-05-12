@@ -25,7 +25,7 @@ export default function ClipDetails(props: ClipDetailsProps) {
 
 			let headline = `${
 				clip.teamBeneficiary ? `${clip.teamBeneficiary}:` : ""
-			} ${scorer} scored a ${clip.offense.pointsAdded}`;
+			} ${scorer} scored ${clip.offense.pointsAdded} point(s)`;
 			if (playmaker) {
 				headline += `, assisted by ${playmaker}`;
 			}
@@ -49,15 +49,32 @@ export default function ClipDetails(props: ClipDetailsProps) {
 
 			<div className="grow overflow-y-scroll space-y-4">
 				{props.draft ? (
-					props.draft.clipsDetails.map((clip, i) => (
-						<div key={i} className="space-y-4">
-							<ClipDetailsCard
-								headline={clipHeadline(clip)}
-								tags={clip.tags as ClipTag[]}
-							/>
-							<ScoreDivider score="0-0" />
-						</div>
-					))
+					(() => {
+						let homeScore = 0;
+						let awayScore = 0;
+
+						return props.draft!.clipsDetails.map((clip, i) => {
+							if (clip.offense) {
+								if (clip.teamBeneficiary === "home") {
+									homeScore += clip.offense.pointsAdded;
+								} else {
+									awayScore += clip.offense.pointsAdded;
+								}
+							}
+
+							const scoreboard = `${homeScore}-${awayScore}`;
+
+							return (
+								<div key={i} className="space-y-4">
+									<ClipDetailsCard
+										headline={clipHeadline(clip)}
+										tags={clip.tags as ClipTag[]}
+									/>
+									{clip.offense && <ScoreDivider score={scoreboard} />}
+								</div>
+							);
+						});
+					})()
 				) : (
 					<div>Loading data</div>
 				)}
