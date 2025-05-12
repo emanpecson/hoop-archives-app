@@ -6,7 +6,6 @@ export interface Game {
 	date: Date;
 	type: GameType;
 
-	team1?: Player[];
-	team2?: Player[];
-	players?: Player[];
+	home: Player[];
+	away: Player[];
 }

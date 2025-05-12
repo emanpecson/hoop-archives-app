@@ -75,11 +75,9 @@ export async function PUT(req: NextRequest) {
 			date: { S: draft.date },
 			type: { S: draft.type },
 			clipsDetails: { L: [] },
+			home: mapPlayersToAttributeValue(draft.home),
+			away: mapPlayersToAttributeValue(draft.away),
 		};
-
-		if (draft.players) item.players = mapPlayersToAttributeValue(draft.players);
-		if (draft.team1) item.team1 = mapPlayersToAttributeValue(draft.team1);
-		if (draft.team2) item.team2 = mapPlayersToAttributeValue(draft.team2);
 
 		const command = new PutItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,

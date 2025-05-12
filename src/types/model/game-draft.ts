@@ -8,9 +8,8 @@ export interface GameDraft {
 	bucketKey: string;
 	date: string;
 	type: GameType;
-	team1?: Player[];
-	team2?: Player[];
-	players?: Player[];
+	home: Player[];
+	away: Player[];
 
 	// * defined in video-clipper (new-clip)
 	clipsDetails: ClipDetails[];

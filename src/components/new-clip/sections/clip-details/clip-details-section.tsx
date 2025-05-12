@@ -28,26 +28,14 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 		defaultValues: { play: "offense", pointsAdded: PointsAdded.TWO_POINTER },
 	});
 
-	const selectedPlay = watch("play"); // Let form state track this
+	const selectedPlay = watch("play");
 	const playTypes = { offense: SwordIcon, defense: ShieldIcon };
 
-	console.log("draft:", props.draft);
-
-	// if .team1 + .team2, combine; else use .players
-	const getPlayerOptions = () => {
-		if (props.draft.team1 && props.draft.team2) {
-			return [...props.draft.team1, ...props.draft.team2];
-		} else if (props.draft.players) {
-			return props.draft.players;
-		}
-		return [];
-	};
-
 	const defineTeamBeneficiary = (player: Player) => {
-		if (props.draft.team1 && props.draft.team1.includes(player)) {
-			setValue("teamBeneficiary", "Team 1");
-		} else if (props.draft.team2) {
-			setValue("teamBeneficiary", "Team 2");
+		if (props.draft.home.includes(player)) {
+			setValue("teamBeneficiary", "Home");
+		} else {
+			setValue("teamBeneficiary", "Away");
 		}
 	};
 
@@ -75,7 +63,7 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 				<div className="pl-6 w-full">
 					{selectedPlay === "offense" ? (
 						<OffenseDetails
-							playerOptions={getPlayerOptions()}
+							playerOptions={[...props.draft.home, ...props.draft.away]}
 							draft={props.draft}
 							control={control as Control<OffensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<OffensivePlayFormFields>>}
@@ -83,7 +71,7 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 						/>
 					) : (
 						<DefenseDetails
-							playerOptions={getPlayerOptions()}
+							playerOptions={[...props.draft.home, ...props.draft.away]}
 							control={control as Control<DefensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<DefensivePlayFormFields>>}
 							onPrimaryPlayer={defineTeamBeneficiary}

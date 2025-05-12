@@ -73,11 +73,13 @@ export default function GameDetails(props: GameDetailsProps) {
 
 			<div className="space-y-2">
 				<Input
+					readOnly
 					Icon={FolderPenIcon}
 					value={props.draft ? props.draft.title : "Loading..."}
 					className="pointer-events-none"
 				/>
 				<Input
+					readOnly
 					Icon={CalendarIcon}
 					value={
 						props.draft
@@ -94,19 +96,10 @@ export default function GameDetails(props: GameDetailsProps) {
 								{props.draft ? props.draft.type : "Loading..."}
 							</span>
 						</h3>
-						{props.draft && props.draft.team1 && (
-							<div className="py-2">
-								<ListPlayers label="Team 1" players={props.draft.team1} />
-							</div>
-						)}
-						{props.draft && props.draft.team2 && (
-							<div className="pt-2">
-								<ListPlayers label="Team 2" players={props.draft.team2} />
-							</div>
-						)}
-						{props.draft && props.draft.players && (
-							<div className="pt-2">
-								<ListPlayers label="Players" players={props.draft.players} />
+						{props.draft && (
+							<div className="space-y-2">
+								<ListPlayers label="Home" players={props.draft.home} />
+								<ListPlayers label="Away" players={props.draft.away} />
 							</div>
 						)}
 					</div>

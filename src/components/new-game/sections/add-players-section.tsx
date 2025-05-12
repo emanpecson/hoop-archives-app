@@ -33,28 +33,16 @@ export default function AddPlayersSection(props: NewGameFormSectionProps) {
 
 	// get reactive variables from form
 	const form = {
-		players: watch("players"),
-		team1: watch("team1"),
-		team2: watch("team2"),
+		home: watch("home"),
+		away: watch("away"),
 	};
 
-	// initialize arrays for teams/players
+	// initialize arrays for teams
 	useEffect(() => {
-		if (props.form) {
-			// flush old data
-			if (form.team1) setValue("team1", undefined);
-			if (form.team2) setValue("team2", undefined);
-			if (form.players) setValue("players", undefined);
-
-			if (["2v2", "3v3", "4v4"].includes(props.form.type)) {
-				const teamLength = parseInt(props.form.type[0]);
-				setValue("team1", new Array(teamLength).fill(null));
-				setValue("team2", new Array(teamLength).fill(null));
-			} else if (props.form.type === "1v1") {
-				setValue("players", new Array(2).fill(null));
-			} else {
-				setValue("players", new Array(5).fill(null)); // 3-5 players
-			}
+		if (props.form && props.form.type) {
+			const teamLength = parseInt(props.form.type[0]);
+			setValue("home", new Array(teamLength).fill(null));
+			setValue("away", new Array(teamLength).fill(null));
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.form.type]);
@@ -77,35 +65,25 @@ export default function AddPlayersSection(props: NewGameFormSectionProps) {
 				onSelect={setSelectedPlayer}
 				selectedPlayerId={selectedPlayer ? selectedPlayer.playerId : null}
 			/>
-			{form.team1 && form.team2 ? (
-				<div className="flex justify-between gap-2 w-full">
-					<PlayersPreview
-						label="Team 1"
-						targetName="team1"
-						targetArray={form.team1}
-						errors={errors}
-						selectedPlayer={selectedPlayer}
-						onUpdate={updatePlayer}
-					/>
-					<PlayersPreview
-						label="Team 2"
-						targetName="team2"
-						targetArray={form.team2}
-						errors={errors}
-						selectedPlayer={selectedPlayer}
-						onUpdate={updatePlayer}
-					/>
-				</div>
-			) : (
+
+			<div className="flex justify-between gap-2 w-full">
 				<PlayersPreview
-					label="Players"
-					targetName="players"
-					targetArray={form.players!}
+					label="Home"
+					targetName="home"
+					targetArray={form.home || []}
 					errors={errors}
 					selectedPlayer={selectedPlayer}
 					onUpdate={updatePlayer}
 				/>
-			)}
+				<PlayersPreview
+					label="Away"
+					targetName="away"
+					targetArray={form.away || []}
+					errors={errors}
+					selectedPlayer={selectedPlayer}
+					onUpdate={updatePlayer}
+				/>
+			</div>
 		</FormSection>
 	);
 }

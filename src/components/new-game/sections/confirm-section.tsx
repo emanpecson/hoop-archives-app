@@ -26,7 +26,6 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 	// upload form data to ddb
 	const createDraft = async (title: string, videoFile: File) => {
 		try {
-			const isTeamGame = ["2v2", "3v3", "4v4"].includes(props.form.type);
 			const ext = videoFile.name.substring(videoFile.name.indexOf("."));
 
 			const res = await fetch(`/api/ddb/game-drafts`, {
@@ -34,11 +33,6 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 				body: JSON.stringify({
 					...props.form,
 					bucketKey: title + ext,
-
-					// override optional attributes based on game type
-					team1: isTeamGame ? props.form.team1 : undefined,
-					team2: isTeamGame ? props.form.team2 : undefined,
-					players: isTeamGame ? undefined : props.form.players,
 				} as GameDraft),
 			});
 
@@ -56,6 +50,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 		if (props.form.title && props.videoFile) {
 			uploadVideo(props.videoFile);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.videoFile, props.form]);
 
 	return (
