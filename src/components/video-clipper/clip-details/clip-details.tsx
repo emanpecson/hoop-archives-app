@@ -50,17 +50,17 @@ export default function ClipDetails(props: ClipDetailsProps) {
 			<div className="grow overflow-y-scroll space-y-4">
 				{props.draft ? (
 					props.draft.clipsDetails.map((clip, i) => (
-						<ClipDetailsCard
-							key={i}
-							headline={clipHeadline(clip)}
-							tags={clip.tags as ClipTag[]}
-						/>
+						<div key={i} className="space-y-4">
+							<ClipDetailsCard
+								headline={clipHeadline(clip)}
+								tags={clip.tags as ClipTag[]}
+							/>
+							<ScoreDivider score="0-0" />
+						</div>
 					))
 				) : (
 					<div>Loading data</div>
 				)}
-
-				<ScoreDivider score="3-0" />
 			</div>
 		</DashboardCard>
 	);

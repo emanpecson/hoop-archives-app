@@ -9,7 +9,7 @@ interface ClipDetailsCardProps {
 export default function ClipDetailsCard(props: ClipDetailsCardProps) {
 	return (
 		<CardButton>
-			<div className="space-y-4 text-neutral-400">
+			<div className="space-y-2 text-neutral-400">
 				<p>{props.headline}</p>
 				<div className="flex flex-wrap gap-x-1 text-blue-300">
 					{props.tags.map((tag, i) => (
