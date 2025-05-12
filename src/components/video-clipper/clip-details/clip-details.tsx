@@ -53,27 +53,29 @@ export default function ClipDetails(props: ClipDetailsProps) {
 						let homeScore = 0;
 						let awayScore = 0;
 
-						return props.draft!.clipsDetails.map((clip, i) => {
-							if (clip.offense) {
-								if (clip.teamBeneficiary === "home") {
-									homeScore += clip.offense.pointsAdded;
-								} else {
-									awayScore += clip.offense.pointsAdded;
+						return props
+							.draft!.clipsDetails.slice() //  shallow copy (to avoid mutating og array)
+							.sort((a, b) => a.startTime - b.endTime)
+							.map((clip, i) => {
+								if (clip.offense) {
+									if (clip.teamBeneficiary === "home") {
+										homeScore += clip.offense.pointsAdded;
+									} else {
+										awayScore += clip.offense.pointsAdded;
+									}
 								}
-							}
 
-							const scoreboard = `${homeScore}-${awayScore}`;
-
-							return (
-								<div key={i} className="space-y-4">
-									<ClipDetailsCard
-										headline={clipHeadline(clip)}
-										tags={clip.tags as ClipTag[]}
-									/>
-									{clip.offense && <ScoreDivider score={scoreboard} />}
-								</div>
-							);
-						});
+								const scoreboard = `${homeScore}-${awayScore}`;
+								return (
+									<div key={i} className="space-y-4">
+										<ClipDetailsCard
+											headline={clipHeadline(clip)}
+											tags={clip.tags as ClipTag[]}
+										/>
+										{clip.offense && <ScoreDivider score={scoreboard} />}
+									</div>
+								);
+							});
 					})()
 				) : (
 					<div>Loading data</div>
