@@ -17,16 +17,14 @@ interface StatboardProps {
 
 export default function Statboard(props: StatboardProps) {
 	const [playerStats, setPlayerStats] = useState<{ [id: string]: Stats }>({});
-	const [totals, setTotals] = useState<Stats>({ pts: 0, ast: 0, blk: 0 });
+	const [teamStats, setTeamStats] = useState<Stats>({ pts: 0, ast: 0, blk: 0 });
 
 	const getStats = useCallback(() => {
 		// initialize stats w/ 0
 		const stats: typeof playerStats = Object.fromEntries(
 			props.players.map((p) => [p.playerId, { pts: 0, ast: 0, blk: 0 }])
 		);
-		let totalPts = 0;
-		let totalAst = 0;
-		let totalBlk = 0;
+		const totals: Stats = { pts: 0, ast: 0, blk: 0 };
 
 		console.log("stats:", stats);
 
@@ -37,12 +35,12 @@ export default function Statboard(props: StatboardProps) {
 
 				if (scorer.playerId in stats) {
 					stats[scorer.playerId].pts += clip.offense.pointsAdded;
-					totalPts += clip.offense.pointsAdded;
+					totals.pts += clip.offense.pointsAdded;
 
 					const assister = clip.offense.playerAssisting;
 					if (assister) {
 						stats[assister.playerId].ast++;
-						totalAst++;
+						totals.ast++;
 					}
 				}
 			} else if (clip.defense) {
@@ -50,13 +48,13 @@ export default function Statboard(props: StatboardProps) {
 
 				if (defender.playerId in stats) {
 					stats[defender.playerId].blk++;
-					totalBlk++;
+					totals.blk++;
 				}
 			}
 		}
 
 		setPlayerStats(stats);
-		setTotals({ pts: totalPts, ast: totalAst, blk: totalBlk });
+		setTeamStats(totals);
 	}, [props.clips, props.players]);
 
 	useEffect(() => {
@@ -107,9 +105,9 @@ export default function Statboard(props: StatboardProps) {
 				<tfoot>
 					<tr>
 						<td className="text-left pt-0.5 px-0.5 text-xs">Totals</td>
-						<td className="text-right pt-0.5 px-0.5">{totals.pts}</td>
-						<td className="text-right pt-0.5 px-0.5">{totals.ast}</td>
-						<td className="text-right pt-0.5 px-0.5">{totals.blk}</td>
+						<td className="text-right pt-0.5 px-0.5">{teamStats.pts}</td>
+						<td className="text-right pt-0.5 px-0.5">{teamStats.ast}</td>
+						<td className="text-right pt-0.5 px-0.5">{teamStats.blk}</td>
 					</tr>
 				</tfoot>
 			</table>
