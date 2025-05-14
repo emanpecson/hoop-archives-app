@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import ClipController from "./clip-controller";
 import ClipDetails from "./clip-details/clip-details";
-import GameDetails from "./game-details";
+import GameDetails from "./game-details/game-details";
 import VideoController from "./video-controller/video-controller";
 import VideoPlayer from "./video-player/video-player";
 import { ClipTime } from "@/types/clip-time";

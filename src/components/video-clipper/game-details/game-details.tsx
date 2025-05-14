@@ -1,12 +1,13 @@
 import { CalendarIcon, FolderPenIcon, SwordsIcon } from "lucide-react";
-import DashboardCard from "../dashboard/dashboard-card";
-import DashboardCardHeader from "../dashboard/dashboard-card-header";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import DashboardCard from "../../dashboard/dashboard-card";
+import DashboardCardHeader from "../../dashboard/dashboard-card-header";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 import { GameDraft } from "@/types/model/game-draft";
 import { TrimRequest } from "@/types/trim-request";
-import CardButton from "../card-button";
+import CardButton from "../../card-button";
 import { Player } from "@/types/model/player";
+import Statboard from "./statboard";
 
 interface GameDetailsProps {
 	draft: GameDraft | null;
@@ -107,6 +108,20 @@ export default function GameDetails(props: GameDetailsProps) {
 			</div>
 
 			<hr className="text-neutral-700" />
+
+			<Statboard
+				label="Home Stats"
+				clips={props.draft ? props.draft.clipsDetails : []}
+				players={props.draft ? props.draft.home : []}
+			/>
+
+			<hr className="text-neutral-700" />
+
+			<Statboard
+				label="Away Stats"
+				clips={props.draft ? props.draft.clipsDetails : []}
+				players={props.draft ? props.draft.away : []}
+			/>
 
 			<Button
 				onClick={() => createVideoClips(props.draft!)}
