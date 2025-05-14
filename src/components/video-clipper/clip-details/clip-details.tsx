@@ -42,11 +42,6 @@ export default function ClipDetails(props: ClipDetailsProps) {
 		return "N/A";
 	};
 
-	const sortClips = (clips: ClipDetailsType[]) => {
-		// shallow copy w/ slice (to avoid mutating og array)
-		return clips.slice().sort((a, b) => a.startTime - b.endTime);
-	};
-
 	return (
 		<DashboardCard className="w-72 h-full space-y-4 flex flex-col">
 			<DashboardCardHeader text="Clip Details" />
@@ -58,7 +53,7 @@ export default function ClipDetails(props: ClipDetailsProps) {
 						let homeScore = 0;
 						let awayScore = 0;
 
-						return sortClips(props.draft!.clipsDetails).map((clip, i) => {
+						return props.draft!.clipsDetails.map((clip, i) => {
 							if (clip.offense) {
 								if (clip.teamBeneficiary === "home") {
 									homeScore += clip.offense.pointsAdded;

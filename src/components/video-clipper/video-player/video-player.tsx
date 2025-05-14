@@ -6,15 +6,22 @@ import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { getTimestamp } from "@/utils/time";
+import { ClipDetails } from "@/types/clip-details";
 
 interface VideoPlayerProps {
 	videoRef: RefObject<HTMLVideoElement | null>;
+	clips: ClipDetails[];
 	src: string;
 	currentTime: number;
 	duration: number;
 	setCurrentTime: Dispatch<SetStateAction<number>>;
 	setDuration: Dispatch<SetStateAction<number>>;
 	onSliderChange: (value: number[]) => void;
+	previewClipsIsActive: boolean;
+	setPreviewClipsIsActive: Dispatch<SetStateAction<boolean>>;
+	playClip: (i: number) => void;
+	currClipIndex: number | null;
+	setCurrClipIndex: Dispatch<SetStateAction<number | null>>;
 }
 
 export default function VideoPlayer(props: VideoPlayerProps) {
@@ -31,11 +38,30 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 
 	const handleTimeUpdate = () => {
 		if (props.videoRef.current) {
-			props.setCurrentTime(props.videoRef.current.currentTime);
+			const vid = props.videoRef.current;
+			props.setCurrentTime(vid.currentTime);
+
+			if (props.previewClipsIsActive && props.currClipIndex !== null) {
+				const clip = props.clips[props.currClipIndex];
+
+				// @ end of curr clip, play next clip
+				if (vid.currentTime >= clip.endTime) {
+					const nextIndex = props.currClipIndex + 1;
+
+					if (nextIndex < props.clips.length) {
+						props.playClip(nextIndex);
+					} else {
+						vid.pause();
+						props.setCurrClipIndex(null);
+					}
+				}
+			}
 		}
 	};
 
 	const handlePlayPause = () => {
+		props.setPreviewClipsIsActive(false);
+
 		if (props.videoRef.current) {
 			if (props.videoRef.current.paused) props.videoRef.current.play();
 			else props.videoRef.current.pause();

@@ -21,6 +21,8 @@ export default function VideoClipper(props: VideoClipperProps) {
 	const [source, setSource] = useState<string | null>(null);
 	const [duration, setDuration] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
+	const [previewClipsIsActive, setPreviewClipsIsActive] = useState(false);
+	const [currClipIndex, setCurrClipIndex] = useState<number | null>(null);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	// for defining further clip details
@@ -49,7 +51,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 			const res = await fetch(`/api/ddb/game-drafts?title=${title}`);
 			const data = (await res.json()) as GameDraft;
 			console.log("draft data:", data);
-			setDraft(data);
+			setDraft({ ...data, clipsDetails: sortClips(data.clipsDetails) });
 		} catch (error) {
 			console.log(error); // TODO: notify
 		}
@@ -68,11 +70,31 @@ export default function VideoClipper(props: VideoClipperProps) {
 	};
 
 	const handleClipCreate = (newClip: ClipDetailsType) => {
-		setDraft((prevDraft) => ({
-			...prevDraft!,
-			clipsDetails: [...prevDraft!.clipsDetails, newClip],
-		}));
+		setDraft((prevDraft) => {
+			const clips = sortClips([...prevDraft!.clipsDetails, newClip]);
+			return {
+				...prevDraft!,
+				clipsDetails: clips,
+			};
+		});
 		setNewClipTime(null);
+	};
+
+	const playClip = (i: number) => {
+		const vid = videoRef.current;
+		if (!vid) return;
+
+		setCurrClipIndex(i);
+		setPreviewClipsIsActive(true);
+
+		const clip = draft!.clipsDetails[i];
+		vid.currentTime = clip.startTime;
+		vid.play();
+	};
+
+	const sortClips = (clips: ClipDetailsType[]) => {
+		// shallow copy w/ slice (to avoid mutating og array)
+		return clips.slice().sort((a, b) => a.startTime - b.endTime);
 	};
 
 	useEffect(() => {
@@ -101,6 +123,12 @@ export default function VideoClipper(props: VideoClipperProps) {
 								setCurrentTime={setCurrentTime}
 								setDuration={setDuration}
 								onSliderChange={handleSliderChange}
+								clips={draft ? draft.clipsDetails : []}
+								previewClipsIsActive={previewClipsIsActive}
+								setPreviewClipsIsActive={setPreviewClipsIsActive}
+								playClip={playClip}
+								currClipIndex={currClipIndex}
+								setCurrClipIndex={setCurrClipIndex}
 							/>
 						)}
 					</div>
@@ -115,7 +143,13 @@ export default function VideoClipper(props: VideoClipperProps) {
 								onClipTime={handleClipTime}
 							/>
 						)}
-						<ClipController />
+						<ClipController
+							clips={draft ? draft.clipsDetails : []}
+							currentTime={currentTime}
+							duration={duration}
+							videoRef={videoRef}
+							onPreviewClips={playClip}
+						/>
 					</div>
 				</div>
 				<GameDetails draft={draft} />
