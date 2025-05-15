@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ClipController from "./clip-controller";
-import ClipDetails from "./clip-details/clip-details";
+import ClipController from "./clip-controller/clip-controller";
 import GameDetails from "./game-details/game-details";
 import VideoController from "./video-controller/video-controller";
 import VideoPlayer from "./video-player/video-player";
@@ -111,9 +110,9 @@ export default function VideoClipper(props: VideoClipperProps) {
 	return (
 		<>
 			<div className="flex w-full h-full gap-dashboard">
-				<div className="flex flex-col w-full h-full gap-dashboard">
+				<div className="flex flex-col w-full h-full gap-dashboard min-w-0">
 					<div className="flex w-full gap-dashboard h-full min-h-0">
-						<ClipDetails draft={draft} />
+						{/* <ClipDetails draft={draft} /> */}
 						{source && (
 							<VideoPlayer
 								videoRef={videoRef}
