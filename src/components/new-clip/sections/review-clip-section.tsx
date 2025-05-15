@@ -1,8 +1,12 @@
 import { NewClipFormSectionProps } from "@/types/form-section";
 import FormSection from "@/components/form-section";
 import { useRef } from "react";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 export default function ReviewClipSection(props: NewClipFormSectionProps) {
+	const { source } = useVideoClipperStore((state) => ({
+		source: state.source,
+	}));
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const startTime = props.clipTime.start;
@@ -30,7 +34,7 @@ export default function ReviewClipSection(props: NewClipFormSectionProps) {
 					onLoadedMetadata={loadAtStartTime}
 					onTimeUpdate={loop}
 				>
-					<source src={props.videoSource} />
+					<source src={source} />
 				</video>
 			</div>
 		</FormSection>

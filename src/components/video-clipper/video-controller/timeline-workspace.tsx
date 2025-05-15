@@ -1,34 +1,39 @@
 import { useEffect, useState } from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { getTimestamp } from "@/utils/time";
-import { ClipDetails } from "@/types/clip-details";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 interface TimelineWorkspaceProps {
 	zoom: number; // magnify rate
-	currentTime: number;
-	duration: number;
-	onSliderChange: (value: number[]) => void;
-	clips: ClipDetails[];
 	hangingClipTime: number | null;
 }
 
 export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
+	const { currentTime, setCurrentTime, duration, clips, videoRef } =
+		useVideoClipperStore((state) => ({
+			currentTime: state.currentTime,
+			setCurrentTime: state.setCurrentTime,
+			duration: state.duration,
+			clips: state.clips,
+			videoRef: state.videoRef,
+		}));
+
 	const [timestamps, setTimestamps] = useState<number[]>([]);
 	const pixelsPerSecond = 48;
 	const secondsGap = 2;
 
-	const timelinePixels = props.duration * pixelsPerSecond * props.zoom;
+	const timelinePixels = duration * pixelsPerSecond * props.zoom;
 	const timestampGap = secondsGap / props.zoom;
 
 	useEffect(() => {
 		setTimestamps(() => {
 			const newTimestamps: number[] = [];
-			for (let second = 0; second <= props.duration; second += timestampGap) {
+			for (let second = 0; second <= duration; second += timestampGap) {
 				newTimestamps.push(second);
 			}
 			return newTimestamps;
 		});
-	}, [timestampGap, props.duration]);
+	}, [timestampGap, duration]);
 
 	/**
 	 * Gets the position of where a time exists within the duration
@@ -40,18 +45,23 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 	 * @returns {number} Position of timestamp as a percentage (i.e. returned 20 means 20%)
 	 */
 	const getTimestampPosition = (time: number): number => {
-		return props.duration > 0 ? (time / props.duration) * 100 : 0;
+		return duration > 0 ? (time / duration) * 100 : 0;
+	};
+
+	const handleSliderChange = (value: number[]) => {
+		setCurrentTime(value[0]);
+		if (videoRef.current) videoRef.current.currentTime = value[0];
 	};
 
 	return (
 		<div className="w-full h-full border border-card-border rounded-2xl relative overflow-x-auto">
 			<SliderPrimitive.Root
 				data-slot="slider"
-				value={[props.currentTime]}
-				onValueChange={props.onSliderChange}
+				value={[currentTime]}
+				onValueChange={handleSliderChange}
 				step={0.1}
 				min={0}
-				max={props.duration}
+				max={duration}
 				className="absolute flex touch-none items-center select-none h-full bg-card-background inset-shadow-sm inset-shadow-neutral-800/60"
 				style={{ width: `${timelinePixels}px` }}
 			>
@@ -83,7 +93,7 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 
 				{/* clip segments */}
 				<div className="absolute top-14 left-0 w-full h-full transform -translate-y-1/2 z-10">
-					{props.clips.map((clip, i) => (
+					{clips.map((clip, i) => (
 						<div
 							key={i}
 							className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"

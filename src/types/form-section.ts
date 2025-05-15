@@ -3,7 +3,6 @@ import { Dispatch, JSX, SetStateAction } from "react";
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { ClipTime } from "./clip-time";
 import { ClipDetails } from "./clip-details";
-import { GameDraft } from "./model/game-draft";
 
 // base form props
 export interface FormSectionProps {
@@ -46,9 +45,7 @@ export interface NewGameFormSection extends Omit<FormSection, "component"> {
 export interface NewClipFormSectionProps
 	extends Omit<FormSectionProps, "sections"> {
 	clipTime: ClipTime;
-	videoSource: string;
 	sections: NewClipFormSection[];
-	draft: GameDraft;
 	onClipCreate: (clipDetails: ClipDetails) => void;
 }
 

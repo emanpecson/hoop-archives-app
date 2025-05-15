@@ -26,8 +26,6 @@ export default function Statboard(props: StatboardProps) {
 		);
 		const totals: Stats = { pts: 0, ast: 0, blk: 0 };
 
-		console.log("stats:", stats);
-
 		// calculate player stats by clip
 		for (const clip of props.clips) {
 			if (clip.offense) {

@@ -1,18 +1,16 @@
 import DashboardCard from "../../dashboard/dashboard-card";
 import { ClipDetails } from "@/types/clip-details";
-import { RefObject } from "react";
 import ClipDetailsCard from "./clip-details-card";
 import { ClipTag } from "@/types/enum/clip-tag";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 interface ClipControllerProps {
-	clips: ClipDetails[];
-	currentTime: number;
-	duration: number;
-	videoRef: RefObject<HTMLVideoElement | null>;
 	onPreviewClips: (i: number) => void;
 }
 
 export default function ClipController(props: ClipControllerProps) {
+	const { clips } = useVideoClipperStore((state) => ({ clips: state.clips }));
+
 	const clipHeadline = (clip: ClipDetails) => {
 		if (clip.offense) {
 			const scorer = `${clip.offense.playerScoring.firstName}`;
@@ -46,12 +44,12 @@ export default function ClipController(props: ClipControllerProps) {
 		<DashboardCard className="h-32 w-full">
 			<div className="overflow-x-auto h-full w-full">
 				<div className="flex h-full min-w-full">
-					{props.clips ? (
+					{clips ? (
 						(() => {
 							let homeScore = 0;
 							let awayScore = 0;
 
-							return props.clips.map((clip, i) => {
+							return clips.map((clip, i) => {
 								if (clip.offense) {
 									if (clip.teamBeneficiary === "home") {
 										homeScore += clip.offense.pointsAdded;

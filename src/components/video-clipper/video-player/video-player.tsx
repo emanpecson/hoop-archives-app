@@ -1,54 +1,64 @@
 "use client";
 
-import { Dispatch, RefObject, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import VideoOverlayWrapper from "./video-overlay-wrapper";
 import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { getTimestamp } from "@/utils/time";
-import { ClipDetails } from "@/types/clip-details";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 interface VideoPlayerProps {
-	videoRef: RefObject<HTMLVideoElement | null>;
-	clips: ClipDetails[];
-	src: string;
-	currentTime: number;
-	duration: number;
-	setCurrentTime: Dispatch<SetStateAction<number>>;
-	setDuration: Dispatch<SetStateAction<number>>;
-	onSliderChange: (value: number[]) => void;
-	previewClipsIsActive: boolean;
-	setPreviewClipsIsActive: Dispatch<SetStateAction<boolean>>;
 	playClip: (i: number) => void;
 	currClipIndex: number | null;
 	setCurrClipIndex: Dispatch<SetStateAction<number | null>>;
 }
 
 export default function VideoPlayer(props: VideoPlayerProps) {
+	const {
+		duration,
+		setDuration,
+		currentTime,
+		setCurrentTime,
+		videoRef,
+		source,
+		clips,
+		isPreviewingClips,
+		setIsPreviewingClips,
+	} = useVideoClipperStore((state) => ({
+		duration: state.duration,
+		setDuration: state.setDuration,
+		currentTime: state.currentTime,
+		setCurrentTime: state.setCurrentTime,
+		videoRef: state.videoRef,
+		source: state.source,
+		clips: state.clips,
+		isPreviewingClips: state.isPreviewingClips,
+		setIsPreviewingClips: state.setIsPreviewingClips,
+	}));
+
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const time = `${getTimestamp(props.currentTime)} / ${getTimestamp(
-		props.duration
-	)}`;
+	const time = `${getTimestamp(currentTime)} / ${getTimestamp(duration)}`;
 
 	const handleLoadedMetadata = () => {
-		if (props.videoRef.current) {
-			props.setDuration(props.videoRef.current.duration);
+		if (videoRef.current) {
+			setDuration(videoRef.current.duration);
 		}
 	};
 
 	const handleTimeUpdate = () => {
-		if (props.videoRef.current) {
-			const vid = props.videoRef.current;
-			props.setCurrentTime(vid.currentTime);
+		if (videoRef.current) {
+			const vid = videoRef.current;
+			setCurrentTime(vid.currentTime);
 
-			if (props.previewClipsIsActive && props.currClipIndex !== null) {
-				const clip = props.clips[props.currClipIndex];
+			if (isPreviewingClips && props.currClipIndex !== null) {
+				const clip = clips[props.currClipIndex];
 
 				// @ end of curr clip, play next clip
 				if (vid.currentTime >= clip.endTime) {
 					const nextIndex = props.currClipIndex + 1;
 
-					if (nextIndex < props.clips.length) {
+					if (nextIndex < clips.length) {
 						props.playClip(nextIndex);
 					} else {
 						vid.pause();
@@ -60,12 +70,17 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 	};
 
 	const handlePlayPause = () => {
-		props.setPreviewClipsIsActive(false);
+		setIsPreviewingClips(false);
 
-		if (props.videoRef.current) {
-			if (props.videoRef.current.paused) props.videoRef.current.play();
-			else props.videoRef.current.pause();
+		if (videoRef.current) {
+			if (videoRef.current.paused) videoRef.current.play();
+			else videoRef.current.pause();
 		}
+	};
+
+	const handleSliderChange = (value: number[]) => {
+		setCurrentTime(value[0]);
+		if (videoRef.current) videoRef.current.currentTime = value[0];
 	};
 
 	return (
@@ -74,18 +89,20 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 			onMouseOver={() => setShowOverlayController(true)}
 			onMouseLeave={() => setShowOverlayController(false)}
 		>
-			<video
-				ref={props.videoRef}
-				width={600}
-				className="h-full w-full mx-auto"
-				preload="metadata"
-				onLoadedMetadata={handleLoadedMetadata}
-				onTimeUpdate={handleTimeUpdate}
-			>
-				<source src={props.src} type="video/mp4" />
-			</video>
+			{source && (
+				<video
+					ref={videoRef}
+					width={600}
+					className="h-full w-full mx-auto"
+					preload="metadata"
+					onLoadedMetadata={handleLoadedMetadata}
+					onTimeUpdate={handleTimeUpdate}
+				>
+					<source src={source} type="video/mp4" />
+				</video>
+			)}
 
-			{props.videoRef.current && (
+			{videoRef.current && (
 				<div
 					className={cn(
 						"absolute bottom-0 w-full p-4 flex space-x-3",
@@ -96,7 +113,7 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 					<div className="w-[16rem]">
 						<VideoOverlayWrapper>
 							<button onClick={handlePlayPause} className="cursor-pointer">
-								{props.videoRef.current.paused ? (
+								{videoRef.current.paused ? (
 									<PlayIcon strokeWidth={1.5} />
 								) : (
 									<PauseIcon strokeWidth={1.5} />
@@ -113,10 +130,10 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 						<VideoOverlayWrapper>
 							<Slider
 								min={0}
-								max={props.duration}
+								max={duration}
 								step={0.1}
-								value={[props.currentTime]}
-								onValueChange={props.onSliderChange}
+								value={[currentTime]}
+								onValueChange={handleSliderChange}
 							/>
 						</VideoOverlayWrapper>
 					</div>

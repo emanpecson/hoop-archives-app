@@ -10,13 +10,10 @@ import { newClipSections } from "@/data/sections";
 import { NewClipFormSection } from "@/types/form-section";
 import { useState } from "react";
 import { ClipDetails } from "@/types/clip-details";
-import { GameDraft } from "@/types/model/game-draft";
 
 interface NewClipDialogProps {
 	open: boolean;
 	clipTime: ClipTime;
-	videoSource: string;
-	draft: GameDraft;
 	onClipCreate: (clipDetails: ClipDetails) => void;
 	onClose: (flag: boolean) => void;
 }
@@ -58,9 +55,7 @@ export default function NewClipDialog(props: NewClipDialogProps) {
 						saveData={handleSaveData}
 						form={newClipForm}
 						clipTime={props.clipTime}
-						videoSource={props.videoSource}
 						onClipCreate={props.onClipCreate}
-						draft={props.draft}
 					/>
 				))}
 			</DialogContent>

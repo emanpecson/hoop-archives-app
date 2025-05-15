@@ -1,20 +1,22 @@
 import useKeyboardShortcut from "@/hooks/use-keyboard-shortcut";
-import { ClipDetails } from "@/types/clip-details";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { ClipTime } from "@/types/clip-time";
 import { Dispatch, SetStateAction } from "react";
 
 interface ClipButtonProps {
-	clips: ClipDetails[];
-	currentTime: number;
-	duration: number;
 	hangingClipTime: number | null;
 	setHangingClipTime: Dispatch<SetStateAction<number | null>>;
 	onClipTime: (clipTime: ClipTime) => void;
 }
 
 export default function ClipButton(props: ClipButtonProps) {
+	const { currentTime, clips } = useVideoClipperStore((state) => ({
+		currentTime: state.currentTime,
+		clips: state.clips,
+	}));
+
 	const throwOnOverlappingPoint = (time: number) => {
-		for (const clip of props.clips) {
+		for (const clip of clips) {
 			if (clip.startTime <= time && time <= clip.endTime) {
 				throw new Error(
 					`Overlapping point ${time} on [${clip.startTime}, ${clip.endTime}]`
@@ -24,7 +26,7 @@ export default function ClipButton(props: ClipButtonProps) {
 	};
 
 	const throwOnOverlappingClip = (startTime: number, endTime: number) => {
-		for (const clip of props.clips) {
+		for (const clip of clips) {
 			// skip current clip
 			if (clip.startTime === startTime) continue;
 
@@ -38,24 +40,24 @@ export default function ClipButton(props: ClipButtonProps) {
 
 	const defineClip = () => {
 		try {
-			throwOnOverlappingPoint(props.currentTime);
+			throwOnOverlappingPoint(currentTime);
 
 			// complete clip
 			if (props.hangingClipTime) {
 				let newClipTime = null;
 
 				// define start/end time
-				if (props.currentTime < props.hangingClipTime) {
-					throwOnOverlappingClip(props.currentTime, props.hangingClipTime);
+				if (currentTime < props.hangingClipTime) {
+					throwOnOverlappingClip(currentTime, props.hangingClipTime);
 					newClipTime = {
-						start: props.currentTime,
+						start: currentTime,
 						end: props.hangingClipTime,
 					} as ClipTime;
 				} else {
-					throwOnOverlappingClip(props.hangingClipTime, props.currentTime);
+					throwOnOverlappingClip(props.hangingClipTime, currentTime);
 					newClipTime = {
 						start: props.hangingClipTime,
-						end: props.currentTime,
+						end: currentTime,
 					} as ClipTime;
 				}
 
@@ -65,7 +67,7 @@ export default function ClipButton(props: ClipButtonProps) {
 
 			// init new clip
 			else {
-				props.setHangingClipTime(props.currentTime);
+				props.setHangingClipTime(currentTime);
 			}
 		} catch (error) {
 			// TODO: notify error
