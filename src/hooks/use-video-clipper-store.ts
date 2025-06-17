@@ -30,6 +30,12 @@ type VideoClipperStore = {
 	setClips: (clips: ClipDetails[]) => void;
 	sortClips: (clips: ClipDetails[]) => ClipDetails[];
 	handleSliderChange: (value: number[]) => void;
+
+	homeScore: number;
+	setHomeScore: (score: number) => void;
+
+	awayScore: number;
+	setAwayScore: (score: number) => void;
 };
 
 const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
@@ -93,6 +99,12 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		setClips: (clips: ClipDetails[]) => set({ clips }),
 		sortClips,
 		handleSliderChange,
+
+		homeScore: 0,
+		setHomeScore: (homeScore: number) => set({ homeScore }),
+
+		awayScore: 0,
+		setAwayScore: (awayScore: number) => set({ awayScore }),
 	};
 });
 

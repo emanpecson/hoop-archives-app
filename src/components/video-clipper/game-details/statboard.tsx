@@ -1,7 +1,7 @@
 import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
 import { ClipDetails } from "@/types/clip-details";
 import { Player } from "@/types/model/player";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Stats = {
 	pts: number;
@@ -13,51 +13,54 @@ interface StatboardProps {
 	label: string;
 	players: Player[];
 	clips: ClipDetails[];
+	setTeamScore: (score: number) => void;
 }
 
 export default function Statboard(props: StatboardProps) {
 	const [playerStats, setPlayerStats] = useState<{ [id: string]: Stats }>({});
 	const [teamStats, setTeamStats] = useState<Stats>({ pts: 0, ast: 0, blk: 0 });
 
-	const getStats = useCallback(() => {
-		// initialize stats w/ 0
-		const stats: typeof playerStats = Object.fromEntries(
-			props.players.map((p) => [p.playerId, { pts: 0, ast: 0, blk: 0 }])
-		);
-		const totals: Stats = { pts: 0, ast: 0, blk: 0 };
+	useEffect(() => {
+		const getStats = () => {
+			// initialize stats w/ 0
+			const stats: typeof playerStats = Object.fromEntries(
+				props.players.map((p) => [p.playerId, { pts: 0, ast: 0, blk: 0 }])
+			);
+			const totals: Stats = { pts: 0, ast: 0, blk: 0 };
 
-		// calculate player stats by clip
-		for (const clip of props.clips) {
-			if (clip.offense) {
-				const scorer = clip.offense.playerScoring;
+			// calculate player stats by clip
+			for (const clip of props.clips) {
+				if (clip.offense) {
+					const scorer = clip.offense.playerScoring;
 
-				if (scorer.playerId in stats) {
-					stats[scorer.playerId].pts += clip.offense.pointsAdded;
-					totals.pts += clip.offense.pointsAdded;
+					if (scorer.playerId in stats) {
+						stats[scorer.playerId].pts += clip.offense.pointsAdded;
+						totals.pts += clip.offense.pointsAdded;
 
-					const assister = clip.offense.playerAssisting;
-					if (assister) {
-						stats[assister.playerId].ast++;
-						totals.ast++;
+						const assister = clip.offense.playerAssisting;
+						if (assister) {
+							stats[assister.playerId].ast++;
+							totals.ast++;
+						}
+					}
+				} else if (clip.defense) {
+					const defender = clip.defense.playerDefending;
+
+					if (defender.playerId in stats) {
+						stats[defender.playerId].blk++;
+						totals.blk++;
 					}
 				}
-			} else if (clip.defense) {
-				const defender = clip.defense.playerDefending;
-
-				if (defender.playerId in stats) {
-					stats[defender.playerId].blk++;
-					totals.blk++;
-				}
 			}
-		}
 
-		setPlayerStats(stats);
-		setTeamStats(totals);
-	}, [props.clips, props.players]);
+			setPlayerStats(stats);
+			setTeamStats(totals);
+			props.setTeamScore(totals.pts);
+		};
 
-	useEffect(() => {
 		getStats();
-	}, [props.players, props.clips, getStats]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.clips, props.players, props.setTeamScore]);
 
 	return (
 		<div className="w-full space-y-2">

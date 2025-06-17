@@ -25,6 +25,8 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 		clips,
 		isPreviewingClips,
 		setIsPreviewingClips,
+		homeScore,
+		awayScore,
 	} = useVideoClipperStore((state) => ({
 		duration: state.duration,
 		setDuration: state.setDuration,
@@ -35,6 +37,8 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 		clips: state.clips,
 		isPreviewingClips: state.isPreviewingClips,
 		setIsPreviewingClips: state.setIsPreviewingClips,
+		homeScore: state.homeScore,
+		awayScore: state.awayScore,
 	}));
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
@@ -137,6 +141,9 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 							/>
 						</VideoOverlayWrapper>
 					</div>
+
+					<VideoOverlayWrapper>{`Home: ${homeScore}`}</VideoOverlayWrapper>
+					<VideoOverlayWrapper>{`Away: ${awayScore}`}</VideoOverlayWrapper>
 				</div>
 			)}
 		</div>

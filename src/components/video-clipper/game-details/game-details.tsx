@@ -8,12 +8,31 @@ import { TrimRequest } from "@/types/trim-request";
 import CardButton from "../../card-button";
 import { Player } from "@/types/model/player";
 import Statboard from "./statboard";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
+import { useMemo } from "react";
 
 interface GameDetailsProps {
 	draft: GameDraft | null;
 }
 
 export default function GameDetails(props: GameDetailsProps) {
+	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
+	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
+
+	// prevent re-render from triggering unless props.draft changes
+	const memoClips = useMemo(
+		() => (props.draft ? props.draft.clipsDetails : []),
+		[props.draft]
+	);
+	const memoHomePlayers = useMemo(
+		() => (props.draft ? props.draft.home : []),
+		[props.draft]
+	);
+	const memoAwayPlayers = useMemo(
+		() => (props.draft ? props.draft.away : []),
+		[props.draft]
+	);
+
 	const createVideoClips = async (draft: GameDraft) => {
 		try {
 			const res = await fetch(
@@ -111,16 +130,18 @@ export default function GameDetails(props: GameDetailsProps) {
 
 			<Statboard
 				label="Home Stats"
-				clips={props.draft ? props.draft.clipsDetails : []}
-				players={props.draft ? props.draft.home : []}
+				clips={memoClips}
+				players={memoHomePlayers}
+				setTeamScore={setHomeScore}
 			/>
 
 			<hr className="text-neutral-700" />
 
 			<Statboard
 				label="Away Stats"
-				clips={props.draft ? props.draft.clipsDetails : []}
-				players={props.draft ? props.draft.away : []}
+				clips={memoClips}
+				players={memoAwayPlayers}
+				setTeamScore={setAwayScore}
 			/>
 
 			<Button
