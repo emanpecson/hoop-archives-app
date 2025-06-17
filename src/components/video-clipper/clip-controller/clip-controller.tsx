@@ -62,6 +62,7 @@ export default function ClipController(props: ClipControllerProps) {
 								return (
 									<div key={i} className="flex flex-shrink-0 h-full">
 										<ClipDetailsCard
+											clip={clip}
 											headline={clipHeadline(clip)}
 											tags={clip.tags as ClipTag[]}
 											onClick={() => props.onPreviewClips(i)}
