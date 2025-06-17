@@ -20,7 +20,10 @@ export default function VideoController(props: VideoControllerProps) {
 	return (
 		<div className="flex w-full h-24 gap-dashboard">
 			<DashboardCard className="w-32 shrink-0">
-				<Slider min={1} max={4} step={1} onValueChange={handleZoomChange} />
+				<div className="pt-2 flex flex-col justify-center space-y-3 mb-2 text-neutral-500 hover:text-white duration-100">
+					<label className="font-medium text-center">Zoom</label>
+					<Slider min={1} max={4} step={1} onValueChange={handleZoomChange} />
+				</div>
 			</DashboardCard>
 
 			<DashboardCard className="w-32 shrink-0">

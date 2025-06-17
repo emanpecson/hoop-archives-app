@@ -75,11 +75,15 @@ export default function ClipButton(props: ClipButtonProps) {
 		}
 	};
 
-	useKeyboardShortcut({ key: "k" }, defineClip);
+	useKeyboardShortcut({ key: "a" }, defineClip);
 
 	return (
-		<>
-			<button onClick={defineClip}>clip</button>
-		</>
+		<button
+			className="cursor-pointer font-medium w-full h-full space-y-1 text-neutral-500 hover:text-white duration-100"
+			onClick={defineClip}
+		>
+			<p>Define clip</p>
+			<p className="font-mono rounded-md px-2 bg-neutral-800">cmd + a</p>
+		</button>
 	);
 }
