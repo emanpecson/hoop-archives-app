@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import VideoOverlayWrapper from "./video-overlay-wrapper";
 import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,8 +10,6 @@ import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 interface VideoPlayerProps {
 	playClip: (i: number) => void;
-	currClipIndex: number | null;
-	setCurrClipIndex: Dispatch<SetStateAction<number | null>>;
 }
 
 export default function VideoPlayer(props: VideoPlayerProps) {
@@ -27,6 +25,8 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 		setIsPreviewingClips,
 		homeScore,
 		awayScore,
+		currClipIndex,
+		setCurrClipIndex,
 	} = useVideoClipperStore((state) => ({
 		duration: state.duration,
 		setDuration: state.setDuration,
@@ -39,6 +39,8 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 		setIsPreviewingClips: state.setIsPreviewingClips,
 		homeScore: state.homeScore,
 		awayScore: state.awayScore,
+		currClipIndex: state.currClipIndex,
+		setCurrClipIndex: state.setCurrClipIndex,
 	}));
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
@@ -55,18 +57,18 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 			const vid = videoRef.current;
 			setCurrentTime(vid.currentTime);
 
-			if (isPreviewingClips && props.currClipIndex !== null) {
-				const clip = clips[props.currClipIndex];
+			if (isPreviewingClips && currClipIndex !== null) {
+				const clip = clips[currClipIndex];
 
 				// @ end of curr clip, play next clip
 				if (vid.currentTime >= clip.endTime) {
-					const nextIndex = props.currClipIndex + 1;
+					const nextIndex = currClipIndex + 1;
 
 					if (nextIndex < clips.length) {
 						props.playClip(nextIndex);
 					} else {
 						vid.pause();
-						props.setCurrClipIndex(null);
+						setCurrClipIndex(null);
 					}
 				}
 			}

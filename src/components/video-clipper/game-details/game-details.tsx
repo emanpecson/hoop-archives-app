@@ -2,7 +2,6 @@ import { CalendarIcon, FolderPenIcon, SwordsIcon } from "lucide-react";
 import DashboardCard from "../../dashboard/dashboard-card";
 import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
 import { GameDraft } from "@/types/model/game-draft";
 import { TrimRequest } from "@/types/trim-request";
 import CardButton from "../../card-button";
@@ -18,6 +17,14 @@ interface GameDetailsProps {
 export default function GameDetails(props: GameDetailsProps) {
 	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
 	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
+	const setIsPreviewingClips = useVideoClipperStore(
+		(state) => state.setIsPreviewingClips
+	);
+	const setCurrClipIndex = useVideoClipperStore(
+		(state) => state.setCurrClipIndex
+	);
+	const setCurrentTime = useVideoClipperStore((state) => state.setCurrentTime);
+	const videoRef = useVideoClipperStore((state) => state.videoRef);
 
 	// prevent re-render from triggering unless props.draft changes
 	const memoClips = useMemo(
@@ -32,6 +39,18 @@ export default function GameDetails(props: GameDetailsProps) {
 		() => (props.draft ? props.draft.away : []),
 		[props.draft]
 	);
+
+	const previewClips = (draft: GameDraft) => {
+		const vid = videoRef.current;
+		if (!vid) return;
+
+		setIsPreviewingClips(true);
+		setCurrClipIndex(0);
+
+		setCurrentTime(draft.clipsDetails[0].startTime);
+		vid.currentTime = draft.clipsDetails[0].startTime;
+		vid.play();
+	};
 
 	const createVideoClips = async (draft: GameDraft) => {
 		try {
@@ -144,12 +163,22 @@ export default function GameDetails(props: GameDetailsProps) {
 				setTeamScore={setAwayScore}
 			/>
 
-			<Button
-				onClick={() => createVideoClips(props.draft!)}
-				disabled={!props.draft || props.draft.clipsDetails.length === 0}
-			>
-				Complete game
-			</Button>
+			<div className="space-y-2">
+				<CardButton
+					onClick={() => previewClips(props.draft!)}
+					disabled={!props.draft || props.draft.clipsDetails.length === 0}
+					className="text-center py-2"
+				>
+					Preview clips
+				</CardButton>
+				<CardButton
+					onClick={() => createVideoClips(props.draft!)}
+					disabled={!props.draft || props.draft.clipsDetails.length === 0}
+					className="text-center py-2"
+				>
+					Complete game
+				</CardButton>
+			</div>
 		</DashboardCard>
 	);
 }

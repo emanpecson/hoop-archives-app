@@ -16,7 +16,6 @@ interface VideoClipperProps {
 
 export default function VideoClipper(props: VideoClipperProps) {
 	const [newClipDialogOpen, setNewClipDialogOpen] = useState(false);
-	const [currClipIndex, setCurrClipIndex] = useState<number | null>(null);
 
 	const {
 		draft,
@@ -27,6 +26,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 		sortClips,
 		videoRef,
 		setIsPreviewingClips,
+		setCurrClipIndex,
 	} = useVideoClipperStore((state) => ({
 		draft: state.draft,
 		setDraft: state.setDraft,
@@ -37,6 +37,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 		videoRef: state.videoRef,
 		isPreviewingClips: state.isPreviewingClips,
 		setIsPreviewingClips: state.setIsPreviewingClips,
+		setCurrClipIndex: state.setCurrClipIndex,
 	}));
 
 	// for defining further clip details
@@ -79,11 +80,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 			<div className="flex w-full h-full gap-dashboard">
 				<div className="flex flex-col w-full h-full gap-dashboard min-w-0">
 					<div className="flex w-full gap-dashboard h-full min-h-0">
-						<VideoPlayer
-							playClip={playClip}
-							currClipIndex={currClipIndex}
-							setCurrClipIndex={setCurrClipIndex}
-						/>
+						<VideoPlayer playClip={playClip} />
 					</div>
 					<div className="h-fit flex flex-col gap-dashboard">
 						{draft && <VideoController onClipTime={handleClipTime} />}
