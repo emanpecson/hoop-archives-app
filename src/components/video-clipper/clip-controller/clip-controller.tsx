@@ -65,7 +65,7 @@ export default function ClipController(props: ClipControllerProps) {
 											clip={clip}
 											headline={clipHeadline(clip)}
 											tags={clip.tags as ClipTag[]}
-											onClick={() => props.onPreviewClips(i)}
+											onPreview={() => props.onPreviewClips(i)}
 										/>
 										{clip.offense && (
 											<span className="text-nowrap px-4 h-full flex place-items-center text-neutral-500">
