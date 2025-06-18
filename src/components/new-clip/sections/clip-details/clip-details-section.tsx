@@ -28,13 +28,13 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 		defaultValues: { play: "offense", pointsAdded: 1 },
 	});
 
-	const { draft } = useVideoClipperStore((state) => ({ draft: state.draft }));
+	const draft = useVideoClipperStore((s) => s.draft!);
 
 	const selectedPlay = watch("play");
 	const playTypes = { offense: SwordIcon, defense: ShieldIcon };
 
 	const setTeamBeneficiary = (player: Player) => {
-		setValue("teamBeneficiary", draft!.home.includes(player) ? "home" : "away");
+		setValue("teamBeneficiary", draft.home.includes(player) ? "home" : "away");
 	};
 
 	return (
@@ -61,15 +61,15 @@ export default function ClipDetailsSection(props: NewClipFormSectionProps) {
 				<div className="pl-6 w-full">
 					{selectedPlay === "offense" ? (
 						<OffenseDetails
-							playerOptions={[...draft!.home, ...draft!.away]}
-							draft={draft!}
+							playerOptions={[...draft.home, ...draft.away]}
+							draft={draft}
 							control={control as Control<OffensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<OffensivePlayFormFields>>}
 							onPrimaryPlayer={setTeamBeneficiary}
 						/>
 					) : (
 						<DefenseDetails
-							playerOptions={[...draft!.home, ...draft!.away]}
+							playerOptions={[...draft.home, ...draft.away]}
 							control={control as Control<DefensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<DefensivePlayFormFields>>}
 							onPrimaryPlayer={setTeamBeneficiary}

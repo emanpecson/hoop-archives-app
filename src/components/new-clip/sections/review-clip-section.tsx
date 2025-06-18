@@ -4,9 +4,7 @@ import { useRef } from "react";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 export default function ReviewClipSection(props: NewClipFormSectionProps) {
-	const { source } = useVideoClipperStore((state) => ({
-		source: state.source,
-	}));
+	const source = useVideoClipperStore((s) => s.source);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	const startTime = props.clipTime.start;

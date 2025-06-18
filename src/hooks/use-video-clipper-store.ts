@@ -9,7 +9,6 @@ type VideoClipperStore = {
 	fetchDraft: (key: string) => Promise<void>;
 
 	source?: string;
-	setSource: (source: string) => void;
 	fetchSource: (key: string) => Promise<void>;
 
 	videoRef: RefObject<HTMLVideoElement | null>;
@@ -20,36 +19,24 @@ type VideoClipperStore = {
 	duration: number;
 	setDuration: (duration: number) => void;
 
-	isPreviewingClips: boolean;
-	setIsPreviewingClips: (isPreviewing: boolean) => void;
-
 	currClipIndex: number | null;
 	setCurrClipIndex: (index: number | null) => void;
 
-	clips: ClipDetails[];
-	setClips: (clips: ClipDetails[]) => void;
 	sortClips: (clips: ClipDetails[]) => ClipDetails[];
-	handleSliderChange: (value: number[]) => void;
 
 	homeScore: number;
 	setHomeScore: (score: number) => void;
 
 	awayScore: number;
 	setAwayScore: (score: number) => void;
+
+	previewClips: (i: number) => void;
 };
 
 const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 	const sortClips = (clips: ClipDetails[]) => {
 		// shallow copy w/ slice (to avoid mutating og array)
 		return clips.slice().sort((a, b) => a.startTime - b.endTime);
-	};
-
-	const handleSliderChange = (value: number[]) => {
-		set({ currentTime: value[0] });
-		const videoRef = get().videoRef;
-		if (videoRef.current) {
-			videoRef.current.currentTime = value[0];
-		}
 	};
 
 	const fetchDraft = async (key: string) => {
@@ -59,7 +46,6 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		const sortedClips = sortClips(data.clipsDetails);
 		console.log("draft:", data);
 		set({ draft: { ...data, clipsDetails: sortedClips } });
-		set({ clips: sortedClips });
 	};
 
 	const fetchSource = async (key: string) => {
@@ -71,13 +57,23 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		set({ source: presignedUrl });
 	};
 
+	const previewClips = (i: number) => {
+		const vid = get().videoRef.current;
+		if (!vid) return;
+
+		set({ currClipIndex: i });
+
+		const clip = get().draft!.clipsDetails[i];
+		vid.currentTime = clip.startTime;
+		vid.play();
+	};
+
 	return {
 		draft: null,
 		setDraft: (draft: GameDraft) => set({ draft }),
 		fetchDraft,
 
 		source: undefined,
-		setSource: (source: string) => set({ source }),
 		fetchSource,
 
 		videoRef: createRef<HTMLVideoElement>(),
@@ -88,23 +84,18 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		duration: 0,
 		setDuration: (duration: number) => set({ duration }),
 
-		isPreviewingClips: false,
-		setIsPreviewingClips: (isPreviewingClips: boolean) =>
-			set({ isPreviewingClips }),
-
 		currClipIndex: null,
 		setCurrClipIndex: (currClipIndex: number | null) => set({ currClipIndex }),
 
-		clips: [],
-		setClips: (clips: ClipDetails[]) => set({ clips }),
 		sortClips,
-		handleSliderChange,
 
 		homeScore: 0,
 		setHomeScore: (homeScore: number) => set({ homeScore }),
 
 		awayScore: 0,
 		setAwayScore: (awayScore: number) => set({ awayScore }),
+
+		previewClips,
 	};
 });
 

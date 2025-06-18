@@ -24,9 +24,9 @@ interface ClipDetailsCardProps {
 }
 
 export default function ClipDetailsCard(props: ClipDetailsCardProps) {
-	const clips = useVideoClipperStore((state) => state.clips);
-	const setClips = useVideoClipperStore((state) => state.setClips);
-	const currentTime = useVideoClipperStore((state) => state.currentTime);
+	const draft = useVideoClipperStore((s) => s.draft!);
+	const setDraft = useVideoClipperStore((s) => s.setDraft);
+	const currentTime = useVideoClipperStore((s) => s.currentTime);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isActive, setIsActive] = useState(false);
 
@@ -42,9 +42,13 @@ export default function ClipDetailsCard(props: ClipDetailsCardProps) {
 		props.onPreview();
 	};
 
-	// ! this doesn't seem to actually delete the data, maybe its based off of "draft"
+	// TODO: have to update db draft
 	const handleDelete = () => {
-		setClips(clips.filter((x) => x.startTime !== props.clip.startTime));
+		const clips = draft.clipsDetails;
+		const updatedClips = clips.filter(
+			(x) => x.startTime !== props.clip.startTime
+		);
+		setDraft({ ...draft!, clipsDetails: updatedClips });
 		setIsOpen(false);
 	};
 

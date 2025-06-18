@@ -1,4 +1,9 @@
-import { CalendarIcon, FolderPenIcon, SwordsIcon } from "lucide-react";
+import {
+	CalendarIcon,
+	FolderPenIcon,
+	Loader2Icon,
+	SwordsIcon,
+} from "lucide-react";
 import DashboardCard from "../../dashboard/dashboard-card";
 import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
@@ -11,34 +16,16 @@ import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { useMemo } from "react";
 
 export default function GameDetails() {
-	const draft = useVideoClipperStore((state) => state.draft);
-	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
-	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
-	const setIsPreviewingClips = useVideoClipperStore(
-		(state) => state.setIsPreviewingClips
-	);
-	const setCurrClipIndex = useVideoClipperStore(
-		(state) => state.setCurrClipIndex
-	);
-	const setCurrentTime = useVideoClipperStore((state) => state.setCurrentTime);
-	const videoRef = useVideoClipperStore((state) => state.videoRef);
+	const draft = useVideoClipperStore((s) => s.draft);
+	const setHomeScore = useVideoClipperStore((s) => s.setHomeScore);
+	const setAwayScore = useVideoClipperStore((s) => s.setAwayScore);
+	const previewClips = useVideoClipperStore((s) => s.previewClips);
+	const currClipIndex = useVideoClipperStore((s) => s.currClipIndex);
 
 	// prevent re-render from triggering unless draft changes
 	const memoClips = useMemo(() => (draft ? draft.clipsDetails : []), [draft]);
 	const memoHomePlayers = useMemo(() => (draft ? draft.home : []), [draft]);
 	const memoAwayPlayers = useMemo(() => (draft ? draft.away : []), [draft]);
-
-	const previewClips = (draft: GameDraft) => {
-		const vid = videoRef.current;
-		if (!vid) return;
-
-		setIsPreviewingClips(true);
-		setCurrClipIndex(0);
-
-		setCurrentTime(draft.clipsDetails[0].startTime);
-		vid.currentTime = draft.clipsDetails[0].startTime;
-		vid.play();
-	};
 
 	const createVideoClips = async (draft: GameDraft) => {
 		try {
@@ -151,11 +138,14 @@ export default function GameDetails() {
 
 			<div className="space-y-2">
 				<CardButton
-					onClick={() => previewClips(draft!)}
+					onClick={() => previewClips(0)}
 					disabled={!draft || draft.clipsDetails.length === 0}
-					className="text-center py-2"
+					className="text-center py-2 flex justify-center place-items-center space-x-2"
 				>
-					Preview clips
+					{currClipIndex !== null && currClipIndex >= 0 && (
+						<Loader2Icon className="animate-spin" size={16} strokeWidth={1.5} />
+					)}
+					<span>Preview clips</span>
 				</CardButton>
 				<CardButton
 					onClick={() => createVideoClips(draft!)}

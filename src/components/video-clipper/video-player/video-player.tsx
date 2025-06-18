@@ -8,40 +8,19 @@ import { Slider } from "@/components/ui/slider";
 import { getTimestamp } from "@/utils/time";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
-interface VideoPlayerProps {
-	playClip: (i: number) => void;
-}
-
-export default function VideoPlayer(props: VideoPlayerProps) {
-	const {
-		duration,
-		setDuration,
-		currentTime,
-		setCurrentTime,
-		videoRef,
-		source,
-		clips,
-		isPreviewingClips,
-		setIsPreviewingClips,
-		homeScore,
-		awayScore,
-		currClipIndex,
-		setCurrClipIndex,
-	} = useVideoClipperStore((state) => ({
-		duration: state.duration,
-		setDuration: state.setDuration,
-		currentTime: state.currentTime,
-		setCurrentTime: state.setCurrentTime,
-		videoRef: state.videoRef,
-		source: state.source,
-		clips: state.clips,
-		isPreviewingClips: state.isPreviewingClips,
-		setIsPreviewingClips: state.setIsPreviewingClips,
-		homeScore: state.homeScore,
-		awayScore: state.awayScore,
-		currClipIndex: state.currClipIndex,
-		setCurrClipIndex: state.setCurrClipIndex,
-	}));
+export default function VideoPlayer() {
+	const draft = useVideoClipperStore((s) => s.draft);
+	const duration = useVideoClipperStore((s) => s.duration);
+	const setDuration = useVideoClipperStore((s) => s.setDuration);
+	const currentTime = useVideoClipperStore((s) => s.currentTime);
+	const setCurrentTime = useVideoClipperStore((s) => s.setCurrentTime);
+	const videoRef = useVideoClipperStore((s) => s.videoRef);
+	const source = useVideoClipperStore((s) => s.source);
+	const homeScore = useVideoClipperStore((s) => s.homeScore);
+	const awayScore = useVideoClipperStore((s) => s.awayScore);
+	const currClipIndex = useVideoClipperStore((s) => s.currClipIndex);
+	const setCurrClipIndex = useVideoClipperStore((s) => s.setCurrClipIndex);
+	const previewClips = useVideoClipperStore((s) => s.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
 	const time = `${getTimestamp(currentTime)} / ${getTimestamp(duration)}`;
@@ -57,7 +36,8 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 			const vid = videoRef.current;
 			setCurrentTime(vid.currentTime);
 
-			if (isPreviewingClips && currClipIndex !== null) {
+			if (currClipIndex !== null && draft) {
+				const clips = draft.clipsDetails;
 				const clip = clips[currClipIndex];
 
 				// @ end of curr clip, play next clip
@@ -65,7 +45,7 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 					const nextIndex = currClipIndex + 1;
 
 					if (nextIndex < clips.length) {
-						props.playClip(nextIndex);
+						previewClips(nextIndex);
 					} else {
 						vid.pause();
 						setCurrClipIndex(null);
@@ -76,7 +56,8 @@ export default function VideoPlayer(props: VideoPlayerProps) {
 	};
 
 	const handlePlayPause = () => {
-		setIsPreviewingClips(false);
+		// interrupt preview
+		setCurrClipIndex(null);
 
 		if (videoRef.current) {
 			if (videoRef.current.paused) videoRef.current.play();

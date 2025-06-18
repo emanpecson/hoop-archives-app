@@ -4,12 +4,11 @@ import ClipDetailsCard from "./clip-details-card";
 import { ClipTag } from "@/types/enum/clip-tag";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
-interface ClipControllerProps {
-	onPreviewClips: (i: number) => void;
-}
-
-export default function ClipController(props: ClipControllerProps) {
-	const { clips } = useVideoClipperStore((state) => ({ clips: state.clips }));
+export default function ClipController() {
+	const { draft, previewClips } = useVideoClipperStore((s) => ({
+		draft: s.draft,
+		previewClips: s.previewClips,
+	}));
 
 	const clipHeadline = (clip: ClipDetails) => {
 		if (clip.offense) {
@@ -44,12 +43,12 @@ export default function ClipController(props: ClipControllerProps) {
 		<DashboardCard className="h-32 w-full">
 			<div className="overflow-x-auto h-full w-full">
 				<div className="flex h-full min-w-full">
-					{clips ? (
+					{draft && draft.clipsDetails ? (
 						(() => {
 							let homeScore = 0;
 							let awayScore = 0;
 
-							return clips.map((clip, i) => {
+							return draft.clipsDetails.map((clip, i) => {
 								if (clip.offense) {
 									if (clip.teamBeneficiary === "home") {
 										homeScore += clip.offense.pointsAdded;
@@ -65,7 +64,7 @@ export default function ClipController(props: ClipControllerProps) {
 											clip={clip}
 											headline={clipHeadline(clip)}
 											tags={clip.tags as ClipTag[]}
-											onPreview={() => props.onPreviewClips(i)}
+											onPreview={() => previewClips(i)}
 										/>
 										{clip.offense && (
 											<span className="text-nowrap px-4 h-full flex place-items-center text-neutral-500">

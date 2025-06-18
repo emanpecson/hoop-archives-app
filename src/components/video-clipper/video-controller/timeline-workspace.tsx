@@ -9,13 +9,13 @@ interface TimelineWorkspaceProps {
 }
 
 export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
-	const { currentTime, setCurrentTime, duration, clips, videoRef } =
-		useVideoClipperStore((state) => ({
-			currentTime: state.currentTime,
-			setCurrentTime: state.setCurrentTime,
-			duration: state.duration,
-			clips: state.clips,
-			videoRef: state.videoRef,
+	const { draft, currentTime, setCurrentTime, videoRef, duration } =
+		useVideoClipperStore((s) => ({
+			draft: s.draft,
+			currentTime: s.currentTime,
+			setCurrentTime: s.setCurrentTime,
+			videoRef: s.videoRef,
+			duration: s.duration,
 		}));
 
 	const [timestamps, setTimestamps] = useState<number[]>([]);
@@ -93,19 +93,20 @@ export default function TimelineWorkspace(props: TimelineWorkspaceProps) {
 
 				{/* clip segments */}
 				<div className="absolute top-14 left-0 w-full h-full transform -translate-y-1/2 z-10">
-					{clips.map((clip, i) => (
-						<div
-							key={i}
-							className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"
-							style={{
-								left: `${getTimestampPosition(clip.startTime)}%`,
-								width: `${
-									getTimestampPosition(clip.endTime) -
-									getTimestampPosition(clip.startTime)
-								}%`,
-							}}
-						/>
-					))}
+					{draft &&
+						draft.clipsDetails.map((clip, i) => (
+							<div
+								key={i}
+								className="absolute -top-2 h-full rounded-lg border-4 border-yellow-400"
+								style={{
+									left: `${getTimestampPosition(clip.startTime)}%`,
+									width: `${
+										getTimestampPosition(clip.endTime) -
+										getTimestampPosition(clip.startTime)
+									}%`,
+								}}
+							/>
+						))}
 				</div>
 
 				{/* single marker on pending clip */}

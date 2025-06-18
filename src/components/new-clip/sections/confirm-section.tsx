@@ -5,7 +5,7 @@ import { ClipDetails } from "@/types/clip-details";
 import { NewClipFormSectionProps } from "@/types/form-section";
 
 export function ConfirmSection(props: NewClipFormSectionProps) {
-	const { draft } = useVideoClipperStore((state) => ({ draft: state.draft }));
+	const draft = useVideoClipperStore((s) => s.draft!);
 
 	const saveClipDetails = async () => {
 		try {
@@ -33,7 +33,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 			} as ClipDetails;
 
 			const res = await fetch(
-				`/api/ddb/game-drafts/clip-details?title=${draft!.title}`,
+				`/api/ddb/game-drafts/clip-details?title=${draft.title}`,
 				{
 					method: "PUT",
 					body: JSON.stringify(newClip),

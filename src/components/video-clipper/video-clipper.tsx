@@ -16,28 +16,14 @@ interface VideoClipperProps {
 
 export default function VideoClipper(props: VideoClipperProps) {
 	const [newClipDialogOpen, setNewClipDialogOpen] = useState(false);
-	const {
-		draft,
-		setDraft,
-		fetchDraft,
-		setClips,
-		fetchSource,
-		sortClips,
-		videoRef,
-		setIsPreviewingClips,
-		setCurrClipIndex,
-	} = useVideoClipperStore((state) => ({
-		draft: state.draft,
-		setDraft: state.setDraft,
-		fetchDraft: state.fetchDraft,
-		setClips: state.setClips,
-		fetchSource: state.fetchSource,
-		sortClips: state.sortClips,
-		videoRef: state.videoRef,
-		isPreviewingClips: state.isPreviewingClips,
-		setIsPreviewingClips: state.setIsPreviewingClips,
-		setCurrClipIndex: state.setCurrClipIndex,
-	}));
+	const { draft, setDraft, fetchDraft, fetchSource, sortClips } =
+		useVideoClipperStore((state) => ({
+			draft: state.draft,
+			setDraft: state.setDraft,
+			fetchDraft: state.fetchDraft,
+			fetchSource: state.fetchSource,
+			sortClips: state.sortClips,
+		}));
 
 	// for defining further clip details
 	const [newClipTime, setNewClipTime] = useState<ClipTime | null>(null);
@@ -50,20 +36,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 	const handleClipCreate = (newClip: ClipDetailsType) => {
 		const sortedClips = sortClips([...draft!.clipsDetails, newClip]);
 		setDraft({ ...draft!, clipsDetails: sortedClips });
-		setClips(sortedClips);
 		setNewClipTime(null);
-	};
-
-	const playClip = (i: number) => {
-		const vid = videoRef.current;
-		if (!vid) return;
-
-		setCurrClipIndex(i);
-		setIsPreviewingClips(true);
-
-		const clip = draft!.clipsDetails[i];
-		vid.currentTime = clip.startTime;
-		vid.play();
 	};
 
 	useEffect(() => {
@@ -79,11 +52,11 @@ export default function VideoClipper(props: VideoClipperProps) {
 			<div className="flex w-full h-full gap-dashboard">
 				<div className="flex flex-col w-full h-full gap-dashboard min-w-0">
 					<div className="flex w-full gap-dashboard h-full min-h-0">
-						<VideoPlayer playClip={playClip} />
+						<VideoPlayer />
 					</div>
 					<div className="h-fit flex flex-col gap-dashboard">
 						{draft && <VideoController onClipTime={handleClipTime} />}
-						<ClipController onPreviewClips={playClip} />
+						<ClipController />
 					</div>
 				</div>
 				<GameDetails />
