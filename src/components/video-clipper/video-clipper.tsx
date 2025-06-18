@@ -16,7 +16,6 @@ interface VideoClipperProps {
 
 export default function VideoClipper(props: VideoClipperProps) {
 	const [newClipDialogOpen, setNewClipDialogOpen] = useState(false);
-
 	const {
 		draft,
 		setDraft,
@@ -87,7 +86,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 						<ClipController onPreviewClips={playClip} />
 					</div>
 				</div>
-				<GameDetails draft={draft} />
+				<GameDetails />
 			</div>
 
 			{newClipTime && draft && (

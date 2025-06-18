@@ -10,11 +10,8 @@ import Statboard from "./statboard";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { useMemo } from "react";
 
-interface GameDetailsProps {
-	draft: GameDraft | null;
-}
-
-export default function GameDetails(props: GameDetailsProps) {
+export default function GameDetails() {
+	const draft = useVideoClipperStore((state) => state.draft);
 	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
 	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
 	const setIsPreviewingClips = useVideoClipperStore(
@@ -26,19 +23,10 @@ export default function GameDetails(props: GameDetailsProps) {
 	const setCurrentTime = useVideoClipperStore((state) => state.setCurrentTime);
 	const videoRef = useVideoClipperStore((state) => state.videoRef);
 
-	// prevent re-render from triggering unless props.draft changes
-	const memoClips = useMemo(
-		() => (props.draft ? props.draft.clipsDetails : []),
-		[props.draft]
-	);
-	const memoHomePlayers = useMemo(
-		() => (props.draft ? props.draft.home : []),
-		[props.draft]
-	);
-	const memoAwayPlayers = useMemo(
-		() => (props.draft ? props.draft.away : []),
-		[props.draft]
-	);
+	// prevent re-render from triggering unless draft changes
+	const memoClips = useMemo(() => (draft ? draft.clipsDetails : []), [draft]);
+	const memoHomePlayers = useMemo(() => (draft ? draft.home : []), [draft]);
+	const memoAwayPlayers = useMemo(() => (draft ? draft.away : []), [draft]);
 
 	const previewClips = (draft: GameDraft) => {
 		const vid = videoRef.current;
@@ -114,16 +102,14 @@ export default function GameDetails(props: GameDetailsProps) {
 				<Input
 					readOnly
 					Icon={FolderPenIcon}
-					value={props.draft ? props.draft.title : "Loading..."}
+					value={draft ? draft.title : "Loading..."}
 					className="pointer-events-none"
 				/>
 				<Input
 					readOnly
 					Icon={CalendarIcon}
 					value={
-						props.draft
-							? new Date(props.draft.date).toLocaleDateString()
-							: "Loading..."
+						draft ? new Date(draft.date).toLocaleDateString() : "Loading..."
 					}
 					className="pointer-events-none"
 				/>
@@ -132,13 +118,13 @@ export default function GameDetails(props: GameDetailsProps) {
 						<h3 className="pb-2 flex place-items-center gap-2">
 							<SwordsIcon size={20} className="text-input-muted" />
 							<span className="text-foreground font-medium">
-								{props.draft ? props.draft.type : "Loading..."}
+								{draft ? draft.type : "Loading..."}
 							</span>
 						</h3>
-						{props.draft && (
+						{draft && (
 							<div className="space-y-2">
-								<ListPlayers label="Home" players={props.draft.home} />
-								<ListPlayers label="Away" players={props.draft.away} />
+								<ListPlayers label="Home" players={draft.home} />
+								<ListPlayers label="Away" players={draft.away} />
 							</div>
 						)}
 					</div>
@@ -165,15 +151,15 @@ export default function GameDetails(props: GameDetailsProps) {
 
 			<div className="space-y-2">
 				<CardButton
-					onClick={() => previewClips(props.draft!)}
-					disabled={!props.draft || props.draft.clipsDetails.length === 0}
+					onClick={() => previewClips(draft!)}
+					disabled={!draft || draft.clipsDetails.length === 0}
 					className="text-center py-2"
 				>
 					Preview clips
 				</CardButton>
 				<CardButton
-					onClick={() => createVideoClips(props.draft!)}
-					disabled={!props.draft || props.draft.clipsDetails.length === 0}
+					onClick={() => createVideoClips(draft!)}
+					disabled={!draft || draft.clipsDetails.length === 0}
 					className="text-center py-2"
 				>
 					Complete game
