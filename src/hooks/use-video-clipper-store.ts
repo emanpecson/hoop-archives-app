@@ -1,4 +1,4 @@
-import { ClipDetails } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 import { GameDraft } from "@/types/model/game-draft";
 import { createRef, RefObject } from "react";
 import { create } from "zustand";
@@ -22,7 +22,7 @@ type VideoClipperStore = {
 	currClipIndex: number | null;
 	setCurrClipIndex: (index: number | null) => void;
 
-	sortClips: (clips: ClipDetails[]) => ClipDetails[];
+	sortClips: (clips: ClipDraft[]) => ClipDraft[];
 
 	homeScore: number;
 	setHomeScore: (score: number) => void;
@@ -34,7 +34,7 @@ type VideoClipperStore = {
 };
 
 const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
-	const sortClips = (clips: ClipDetails[]) => {
+	const sortClips = (clips: ClipDraft[]) => {
 		// shallow copy w/ slice (to avoid mutating og array)
 		return clips.slice().sort((a, b) => a.startTime - b.endTime);
 	};
@@ -43,9 +43,9 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		const res = await fetch(`/api/ddb/game-drafts?title=${key}`);
 		const data = (await res.json()) as GameDraft;
 
-		const sortedClips = sortClips(data.clipsDetails);
+		const sortedClips = sortClips(data.clipDrafts);
 		console.log("draft:", data);
-		set({ draft: { ...data, clipsDetails: sortedClips } });
+		set({ draft: { ...data, clipDrafts: sortedClips } });
 	};
 
 	const fetchSource = async (key: string) => {
@@ -63,7 +63,7 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 
 		set({ currClipIndex: i });
 
-		const clip = get().draft!.clipsDetails[i];
+		const clip = get().draft!.clipDrafts[i];
 		vid.currentTime = clip.startTime;
 		vid.play();
 	};

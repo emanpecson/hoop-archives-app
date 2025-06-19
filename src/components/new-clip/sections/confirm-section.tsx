@@ -1,13 +1,13 @@
 import FormSection from "@/components/form-section";
 import { Button } from "@/components/ui/button";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
-import { ClipDetails } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 import { NewClipFormSectionProps } from "@/types/form-section";
 
 export function ConfirmSection(props: NewClipFormSectionProps) {
-	const draft = useVideoClipperStore((s) => s.draft!);
+	const draft = useVideoClipperStore((state) => state.draft!);
 
-	const saveClipDetails = async () => {
+	const saveClipDraft = async () => {
 		try {
 			const newClip = {
 				startTime: props.clipTime.start,
@@ -30,10 +30,10 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 								playerStopped: props.form.playerStopped,
 						  }
 						: undefined,
-			} as ClipDetails;
+			} as ClipDraft;
 
 			const res = await fetch(
-				`/api/ddb/game-drafts/clip-details?title=${draft.title}`,
+				`/api/ddb/game-drafts/clip-drafts?title=${draft.title}`,
 				{
 					method: "POST",
 					body: JSON.stringify(newClip),
@@ -53,7 +53,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 
 	return (
 		<FormSection {...props} handleSubmit={undefined}>
-			<Button type="button" onClick={saveClipDetails}>
+			<Button type="button" onClick={saveClipDraft}>
 				create clip
 			</Button>
 		</FormSection>

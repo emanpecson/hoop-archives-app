@@ -1,6 +1,6 @@
 import { DefensivePlay, OffensivePlay } from "./play";
 
-export interface ClipDetails {
+export interface ClipDraft {
 	startTime: number;
 	endTime: number;
 	tags: string[];

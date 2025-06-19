@@ -2,7 +2,7 @@
 import { Dispatch, JSX, SetStateAction } from "react";
 import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { ClipTime } from "./clip-time";
-import { ClipDetails } from "./clip-details";
+import { ClipDraft } from "./clip-draft";
 
 // base form props
 export interface FormSectionProps {
@@ -46,7 +46,7 @@ export interface NewClipFormSectionProps
 	extends Omit<FormSectionProps, "sections"> {
 	clipTime: ClipTime;
 	sections: NewClipFormSection[];
-	onClipCreate: (clipDetails: ClipDetails) => void;
+	onClipCreate: (clip: ClipDraft) => void;
 }
 
 // override component

@@ -7,7 +7,7 @@ import VideoController from "./video-controller/video-controller";
 import VideoPlayer from "./video-player/video-player";
 import { ClipTime } from "@/types/clip-time";
 import NewClipDialog from "../new-clip/new-clip-dialog";
-import { ClipDetails as ClipDetailsType } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 interface VideoClipperProps {
@@ -33,9 +33,9 @@ export default function VideoClipper(props: VideoClipperProps) {
 		setNewClipDialogOpen(true);
 	};
 
-	const handleClipCreate = (newClip: ClipDetailsType) => {
-		const sortedClips = sortClips([...draft!.clipsDetails, newClip]);
-		setDraft({ ...draft!, clipsDetails: sortedClips });
+	const handleClipCreate = (newClip: ClipDraft) => {
+		const sortedClips = sortClips([...draft!.clipDrafts, newClip]);
+		setDraft({ ...draft!, clipDrafts: sortedClips });
 		setNewClipTime(null);
 	};
 

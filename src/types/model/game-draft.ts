@@ -1,4 +1,4 @@
-import { ClipDetails } from "../clip-details";
+import { ClipDraft } from "../clip-draft";
 import { GameType } from "../enum/game-type";
 import { Player } from "./player";
 
@@ -12,5 +12,5 @@ export interface GameDraft {
 	away: Player[];
 
 	// * defined in video-clipper (new-clip)
-	clipsDetails: ClipDetails[];
+	clipDrafts: ClipDraft[];
 }

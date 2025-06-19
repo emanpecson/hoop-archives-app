@@ -9,18 +9,20 @@ import { getTimestamp } from "@/utils/time";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 export default function VideoPlayer() {
-	const draft = useVideoClipperStore((s) => s.draft);
-	const duration = useVideoClipperStore((s) => s.duration);
-	const setDuration = useVideoClipperStore((s) => s.setDuration);
-	const currentTime = useVideoClipperStore((s) => s.currentTime);
-	const setCurrentTime = useVideoClipperStore((s) => s.setCurrentTime);
-	const videoRef = useVideoClipperStore((s) => s.videoRef);
-	const source = useVideoClipperStore((s) => s.source);
-	const homeScore = useVideoClipperStore((s) => s.homeScore);
-	const awayScore = useVideoClipperStore((s) => s.awayScore);
-	const currClipIndex = useVideoClipperStore((s) => s.currClipIndex);
-	const setCurrClipIndex = useVideoClipperStore((s) => s.setCurrClipIndex);
-	const previewClips = useVideoClipperStore((s) => s.previewClips);
+	const draft = useVideoClipperStore((state) => state.draft);
+	const duration = useVideoClipperStore((state) => state.duration);
+	const setDuration = useVideoClipperStore((state) => state.setDuration);
+	const currentTime = useVideoClipperStore((state) => state.currentTime);
+	const setCurrentTime = useVideoClipperStore((state) => state.setCurrentTime);
+	const videoRef = useVideoClipperStore((state) => state.videoRef);
+	const source = useVideoClipperStore((state) => state.source);
+	const homeScore = useVideoClipperStore((state) => state.homeScore);
+	const awayScore = useVideoClipperStore((state) => state.awayScore);
+	const currClipIndex = useVideoClipperStore((state) => state.currClipIndex);
+	const setCurrClipIndex = useVideoClipperStore(
+		(state) => state.setCurrClipIndex
+	);
+	const previewClips = useVideoClipperStore((state) => state.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
 	const time = `${getTimestamp(currentTime)} / ${getTimestamp(duration)}`;
@@ -37,7 +39,7 @@ export default function VideoPlayer() {
 			setCurrentTime(vid.currentTime);
 
 			if (currClipIndex !== null && draft) {
-				const clips = draft.clipsDetails;
+				const clips = draft.clipDrafts;
 				const clip = clips[currClipIndex];
 
 				// @ end of curr clip, play next clip

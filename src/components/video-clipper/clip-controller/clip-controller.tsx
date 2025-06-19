@@ -1,16 +1,16 @@
 import DashboardCard from "../../dashboard/dashboard-card";
-import { ClipDetails } from "@/types/clip-details";
-import ClipDetailsCard from "./clip-details-card";
+import { ClipDraft } from "@/types/clip-draft";
+import ClipDraftCard from "./clip-draft-card";
 import { ClipTag } from "@/types/enum/clip-tag";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 export default function ClipController() {
-	const { draft, previewClips } = useVideoClipperStore((s) => ({
-		draft: s.draft,
-		previewClips: s.previewClips,
+	const { draft, previewClips } = useVideoClipperStore((state) => ({
+		draft: state.draft,
+		previewClips: state.previewClips,
 	}));
 
-	const clipHeadline = (clip: ClipDetails) => {
+	const clipHeadline = (clip: ClipDraft) => {
 		if (clip.offense) {
 			const scorer = `${clip.offense.playerScoring.firstName}`;
 			const playmaker = clip.offense.playerAssisting
@@ -43,12 +43,12 @@ export default function ClipController() {
 		<DashboardCard className="h-32 w-full">
 			<div className="overflow-x-auto h-full w-full">
 				<div className="flex h-full min-w-full">
-					{draft && draft.clipsDetails ? (
+					{draft && draft.clipDrafts ? (
 						(() => {
 							let homeScore = 0;
 							let awayScore = 0;
 
-							return draft.clipsDetails.map((clip, i) => {
+							return draft.clipDrafts.map((clip, i) => {
 								if (clip.offense) {
 									if (clip.teamBeneficiary === "home") {
 										homeScore += clip.offense.pointsAdded;
@@ -60,7 +60,7 @@ export default function ClipController() {
 								const scoreboard = `${homeScore}-${awayScore}`;
 								return (
 									<div key={i} className="flex flex-shrink-0 h-full">
-										<ClipDetailsCard
+										<ClipDraftCard
 											clip={clip}
 											headline={clipHeadline(clip)}
 											tags={clip.tags as ClipTag[]}

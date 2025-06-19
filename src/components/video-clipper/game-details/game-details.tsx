@@ -16,14 +16,14 @@ import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { useMemo } from "react";
 
 export default function GameDetails() {
-	const draft = useVideoClipperStore((s) => s.draft);
-	const setHomeScore = useVideoClipperStore((s) => s.setHomeScore);
-	const setAwayScore = useVideoClipperStore((s) => s.setAwayScore);
-	const previewClips = useVideoClipperStore((s) => s.previewClips);
-	const currClipIndex = useVideoClipperStore((s) => s.currClipIndex);
+	const draft = useVideoClipperStore((state) => state.draft);
+	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
+	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
+	const previewClips = useVideoClipperStore((state) => state.previewClips);
+	const currClipIndex = useVideoClipperStore((state) => state.currClipIndex);
 
 	// prevent re-render from triggering unless draft changes
-	const memoClips = useMemo(() => (draft ? draft.clipsDetails : []), [draft]);
+	const memoClips = useMemo(() => (draft ? draft.clipDrafts : []), [draft]);
 	const memoHomePlayers = useMemo(() => (draft ? draft.home : []), [draft]);
 	const memoAwayPlayers = useMemo(() => (draft ? draft.away : []), [draft]);
 
@@ -35,7 +35,7 @@ export default function GameDetails() {
 					method: "POST",
 					body: JSON.stringify({
 						key: draft.bucketKey,
-						clips: draft.clipsDetails.map((cd) => ({
+						clips: draft.clipDrafts.map((cd) => ({
 							start: cd.startTime,
 							duration: cd.endTime - cd.startTime,
 						})),
@@ -139,7 +139,7 @@ export default function GameDetails() {
 			<div className="space-y-2">
 				<CardButton
 					onClick={() => previewClips(0)}
-					disabled={!draft || draft.clipsDetails.length === 0}
+					disabled={!draft || draft.clipDrafts.length === 0}
 					className="text-center py-2 flex justify-center place-items-center space-x-2"
 				>
 					{currClipIndex !== null && currClipIndex >= 0 && (
@@ -149,7 +149,7 @@ export default function GameDetails() {
 				</CardButton>
 				<CardButton
 					onClick={() => createVideoClips(draft!)}
-					disabled={!draft || draft.clipsDetails.length === 0}
+					disabled={!draft || draft.clipDrafts.length === 0}
 					className="text-center py-2"
 				>
 					Complete game

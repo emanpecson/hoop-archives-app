@@ -12,21 +12,21 @@ import {
 } from "@/components/ui/dialog";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { cn } from "@/lib/utils";
-import { ClipDetails } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 import { ClipTag } from "@/types/enum/clip-tag";
 import { useEffect, useState } from "react";
 
-interface ClipDetailsCardProps {
-	clip: ClipDetails;
+interface ClipDraftCardProps {
+	clip: ClipDraft;
 	headline: string;
 	tags: ClipTag[];
 	onPreview: () => void;
 }
 
-export default function ClipDetailsCard(props: ClipDetailsCardProps) {
-	const draft = useVideoClipperStore((s) => s.draft!);
-	const setDraft = useVideoClipperStore((s) => s.setDraft);
-	const currentTime = useVideoClipperStore((s) => s.currentTime);
+export default function ClipDraftCard(props: ClipDraftCardProps) {
+	const draft = useVideoClipperStore((state) => state.draft!);
+	const setDraft = useVideoClipperStore((state) => state.setDraft);
+	const currentTime = useVideoClipperStore((state) => state.currentTime);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isActive, setIsActive] = useState(false);
 
@@ -44,11 +44,11 @@ export default function ClipDetailsCard(props: ClipDetailsCardProps) {
 
 	// TODO: have to update db draft
 	const handleDelete = () => {
-		const clips = draft.clipsDetails;
+		const clips = draft.clipDrafts;
 		const updatedClips = clips.filter(
 			(x) => x.startTime !== props.clip.startTime
 		);
-		setDraft({ ...draft!, clipsDetails: updatedClips });
+		setDraft({ ...draft!, clipDrafts: updatedClips });
 		setIsOpen(false);
 	};
 

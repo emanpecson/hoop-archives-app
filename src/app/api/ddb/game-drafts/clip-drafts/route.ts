@@ -1,4 +1,4 @@
-import { ClipDetails } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 import { DynamoDBClient, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,7 +7,7 @@ const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 export async function POST(req: NextRequest) {
 	const query = { title: req.nextUrl.searchParams.get("title") };
-	const clipDetails: ClipDetails = await req.json();
+	const clipDrafts: ClipDraft = await req.json();
 
 	if (!query.title)
 		return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 			{ status: 400 }
 		);
 
-	if (!clipDetails)
+	if (!clipDrafts)
 		return NextResponse.json(
 			{ error: "Missing body request" },
 			{ status: 400 }
@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
 				title: { S: query.title },
 			},
 			UpdateExpression:
-				"SET clipsDetails = list_append(if_not_exists(clipsDetails, :empty), :cd)",
+				"SET clipDrafts = list_append(if_not_exists(clipDrafts, :empty), :cd)",
 			ExpressionAttributeValues: marshall({
-				":cd": [clipDetails], // wrap in array to append
+				":cd": [clipDrafts], // wrap in array to append
 				":empty": [], // fallback
 			}),
 		});

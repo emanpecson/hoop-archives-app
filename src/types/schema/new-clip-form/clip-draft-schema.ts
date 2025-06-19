@@ -27,9 +27,9 @@ export type DefensivePlayFormFields = z.infer<typeof defensivePlaySchema>;
 // ----------------------------------------------------- //
 
 // applies one of the following schemas (based on `play`)
-export const clipDetailsSchema = z.discriminatedUnion("play", [
+export const clipDraftSchema = z.discriminatedUnion("play", [
 	offensivePlaySchema,
 	defensivePlaySchema,
 ]);
 
-export type ClipDetailsFormFields = z.infer<typeof clipDetailsSchema>;
+export type ClipDraftFormFields = z.infer<typeof clipDraftSchema>;

@@ -9,12 +9,12 @@ import {
 import { newClipSections } from "@/data/sections";
 import { NewClipFormSection } from "@/types/form-section";
 import { useState } from "react";
-import { ClipDetails } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 
 interface NewClipDialogProps {
 	open: boolean;
 	clipTime: ClipTime;
-	onClipCreate: (clipDetails: ClipDetails) => void;
+	onClipCreate: (clip: ClipDraft) => void;
 	onClose: (flag: boolean) => void;
 }
 

@@ -1,5 +1,5 @@
 import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
-import { ClipDetails } from "@/types/clip-details";
+import { ClipDraft } from "@/types/clip-draft";
 import { Player } from "@/types/model/player";
 import { useEffect, useState } from "react";
 
@@ -12,7 +12,7 @@ type Stats = {
 interface StatboardProps {
 	label: string;
 	players: Player[];
-	clips: ClipDetails[];
+	clips: ClipDraft[];
 	setTeamScore: (score: number) => void;
 }
 

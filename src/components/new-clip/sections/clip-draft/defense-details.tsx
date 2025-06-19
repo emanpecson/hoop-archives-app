@@ -1,7 +1,7 @@
 import FormatInputGroup from "./format-input-group";
 import { Player } from "@/types/model/player";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { DefensivePlayFormFields } from "@/types/schema/new-clip-form/clip-details-schema";
+import { DefensivePlayFormFields } from "@/types/schema/new-clip-form/clip-draft-schema";
 import PlayerSelect from "@/components/input/player-select";
 import TagsCombobox from "@/components/input/tags-combobox";
 

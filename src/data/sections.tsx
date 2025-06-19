@@ -8,7 +8,7 @@ import {
 	NewGameFormSectionProps,
 } from "@/types/form-section";
 import ReviewClipSection from "@/components/new-clip/sections/review-clip-section";
-import ClipDetailsSection from "@/components/new-clip/sections/clip-details/clip-details-section";
+import ClipDraftSection from "@/components/new-clip/sections/clip-draft/clip-draft-section";
 import { ConfirmSection as NewClipConfirmSection } from "@/components/new-clip/sections/confirm-section";
 
 export const newGameSections: NewGameFormSection[] = [
@@ -45,7 +45,7 @@ export const newClipSections: NewClipFormSection[] = [
 	},
 	{
 		component: (props: NewClipFormSectionProps) => (
-			<ClipDetailsSection {...props} />
+			<ClipDraftSection {...props} />
 		),
 		label: "Clip details",
 		step: 1,

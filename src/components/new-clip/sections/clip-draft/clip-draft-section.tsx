@@ -7,28 +7,28 @@ import OffenseDetails from "./offense-details";
 import DefenseDetails from "./defense-details";
 import { Control, FieldErrors, useForm } from "react-hook-form";
 import {
-	ClipDetailsFormFields,
-	clipDetailsSchema,
+	ClipDraftFormFields,
+	clipDraftSchema,
 	DefensivePlayFormFields,
 	OffensivePlayFormFields,
-} from "@/types/schema/new-clip-form/clip-details-schema";
+} from "@/types/schema/new-clip-form/clip-draft-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Player } from "@/types/model/player";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
-export default function ClipDetailsSection(props: NewClipFormSectionProps) {
+export default function ClipDraftSection(props: NewClipFormSectionProps) {
 	const {
 		control,
 		handleSubmit,
 		watch,
 		setValue,
 		formState: { errors },
-	} = useForm<ClipDetailsFormFields>({
-		resolver: zodResolver(clipDetailsSchema),
+	} = useForm<ClipDraftFormFields>({
+		resolver: zodResolver(clipDraftSchema),
 		defaultValues: { play: "offense", pointsAdded: 1 },
 	});
 
-	const draft = useVideoClipperStore((s) => s.draft!);
+	const draft = useVideoClipperStore((state) => state.draft!);
 
 	const selectedPlay = watch("play");
 	const playTypes = { offense: SwordIcon, defense: ShieldIcon };

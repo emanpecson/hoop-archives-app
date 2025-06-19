@@ -75,7 +75,7 @@ export async function PUT(req: NextRequest) {
 			bucketKey: { S: draft.bucketKey },
 			date: { S: draft.date },
 			type: { S: draft.type },
-			clipsDetails: { L: [] },
+			clipDrafts: { L: [] },
 			home: mapPlayersToAttributeValue(draft.home),
 			away: mapPlayersToAttributeValue(draft.away),
 		};

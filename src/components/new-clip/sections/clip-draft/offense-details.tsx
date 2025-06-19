@@ -1,6 +1,6 @@
 import FormatInputGroup from "./format-input-group";
 import { Player } from "@/types/model/player";
-import { OffensivePlayFormFields } from "@/types/schema/new-clip-form/clip-details-schema";
+import { OffensivePlayFormFields } from "@/types/schema/new-clip-form/clip-draft-schema";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import PlayerSelect from "@/components/input/player-select";
 import PlayerMultiSelect from "@/components/input/player-multi-select";
