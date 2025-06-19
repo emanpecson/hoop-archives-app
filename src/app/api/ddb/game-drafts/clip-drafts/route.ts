@@ -7,7 +7,7 @@ const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 export async function POST(req: NextRequest) {
 	const query = { title: req.nextUrl.searchParams.get("title") };
-	const clipDrafts: ClipDraft = await req.json();
+	const clip: ClipDraft = await req.json();
 
 	if (!query.title)
 		return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 			{ status: 400 }
 		);
 
-	if (!clipDrafts)
+	if (!clip)
 		return NextResponse.json(
 			{ error: "Missing body request" },
 			{ status: 400 }
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 			UpdateExpression:
 				"SET clipDrafts = list_append(if_not_exists(clipDrafts, :empty), :cd)",
 			ExpressionAttributeValues: marshall({
-				":cd": [clipDrafts], // wrap in array to append
+				":cd": [clip], // wrap in array to append
 				":empty": [], // fallback
 			}),
 		});
