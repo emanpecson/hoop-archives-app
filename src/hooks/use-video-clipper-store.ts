@@ -7,6 +7,7 @@ type VideoClipperStore = {
 	draft: GameDraft | null;
 	setDraft: (draft: GameDraft) => void;
 	fetchDraft: (key: string) => Promise<void>;
+	unsortedClips: ClipDraft[];
 
 	source?: string;
 	fetchSource: (key: string) => Promise<void>;
@@ -43,6 +44,7 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		const res = await fetch(`/api/ddb/game-drafts?title=${key}`);
 		const data = (await res.json()) as GameDraft;
 
+		set({ unsortedClips: data.clipDrafts });
 		const sortedClips = sortClips(data.clipDrafts);
 		console.log("draft:", data);
 		set({ draft: { ...data, clipDrafts: sortedClips } });
@@ -72,6 +74,7 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		draft: null,
 		setDraft: (draft: GameDraft) => set({ draft }),
 		fetchDraft,
+		unsortedClips: [],
 
 		source: undefined,
 		fetchSource,

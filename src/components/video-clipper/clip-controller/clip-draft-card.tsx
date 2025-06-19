@@ -24,9 +24,14 @@ interface ClipDraftCardProps {
 }
 
 export default function ClipDraftCard(props: ClipDraftCardProps) {
-	const draft = useVideoClipperStore((state) => state.draft!);
-	const setDraft = useVideoClipperStore((state) => state.setDraft);
-	const currentTime = useVideoClipperStore((state) => state.currentTime);
+	const { draft, setDraft, unsortedClips, currentTime } = useVideoClipperStore(
+		(state) => ({
+			draft: state.draft,
+			setDraft: state.setDraft,
+			unsortedClips: state.unsortedClips,
+			currentTime: state.currentTime,
+		})
+	);
 	const [isOpen, setIsOpen] = useState(false);
 	const [isActive, setIsActive] = useState(false);
 
@@ -43,12 +48,34 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 	};
 
 	// TODO: have to update db draft
-	const handleDelete = () => {
-		const clips = draft.clipDrafts;
-		const updatedClips = clips.filter(
-			(x) => x.startTime !== props.clip.startTime
+	const handleDelete = async () => {
+		const clips = draft!.clipDrafts;
+		const clipIndex = unsortedClips.findIndex(
+			(x) => x.startTime === props.clip.startTime
 		);
-		setDraft({ ...draft!, clipDrafts: updatedClips });
+
+		try {
+			const endpoint = "/api/ddb/game-drafts/clip-drafts";
+			const res = await fetch(
+				`${endpoint}?title=${draft!.title}&clipIndex=${clipIndex}`,
+				{ method: "DELETE" }
+			);
+
+			if (res.ok) {
+				const updatedClips = clips.filter(
+					(x) => x.startTime !== props.clip.startTime
+				);
+				setDraft({ ...draft!, clipDrafts: updatedClips });
+
+				// TODO: notify
+				console.log("Removed clip");
+			} else {
+				throw new Error("Error removing clip");
+			}
+		} catch (error) {
+			// TODO: notify
+			console.log(error);
+		}
 		setIsOpen(false);
 	};
 

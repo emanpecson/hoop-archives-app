@@ -44,3 +44,34 @@ export async function POST(req: NextRequest) {
 		);
 	}
 }
+
+export async function DELETE(req: NextRequest) {
+	const query = {
+		title: req.nextUrl.searchParams.get("title"),
+		clipIndex: req.nextUrl.searchParams.get("clipIndex"),
+	};
+
+	if (!query.title || !query.clipIndex)
+		return NextResponse.json(
+			{ error: "Missing required parameters" },
+			{ status: 400 }
+		);
+
+	try {
+		const command = new UpdateItemCommand({
+			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
+			Key: {
+				title: { S: query.title },
+			},
+			UpdateExpression: `REMOVE clipDrafts[${query.clipIndex}]`,
+		});
+
+		const res = await client.send(command);
+		return NextResponse.json(res, { status: 200 });
+	} catch (error) {
+		return NextResponse.json(
+			{ error: "Server error: " + error },
+			{ status: 500 }
+		);
+	}
+}
