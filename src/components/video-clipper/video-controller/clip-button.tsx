@@ -10,13 +10,13 @@ interface ClipButtonProps {
 }
 
 export default function ClipButton(props: ClipButtonProps) {
-	const { currentTime, clips } = useVideoClipperStore((state) => ({
+	const { currentTime, draft } = useVideoClipperStore((state) => ({
 		currentTime: state.currentTime,
-		clips: state.clips,
+		draft: state.draft,
 	}));
 
 	const throwOnOverlappingPoint = (time: number) => {
-		for (const clip of clips) {
+		for (const clip of draft!.clipDrafts) {
 			if (clip.startTime <= time && time <= clip.endTime) {
 				throw new Error(
 					`Overlapping point ${time} on [${clip.startTime}, ${clip.endTime}]`
@@ -26,7 +26,7 @@ export default function ClipButton(props: ClipButtonProps) {
 	};
 
 	const throwOnOverlappingClip = (startTime: number, endTime: number) => {
-		for (const clip of clips) {
+		for (const clip of draft!.clipDrafts) {
 			// skip current clip
 			if (clip.startTime === startTime) continue;
 
@@ -81,6 +81,7 @@ export default function ClipButton(props: ClipButtonProps) {
 		<button
 			className="cursor-pointer font-medium w-full h-full space-y-1 text-neutral-500 hover:text-white duration-100"
 			onClick={defineClip}
+			disabled={!draft}
 		>
 			<p>Define clip</p>
 			<p className="font-mono rounded-md px-2 bg-neutral-800">cmd + a</p>
