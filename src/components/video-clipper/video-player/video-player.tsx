@@ -18,10 +18,8 @@ export default function VideoPlayer() {
 	const source = useVideoClipperStore((state) => state.source);
 	const homeScore = useVideoClipperStore((state) => state.homeScore);
 	const awayScore = useVideoClipperStore((state) => state.awayScore);
-	const currClipIndex = useVideoClipperStore((state) => state.currClipIndex);
-	const setCurrClipIndex = useVideoClipperStore(
-		(state) => state.setCurrClipIndex
-	);
+	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
+	const setClipIndex = useVideoClipperStore((state) => state.setClipIndex);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
@@ -38,19 +36,19 @@ export default function VideoPlayer() {
 			const vid = videoRef.current;
 			setCurrentTime(vid.currentTime);
 
-			if (currClipIndex !== null && draft) {
+			if (clipIndex !== null && draft) {
 				const clips = draft.clipDrafts;
-				const clip = clips[currClipIndex];
+				const clip = clips[clipIndex];
 
 				// @ end of curr clip, play next clip
 				if (vid.currentTime >= clip.endTime) {
-					const nextIndex = currClipIndex + 1;
+					const nextIndex = clipIndex + 1;
 
 					if (nextIndex < clips.length) {
 						previewClips(nextIndex);
 					} else {
 						vid.pause();
-						setCurrClipIndex(null);
+						setClipIndex(null);
 					}
 				}
 			}
@@ -59,7 +57,7 @@ export default function VideoPlayer() {
 
 	const handlePlayPause = () => {
 		// interrupt preview
-		setCurrClipIndex(null);
+		setClipIndex(null);
 
 		if (videoRef.current) {
 			if (videoRef.current.paused) videoRef.current.play();

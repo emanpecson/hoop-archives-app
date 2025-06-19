@@ -19,8 +19,8 @@ type VideoClipperStore = {
 	duration: number;
 	setDuration: (duration: number) => void;
 
-	currClipIndex: number | null;
-	setCurrClipIndex: (index: number | null) => void;
+	clipIndex: number | null;
+	setClipIndex: (index: number | null) => void;
 
 	sortClips: (clips: ClipDraft[]) => ClipDraft[];
 
@@ -61,7 +61,7 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		const vid = get().videoRef.current;
 		if (!vid) return;
 
-		set({ currClipIndex: i });
+		set({ clipIndex: i });
 
 		const clip = get().draft!.clipDrafts[i];
 		vid.currentTime = clip.startTime;
@@ -84,8 +84,8 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		duration: 0,
 		setDuration: (duration: number) => set({ duration }),
 
-		currClipIndex: null,
-		setCurrClipIndex: (currClipIndex: number | null) => set({ currClipIndex }),
+		clipIndex: null,
+		setClipIndex: (clipIndex: number | null) => set({ clipIndex }),
 
 		sortClips,
 

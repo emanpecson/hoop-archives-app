@@ -20,7 +20,7 @@ export default function GameDetails() {
 	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
 	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
-	const currClipIndex = useVideoClipperStore((state) => state.currClipIndex);
+	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
 
 	// prevent re-render from triggering unless draft changes
 	const memoClips = useMemo(() => (draft ? draft.clipDrafts : []), [draft]);
@@ -142,7 +142,7 @@ export default function GameDetails() {
 					disabled={!draft || draft.clipDrafts.length === 0}
 					className="text-center py-2 flex justify-center place-items-center space-x-2"
 				>
-					{currClipIndex !== null && currClipIndex >= 0 && (
+					{clipIndex !== null && clipIndex >= 0 && (
 						<Loader2Icon className="animate-spin" size={16} strokeWidth={1.5} />
 					)}
 					<span>Preview clips</span>
