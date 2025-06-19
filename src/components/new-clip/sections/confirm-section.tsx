@@ -35,7 +35,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 			const res = await fetch(
 				`/api/ddb/game-drafts/clip-details?title=${draft.title}`,
 				{
-					method: "PUT",
+					method: "POST",
 					body: JSON.stringify(newClip),
 				}
 			);

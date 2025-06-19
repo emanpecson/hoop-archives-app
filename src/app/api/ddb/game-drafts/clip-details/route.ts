@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
-export async function PUT(req: NextRequest) {
+export async function POST(req: NextRequest) {
 	const query = { title: req.nextUrl.searchParams.get("title") };
 	const clipDetails: ClipDetails = await req.json();
 
