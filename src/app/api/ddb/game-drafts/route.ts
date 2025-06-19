@@ -2,6 +2,7 @@ import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { Player } from "@/types/model/player";
 import {
 	AttributeValue,
+	DeleteItemCommand,
 	DynamoDBClient,
 	GetItemCommand,
 	PutItemCommand,
@@ -86,6 +87,36 @@ export async function PUT(req: NextRequest) {
 
 		const res = await client.send(command);
 		return NextResponse.json(res, { status: 200 });
+	} catch (error) {
+		return NextResponse.json(
+			{ error: "Server error: " + error },
+			{ status: 500 }
+		);
+	}
+}
+
+export async function DELETE(req: NextRequest) {
+	const query = { title: req.nextUrl.searchParams.get("title") };
+
+	if (!query.title) {
+		return NextResponse.json(
+			{ error: "Missing query param: title" },
+			{ status: 400 }
+		);
+	}
+
+	try {
+		const command = new DeleteItemCommand({
+			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
+			Key: {
+				title: {
+					S: query.title,
+				},
+			},
+		});
+
+		await client.send(command);
+		return NextResponse.json(null, { status: 204 });
 	} catch (error) {
 		return NextResponse.json(
 			{ error: "Server error: " + error },
