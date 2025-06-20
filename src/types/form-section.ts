@@ -1,8 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, JSX, SetStateAction } from "react";
-import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+import {
+	Control,
+	FieldErrors,
+	SubmitErrorHandler,
+	SubmitHandler,
+	UseFormHandleSubmit,
+	UseFormSetValue,
+	UseFormWatch,
+} from "react-hook-form";
 import { ClipTime } from "./clip-time";
 import { ClipDraft } from "./clip-draft";
+import { ClipDraftFormFields } from "./schema/new-clip-form/clip-draft-schema";
 
 // base form props
 export interface FormSectionProps {
@@ -46,7 +55,13 @@ export interface NewClipFormSectionProps
 	extends Omit<FormSectionProps, "sections"> {
 	clipTime: ClipTime;
 	sections: NewClipFormSection[];
-	onClipCreate: (clip: ClipDraft) => void;
+	onClipSubmit: (clip: ClipDraft) => void;
+	control: Control<ClipDraftFormFields>;
+	handleSubmit: UseFormHandleSubmit<ClipDraftFormFields>;
+	watch: UseFormWatch<ClipDraftFormFields>;
+	setValue: UseFormSetValue<ClipDraftFormFields>;
+	errors: FieldErrors<ClipDraftFormFields>;
+	isDirty?: boolean;
 }
 
 // override component

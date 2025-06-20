@@ -19,6 +19,11 @@ interface PlayerSelectProps {
 }
 
 export default function PlayerSelect(props: PlayerSelectProps) {
+	const playerString = (player: Player | undefined) => {
+		if (player) return `${player.firstName} ${player.lastName}`;
+		return undefined;
+	};
+
 	const [placeholder, setPlaceholder] = useState<string | null>(
 		"Select player"
 	);
@@ -33,17 +38,12 @@ export default function PlayerSelect(props: PlayerSelectProps) {
 		}
 	};
 
-	const playerString = (player: Player | undefined) => {
-		if (player) return `${player.firstName} ${player.lastName}`;
-		return undefined;
-	};
-
 	return (
 		<Select onValueChange={handleValueChange} value={playerString(props.value)}>
 			<SelectTrigger
 				Icon={CircleUserRoundIcon}
 				error={props.error}
-				placeholder={placeholder}
+				placeholder={props.value ? null : placeholder}
 			>
 				<SelectValue />
 			</SelectTrigger>

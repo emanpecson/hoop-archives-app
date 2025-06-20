@@ -31,7 +31,13 @@ interface ComboboxProps {
 
 export function Combobox(props: ComboboxProps) {
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState("");
+	const [value, setValue] = useState(
+		props.value
+			? Array.isArray(props.value)
+				? props.value.reduce((acc, x) => acc + `${x},`, "")
+				: props.value
+			: ""
+	);
 	const triggerRef = useRef<HTMLButtonElement>(null);
 	const [triggerWidth, setTriggerWidth] = useState<number | undefined>();
 

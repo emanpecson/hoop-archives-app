@@ -25,6 +25,11 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
+									// value={
+									// 	props.form.play === "defense"
+									// 		? props.form.playerDefending
+									// 		: undefined
+									// }
 									onChange={(player) => {
 										field.onChange(player);
 										props.onPrimaryPlayer(player);
@@ -45,6 +50,11 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
+									// value={
+									// 	props.form.play === "defense"
+									// 		? props.form.playerStopped
+									// 		: undefined
+									// }
 									playerOptions={props.playerOptions}
 									error={!!props.errors.playerStopped}
 								/>
@@ -59,7 +69,11 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							control={props.control}
 							name="tags"
 							render={({ field }) => (
-								<TagsCombobox {...field} error={!!props.errors.tags} />
+								<TagsCombobox
+									{...field}
+									// value={props.form.tags}
+									error={!!props.errors.tags}
+								/>
 							)}
 						/>
 					),

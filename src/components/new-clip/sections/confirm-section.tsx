@@ -1,36 +1,15 @@
 import FormSection from "@/components/form-section";
 import { Button } from "@/components/ui/button";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
-import { ClipDraft } from "@/types/clip-draft";
 import { NewClipFormSectionProps } from "@/types/form-section";
+import { buildClipDraft } from "@/utils/clip-form";
 
 export function ConfirmSection(props: NewClipFormSectionProps) {
 	const draft = useVideoClipperStore((state) => state.draft!);
 
 	const saveClipDraft = async () => {
 		try {
-			const newClip = {
-				startTime: props.clipTime.start,
-				endTime: props.clipTime.end,
-				tags: props.form.tags,
-				teamBeneficiary: props.form.teamBeneficiary,
-				offense:
-					props.form.play === "offense"
-						? {
-								pointsAdded: props.form.pointsAdded,
-								playerScoring: props.form.playerScoring,
-								playerAssisting: props.form.playerAssisting,
-								playersDefending: props.form.playersDefending,
-						  }
-						: undefined,
-				defense:
-					props.form.play === "defense"
-						? {
-								playerDefending: props.form.playerDefending,
-								playerStopped: props.form.playerStopped,
-						  }
-						: undefined,
-			} as ClipDraft;
+			const newClip = buildClipDraft(props.form, props.clipTime);
 
 			const res = await fetch(
 				`/api/ddb/game-drafts/clip-drafts?title=${draft.title}`,
@@ -42,7 +21,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 
 			if (res.ok) {
 				console.log("success:", await res.json());
-				props.onClipCreate(newClip);
+				props.onClipSubmit(newClip);
 			} else {
 				throw new Error("Failed to save clip");
 			}

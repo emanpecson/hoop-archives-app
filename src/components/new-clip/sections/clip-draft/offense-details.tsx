@@ -6,13 +6,11 @@ import PlayerSelect from "@/components/input/player-select";
 import PlayerMultiSelect from "@/components/input/player-multi-select";
 import ToggleSelect from "@/components/input/toggle-select";
 import TagsCombobox from "@/components/input/tags-combobox";
-import { GameDraft } from "@/types/model/game-draft";
 
 interface OffenseDetailsProps {
 	playerOptions: Player[];
 	control: Control<OffensivePlayFormFields>;
 	errors: Partial<FieldErrors<OffensivePlayFormFields>>;
-	draft: GameDraft;
 	onPrimaryPlayer: (player: Player) => void;
 }
 

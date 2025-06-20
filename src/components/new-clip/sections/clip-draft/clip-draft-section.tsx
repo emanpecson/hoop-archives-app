@@ -5,31 +5,18 @@ import { NewClipFormSectionProps } from "@/types/form-section";
 import { ShieldIcon, SwordIcon } from "lucide-react";
 import OffenseDetails from "./offense-details";
 import DefenseDetails from "./defense-details";
-import { Control, FieldErrors, useForm } from "react-hook-form";
+import { Control, FieldErrors } from "react-hook-form";
 import {
-	ClipDraftFormFields,
-	clipDraftSchema,
 	DefensivePlayFormFields,
 	OffensivePlayFormFields,
 } from "@/types/schema/new-clip-form/clip-draft-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Player } from "@/types/model/player";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 export default function ClipDraftSection(props: NewClipFormSectionProps) {
-	const {
-		control,
-		handleSubmit,
-		watch,
-		setValue,
-		formState: { errors },
-	} = useForm<ClipDraftFormFields>({
-		resolver: zodResolver(clipDraftSchema),
-		defaultValues: { play: "offense", pointsAdded: 1 },
-	});
+	const { control, handleSubmit, setValue, watch, errors } = props;
 
 	const draft = useVideoClipperStore((state) => state.draft!);
-
 	const selectedPlay = watch("play");
 	const playTypes = { offense: SwordIcon, defense: ShieldIcon };
 
@@ -62,7 +49,6 @@ export default function ClipDraftSection(props: NewClipFormSectionProps) {
 					{selectedPlay === "offense" ? (
 						<OffenseDetails
 							playerOptions={[...draft.home, ...draft.away]}
-							draft={draft}
 							control={control as Control<OffensivePlayFormFields>}
 							errors={errors as Partial<FieldErrors<OffensivePlayFormFields>>}
 							onPrimaryPlayer={setTeamBeneficiary}

@@ -3,8 +3,6 @@ import { Button } from "./ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type { FormSection, FormSectionProps } from "@/types/form-section";
 
-// handle switching between different sections
-
 export default function FormSection(props: FormSectionProps) {
 	// save data and proceed to the next step
 	const onNext = props.handleSubmit
@@ -23,23 +21,26 @@ export default function FormSection(props: FormSectionProps) {
 			className={cn(!props.active && "hidden", "space-y-4")}
 			onSubmit={onNext}
 		>
-			<div className="flex justify-between w-full px-2">
-				{props.sections.map((section, i: number) => {
-					const isActive = section.step === props.step;
-					return (
-						<div
-							key={i}
-							className={cn(
-								"flex space-x-1 pointer-events-none text-sm",
-								isActive ? "text-white" : "text-white/25"
-							)}
-						>
-							<span>{section.step + 1}.</span>
-							<span>{section.label}</span>
-						</div>
-					);
-				})}
-			</div>
+			{/* header */}
+			{props.sections.length > 0 && (
+				<div className="flex justify-between w-full px-2">
+					{props.sections.map((section, i: number) => {
+						const isActive = section.step === props.step;
+						return (
+							<div
+								key={i}
+								className={cn(
+									"flex space-x-1 pointer-events-none text-sm",
+									isActive ? "text-white" : "text-white/25"
+								)}
+							>
+								<span>{section.step + 1}.</span>
+								<span>{section.label}</span>
+							</div>
+						);
+					})}
+				</div>
+			)}
 
 			<hr className="border-neutral-700" />
 
@@ -48,26 +49,28 @@ export default function FormSection(props: FormSectionProps) {
 			<hr className="border-neutral-700" />
 
 			{/* footer */}
-			<div className="flex justify-between place-items-center w-full">
-				<Button
-					type="button"
-					size="sm"
-					disabled={props.step === 0}
-					onClick={() => props.setStep(props.step - 1)}
-				>
-					<ChevronLeftIcon />
-					<span>Back</span>
-				</Button>
-				<Button
-					type="button"
-					size="sm"
-					disabled={props.step === props.sections.length - 1}
-					onClick={onNext}
-				>
-					<span>Next</span>
-					<ChevronRightIcon />
-				</Button>
-			</div>
+			{props.sections.length > 0 && (
+				<div className="flex justify-between place-items-center w-full">
+					<Button
+						type="button"
+						size="sm"
+						disabled={props.step === 0}
+						onClick={() => props.setStep(props.step - 1)}
+					>
+						<ChevronLeftIcon />
+						<span>Back</span>
+					</Button>
+					<Button
+						type="button"
+						size="sm"
+						disabled={props.step === props.sections.length - 1}
+						onClick={onNext}
+					>
+						<span>Next</span>
+						<ChevronRightIcon />
+					</Button>
+				</div>
+			)}
 		</form>
 	);
 }
