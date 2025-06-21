@@ -10,12 +10,6 @@ import { newClipSections } from "@/data/sections";
 import { NewClipFormSection } from "@/types/form-section";
 import { useState } from "react";
 import { ClipDraft } from "@/types/clip-draft";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	ClipDraftFormFields,
-	clipDraftSchema,
-} from "@/types/schema/new-clip-form/clip-draft-schema";
-import { useForm } from "react-hook-form";
 
 interface NewClipDialogProps {
 	open: boolean;
@@ -25,17 +19,6 @@ interface NewClipDialogProps {
 }
 
 export default function NewClipDialog(props: NewClipDialogProps) {
-	const {
-		control,
-		handleSubmit,
-		watch,
-		setValue,
-		formState: { errors },
-	} = useForm<ClipDraftFormFields>({
-		resolver: zodResolver(clipDraftSchema),
-		defaultValues: { play: "offense", pointsAdded: 1 },
-	});
-
 	const [step, setStep] = useState(0);
 	const [newClipForm, setNewClipForm] = useState({});
 
@@ -56,7 +39,7 @@ export default function NewClipDialog(props: NewClipDialogProps) {
 
 	return (
 		<Dialog open={props.open} onOpenChange={handleClose}>
-			<DialogContent className="sm:max-w-2xl">
+			<DialogContent className="sm:max-w-3xl">
 				<DialogHeader>
 					<DialogTitle>New Clip</DialogTitle>
 					<DialogDescription>Setup clip details</DialogDescription>
@@ -73,12 +56,6 @@ export default function NewClipDialog(props: NewClipDialogProps) {
 						form={newClipForm}
 						clipTime={props.clipTime}
 						onClipSubmit={props.onClipCreate}
-						// * hook form data
-						control={control}
-						handleSubmit={handleSubmit}
-						setValue={setValue}
-						watch={watch}
-						errors={errors}
 					/>
 				))}
 			</DialogContent>

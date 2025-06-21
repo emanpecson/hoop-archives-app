@@ -4,6 +4,7 @@ import { ClipDraftFormFields } from "./schema/new-clip-form/clip-draft-schema";
 export interface ClipDraft {
 	startTime: number;
 	endTime: number;
+	highlightTime: number;
 	tags: string[];
 
 	teamBeneficiary?: string;

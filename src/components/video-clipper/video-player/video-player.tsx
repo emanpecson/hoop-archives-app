@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import VideoOverlayWrapper from "./video-overlay-wrapper";
-import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
+import VideoOverlayWrapper from "./overlay/video-overlay-wrapper";
 import { cn } from "@/lib/utils";
-import { Slider } from "@/components/ui/slider";
-import { getTimestamp } from "@/utils/time";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
+import VideoOverlayController from "./overlay/video-overlay-controller";
+import VideoOverlaySlider from "./overlay/video-overlay-slider";
 
 export default function VideoPlayer() {
 	const draft = useVideoClipperStore((state) => state.draft);
@@ -23,7 +22,6 @@ export default function VideoPlayer() {
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const time = `${getTimestamp(currentTime)} / ${getTimestamp(duration)}`;
 
 	const handleLoadedMetadata = () => {
 		if (videoRef.current) {
@@ -55,21 +53,6 @@ export default function VideoPlayer() {
 		}
 	};
 
-	const handlePlayPause = () => {
-		// interrupt preview
-		setClipIndex(null);
-
-		if (videoRef.current) {
-			if (videoRef.current.paused) videoRef.current.play();
-			else videoRef.current.pause();
-		}
-	};
-
-	const handleSliderChange = (value: number[]) => {
-		setCurrentTime(value[0]);
-		if (videoRef.current) videoRef.current.currentTime = value[0];
-	};
-
 	return (
 		<div
 			className="rounded-2xl bg-black w-full relative overflow-clip grow"
@@ -98,31 +81,21 @@ export default function VideoPlayer() {
 					)}
 				>
 					<div className="w-[16rem]">
-						<VideoOverlayWrapper>
-							<button onClick={handlePlayPause} className="cursor-pointer">
-								{videoRef.current.paused ? (
-									<PlayIcon strokeWidth={1.5} />
-								) : (
-									<PauseIcon strokeWidth={1.5} />
-								)}
-							</button>
-							<span className="pointer-events-none">{time}</span>
-							<button>
-								<Volume2Icon strokeWidth={1.5} />
-							</button>
-						</VideoOverlayWrapper>
+						<VideoOverlayController
+							videoRef={videoRef}
+							startTime={0}
+							endTime={duration}
+							currentTime={currentTime}
+						/>
 					</div>
 
 					<div className="w-full">
-						<VideoOverlayWrapper>
-							<Slider
-								min={0}
-								max={duration}
-								step={0.1}
-								value={[currentTime]}
-								onValueChange={handleSliderChange}
-							/>
-						</VideoOverlayWrapper>
+						<VideoOverlaySlider
+							videoRef={videoRef}
+							startTime={0}
+							endTime={duration}
+							currentTime={currentTime}
+						/>
 					</div>
 
 					<VideoOverlayWrapper>{`Home: ${homeScore}`}</VideoOverlayWrapper>

@@ -56,12 +56,6 @@ export interface NewClipFormSectionProps
 	clipTime: ClipTime;
 	sections: NewClipFormSection[];
 	onClipSubmit: (clip: ClipDraft) => void;
-	control: Control<ClipDraftFormFields>;
-	handleSubmit: UseFormHandleSubmit<ClipDraftFormFields>;
-	watch: UseFormWatch<ClipDraftFormFields>;
-	setValue: UseFormSetValue<ClipDraftFormFields>;
-	errors: FieldErrors<ClipDraftFormFields>;
-	isDirty?: boolean;
 }
 
 // override component

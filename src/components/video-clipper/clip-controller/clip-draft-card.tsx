@@ -1,7 +1,7 @@
 "use client";
 
 import CardButton from "@/components/card-button";
-import ClipDraftSection from "@/components/new-clip/sections/clip-draft/clip-draft-section";
+import ClipDetails from "@/components/clip-details";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -182,53 +182,46 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 				</CardButton>
 			</DialogTrigger>
 
-			<DialogContent className="sm:max-w-2xl">
-				<DialogHeader>
-					<DialogTitle>Edit Clip</DialogTitle>
-					<DialogDescription>
-						Modify the clip details or remove the clip
-					</DialogDescription>
-				</DialogHeader>
+			<form onSubmit={handleSubmit(saveChanges)}>
+				<DialogContent className="sm:max-w-2xl">
+					<DialogHeader>
+						<DialogTitle>Edit Clip</DialogTitle>
+						<DialogDescription>
+							Modify the clip details or remove the clip
+						</DialogDescription>
+					</DialogHeader>
 
-				<ClipDraftSection
-					// * necessary props
-					active
-					onClipSubmit={() => null}
-					form={props.clip.form}
-					// * hook form data
-					control={control}
-					handleSubmit={handleSubmit}
-					setValue={setValue}
-					watch={watch}
-					errors={errors}
-					isDirty={isDirty}
-					// * filler props
-					clipTime={{ start: props.clip.startTime, end: props.clip.endTime }}
-					step={0}
-					setStep={() => null}
-					saveData={() => null}
-					sections={[]}
-				/>
+					<ClipDetails
+						control={control}
+						watch={watch}
+						setValue={setValue}
+						errors={errors}
+					/>
 
-				{/* footer */}
-				<DialogFooter>
-					<Button variant="outline" onClick={deleteClip}>
-						<TrashIcon />
-						<span>Delete</span>
-					</Button>
-
-					<div className="flex space-x-2">
-						<Button variant="outline" onClick={previewClip}>
-							<EyeIcon />
-							<span>Preview</span>
+					{/* footer */}
+					<DialogFooter>
+						<Button variant="outline" onClick={deleteClip}>
+							<TrashIcon />
+							<span>Delete</span>
 						</Button>
-						<Button variant="outline" disabled={!isDirty} onClick={saveChanges}>
-							<ThumbsUpIcon />
-							<span>Save changes</span>
-						</Button>
-					</div>
-				</DialogFooter>
-			</DialogContent>
+
+						<div className="flex space-x-2">
+							<Button variant="outline" onClick={previewClip}>
+								<EyeIcon />
+								<span>Preview</span>
+							</Button>
+							<Button
+								variant="outline"
+								disabled={!isDirty}
+								onClick={saveChanges}
+							>
+								<ThumbsUpIcon />
+								<span>Save changes</span>
+							</Button>
+						</div>
+					</DialogFooter>
+				</DialogContent>
+			</form>
 		</Dialog>
 	);
 }
