@@ -4,7 +4,7 @@ import { UsersIcon } from "lucide-react";
 
 interface PlayerMultiSelectProps {
 	error?: boolean;
-	value: Player[];
+	value: Player[] | undefined;
 	playerOptions: Player[];
 	onChange: (players: Player[]) => void;
 	disabled?: boolean;
@@ -26,6 +26,9 @@ export default function PlayerMultiSelect(props: PlayerMultiSelectProps) {
 	return (
 		<MultiSelect
 			Icon={UsersIcon}
+			value={
+				props.value ? props.value.map((player) => playerToName(player)) : []
+			}
 			onChange={handleSelect}
 			placeholder="Select player(s)"
 			error={props.error}

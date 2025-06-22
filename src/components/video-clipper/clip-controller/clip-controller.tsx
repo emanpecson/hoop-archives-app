@@ -12,7 +12,7 @@ export default function ClipController() {
 	return (
 		<DashboardCard className="h-32 w-full">
 			<div className="overflow-x-auto h-full w-full">
-				<div className="flex h-full min-w-full">
+				<div className="flex h-full min-w-full space-x-4">
 					{draft && draft.clipDrafts ? (
 						(() => {
 							let homeScore = 0;
@@ -36,7 +36,7 @@ export default function ClipController() {
 											onPreview={() => previewClips(i)}
 										/>
 										{clip.offense && (
-											<span className="text-nowrap px-4 h-full flex place-items-center text-neutral-500">
+											<span className="text-nowrap pl-4 h-full flex place-items-center text-neutral-500">
 												{scoreboard}
 											</span>
 										)}

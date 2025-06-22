@@ -10,13 +10,14 @@ interface MultiSelectProps {
 	options: string[];
 	placeholder: string;
 	error?: boolean;
+	value: string[];
 	onChange: (options: string[]) => void;
 	disabled?: boolean;
 }
 
 export default function MultiSelect(props: MultiSelectProps) {
 	const [open, setOpen] = useState(false);
-	const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+	const [selectedOptions, setSelectedOptions] = useState<string[]>(props.value);
 	const triggerRef = useRef<HTMLButtonElement>(null);
 	const [triggerWidth, setTriggerWidth] = useState<number | undefined>();
 

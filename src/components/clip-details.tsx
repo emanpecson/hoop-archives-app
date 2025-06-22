@@ -11,6 +11,7 @@ import {
 	UseFormWatch,
 	UseFormSetValue,
 	FieldErrors,
+	UseFormUnregister,
 } from "react-hook-form";
 import DefenseDetails from "./new-clip/sections/clip-draft/defense-details";
 import OffenseDetails from "./new-clip/sections/clip-draft/offense-details";
@@ -22,37 +23,17 @@ interface ClipDetailsProps {
 	watch: UseFormWatch<ClipDraftFormFields>;
 	setValue: UseFormSetValue<ClipDraftFormFields>;
 	errors: FieldErrors<ClipDraftFormFields>;
+	unregister: UseFormUnregister<ClipDraftFormFields>;
 }
 
 export default function ClipDetails(props: ClipDetailsProps) {
-	const { control, watch, setValue, errors } = props;
+	const { control, watch, setValue, errors, unregister } = props;
 	const draft = useVideoClipperStore((state) => state.draft!);
 	const selectedPlay = watch("play");
 	const playTypes = { offense: SwordIcon, defense: ShieldIcon };
 
 	const setTeamBeneficiary = (player: Player) => {
 		setValue("teamBeneficiary", draft.home.includes(player) ? "home" : "away");
-	};
-
-	const getTeamOptions = (
-		pivotPlayer: Player | undefined,
-		getSameTeam: boolean
-	) => {
-		if (pivotPlayer) {
-			const isHomePlayer = draft!.home.some(
-				(x) => x.playerId === pivotPlayer.playerId
-			);
-
-			if (getSameTeam) {
-				if (isHomePlayer)
-					return draft!.home.filter((x) => x.playerId !== pivotPlayer.playerId);
-				return draft!.away.filter((x) => x.playerId !== pivotPlayer.playerId);
-			}
-			// get opposing team
-			if (isHomePlayer) return draft!.away;
-			return draft!.home;
-		}
-		return [];
 	};
 
 	return (
@@ -83,7 +64,7 @@ export default function ClipDetails(props: ClipDetailsProps) {
 						errors={errors as Partial<FieldErrors<OffensivePlayFormFields>>}
 						onPrimaryPlayer={setTeamBeneficiary}
 						watch={watch}
-						getTeamOptions={getTeamOptions}
+						unregister={unregister}
 					/>
 				) : (
 					<DefenseDetails
@@ -92,7 +73,8 @@ export default function ClipDetails(props: ClipDetailsProps) {
 						errors={errors as Partial<FieldErrors<DefensivePlayFormFields>>}
 						onPrimaryPlayer={setTeamBeneficiary}
 						watch={watch}
-						getTeamOptions={getTeamOptions}
+						setValue={setValue}
+						unregister={unregister}
 					/>
 				)}
 			</div>

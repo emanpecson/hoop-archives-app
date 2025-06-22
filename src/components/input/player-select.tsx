@@ -36,6 +36,8 @@ export default function PlayerSelect(props: PlayerSelectProps) {
 		if (player) {
 			props.onChange(player);
 			setPlaceholder(null);
+		} else {
+			setPlaceholder("Select player");
 		}
 	};
 

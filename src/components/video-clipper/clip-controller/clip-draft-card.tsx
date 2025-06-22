@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, ThumbsUpIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface ClipDraftCardProps {
 	clip: ClipDraft;
@@ -39,6 +40,7 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 		watch,
 		setValue,
 		reset,
+		unregister,
 		formState: { errors },
 	} = useForm<ClipDraftFormFields>({
 		resolver: zodResolver(clipDraftSchema),
@@ -103,10 +105,15 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 		}
 	};
 
-	const saveChanges = async () => {
+	const onSubmit = handleSubmit(
+		(data) => saveChanges(data),
+		(errors) => console.log("Error:", errors)
+	);
+
+	const saveChanges = async (clipData: ClipDraftFormFields) => {
 		try {
 			const updatedClip = buildClipDraft(
-				{ ...watch(), highlightTime: props.clip.highlightTime },
+				{ ...clipData, highlightTime: props.clip.highlightTime },
 				{
 					start: props.clip.startTime,
 					end: props.clip.endTime,
@@ -123,8 +130,7 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 				updatedClips[clipIndex] = updatedClip;
 				setDraft({ ...draft!, clipDrafts: sortClips(updatedClips) });
 
-				// TODO: notify
-				console.log("Updated clip");
+				toast.success("Clip updated");
 			} else {
 				throw new Error("Error updating clip");
 			}
@@ -185,7 +191,7 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 				</CardButton>
 			</DialogTrigger>
 
-			<form onSubmit={handleSubmit(saveChanges)}>
+			<form onSubmit={onSubmit}>
 				<DialogContent className="sm:max-w-2xl">
 					<DialogHeader>
 						<DialogTitle>Edit Clip</DialogTitle>
@@ -199,24 +205,26 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 						watch={watch}
 						setValue={setValue}
 						errors={errors}
+						unregister={unregister}
 					/>
 
 					{/* footer */}
 					<DialogFooter>
-						<Button variant="outline" onClick={deleteClip}>
+						<Button variant="outline" onClick={deleteClip} type="button">
 							<TrashIcon />
 							<span>Delete</span>
 						</Button>
 
 						<div className="flex space-x-2">
-							<Button variant="outline" onClick={previewClip}>
+							<Button variant="outline" type="button" onClick={previewClip}>
 								<EyeIcon />
 								<span>Preview</span>
 							</Button>
 							<Button
 								variant="outline"
 								disabled={!isDirty}
-								onClick={saveChanges}
+								onClick={onSubmit}
+								type="submit"
 							>
 								<ThumbsUpIcon />
 								<span>Save changes</span>
