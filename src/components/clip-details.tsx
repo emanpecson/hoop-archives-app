@@ -34,6 +34,27 @@ export default function ClipDetails(props: ClipDetailsProps) {
 		setValue("teamBeneficiary", draft.home.includes(player) ? "home" : "away");
 	};
 
+	const getTeamOptions = (
+		pivotPlayer: Player | undefined,
+		getSameTeam: boolean
+	) => {
+		if (pivotPlayer) {
+			const isHomePlayer = draft!.home.some(
+				(x) => x.playerId === pivotPlayer.playerId
+			);
+
+			if (getSameTeam) {
+				if (isHomePlayer)
+					return draft!.home.filter((x) => x.playerId !== pivotPlayer.playerId);
+				return draft!.away.filter((x) => x.playerId !== pivotPlayer.playerId);
+			}
+			// get opposing team
+			if (isHomePlayer) return draft!.away;
+			return draft!.home;
+		}
+		return [];
+	};
+
 	return (
 		<div className="flex divide-x divide-neutral-700">
 			<div className="space-y-4 flex flex-col pr-2">
@@ -61,6 +82,8 @@ export default function ClipDetails(props: ClipDetailsProps) {
 						control={control as Control<OffensivePlayFormFields>}
 						errors={errors as Partial<FieldErrors<OffensivePlayFormFields>>}
 						onPrimaryPlayer={setTeamBeneficiary}
+						watch={watch}
+						getTeamOptions={getTeamOptions}
 					/>
 				) : (
 					<DefenseDetails
@@ -68,6 +91,8 @@ export default function ClipDetails(props: ClipDetailsProps) {
 						control={control as Control<DefensivePlayFormFields>}
 						errors={errors as Partial<FieldErrors<DefensivePlayFormFields>>}
 						onPrimaryPlayer={setTeamBeneficiary}
+						watch={watch}
+						getTeamOptions={getTeamOptions}
 					/>
 				)}
 			</div>

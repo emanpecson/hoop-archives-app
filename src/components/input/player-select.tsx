@@ -16,6 +16,7 @@ interface PlayerSelectProps {
 	value?: Player;
 	playerOptions: Player[];
 	onChange: (player: Player) => void;
+	disabled?: boolean;
 }
 
 export default function PlayerSelect(props: PlayerSelectProps) {
@@ -39,7 +40,11 @@ export default function PlayerSelect(props: PlayerSelectProps) {
 	};
 
 	return (
-		<Select onValueChange={handleValueChange} value={playerString(props.value)}>
+		<Select
+			onValueChange={handleValueChange}
+			value={playerString(props.value)}
+			disabled={props.disabled}
+		>
 			<SelectTrigger
 				Icon={CircleUserRoundIcon}
 				error={props.error}

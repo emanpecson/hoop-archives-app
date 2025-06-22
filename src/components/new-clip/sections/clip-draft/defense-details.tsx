@@ -1,7 +1,15 @@
 import FormatInputGroup from "./format-input-group";
 import { Player } from "@/types/model/player";
-import { Control, Controller, FieldErrors } from "react-hook-form";
-import { DefensivePlayFormFields } from "@/types/schema/new-clip-form/clip-draft-schema";
+import {
+	Control,
+	Controller,
+	FieldErrors,
+	UseFormWatch,
+} from "react-hook-form";
+import {
+	ClipDraftFormFields,
+	DefensivePlayFormFields,
+} from "@/types/schema/new-clip-form/clip-draft-schema";
 import PlayerSelect from "@/components/input/player-select";
 import TagsCombobox from "@/components/input/tags-combobox";
 
@@ -10,9 +18,16 @@ interface DefenseDetailsProps {
 	control: Control<DefensivePlayFormFields>;
 	errors: Partial<FieldErrors<DefensivePlayFormFields>>;
 	onPrimaryPlayer: (player: Player) => void;
+	watch: UseFormWatch<ClipDraftFormFields>;
+	getTeamOptions: (
+		pivotPlayer: Player | undefined,
+		getSameTeam: boolean
+	) => Player[];
 }
 
 export default function DefenseDetails(props: DefenseDetailsProps) {
+	const defender = props.watch("playerDefending");
+
 	return (
 		<FormatInputGroup
 			labelInputs={[
@@ -25,11 +40,6 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									// value={
-									// 	props.form.play === "defense"
-									// 		? props.form.playerDefending
-									// 		: undefined
-									// }
 									onChange={(player) => {
 										field.onChange(player);
 										props.onPrimaryPlayer(player);
@@ -50,13 +60,9 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									// value={
-									// 	props.form.play === "defense"
-									// 		? props.form.playerStopped
-									// 		: undefined
-									// }
-									playerOptions={props.playerOptions}
+									playerOptions={props.getTeamOptions(defender, false)}
 									error={!!props.errors.playerStopped}
+									disabled={!defender}
 								/>
 							)}
 						/>
@@ -69,11 +75,7 @@ export default function DefenseDetails(props: DefenseDetailsProps) {
 							control={props.control}
 							name="tags"
 							render={({ field }) => (
-								<TagsCombobox
-									{...field}
-									// value={props.form.tags}
-									error={!!props.errors.tags}
-								/>
+								<TagsCombobox {...field} error={!!props.errors.tags} />
 							)}
 						/>
 					),

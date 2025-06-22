@@ -11,6 +11,7 @@ interface MultiSelectProps {
 	placeholder: string;
 	error?: boolean;
 	onChange: (options: string[]) => void;
+	disabled?: boolean;
 }
 
 export default function MultiSelect(props: MultiSelectProps) {
@@ -44,6 +45,7 @@ export default function MultiSelect(props: MultiSelectProps) {
 					ref={triggerRef}
 					variant="input"
 					role="combobox"
+					disabled={props.disabled}
 					className={cn(
 						cn(
 							"relative justify-start h-fit min-h-9",

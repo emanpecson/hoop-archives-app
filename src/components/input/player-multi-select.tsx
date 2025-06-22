@@ -7,6 +7,7 @@ interface PlayerMultiSelectProps {
 	value: Player[];
 	playerOptions: Player[];
 	onChange: (players: Player[]) => void;
+	disabled?: boolean;
 }
 
 export default function PlayerMultiSelect(props: PlayerMultiSelectProps) {
@@ -29,6 +30,7 @@ export default function PlayerMultiSelect(props: PlayerMultiSelectProps) {
 			placeholder="Select player(s)"
 			error={props.error}
 			options={props.playerOptions.map((p) => playerToName(p))}
+			disabled={props.disabled}
 		/>
 	);
 }

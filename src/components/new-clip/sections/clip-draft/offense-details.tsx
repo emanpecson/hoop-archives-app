@@ -1,7 +1,15 @@
 import FormatInputGroup from "./format-input-group";
 import { Player } from "@/types/model/player";
-import { OffensivePlayFormFields } from "@/types/schema/new-clip-form/clip-draft-schema";
-import { Control, Controller, FieldErrors } from "react-hook-form";
+import {
+	ClipDraftFormFields,
+	OffensivePlayFormFields,
+} from "@/types/schema/new-clip-form/clip-draft-schema";
+import {
+	Control,
+	Controller,
+	FieldErrors,
+	UseFormWatch,
+} from "react-hook-form";
 import PlayerSelect from "@/components/input/player-select";
 import PlayerMultiSelect from "@/components/input/player-multi-select";
 import ToggleSelect from "@/components/input/toggle-select";
@@ -12,9 +20,16 @@ interface OffenseDetailsProps {
 	control: Control<OffensivePlayFormFields>;
 	errors: Partial<FieldErrors<OffensivePlayFormFields>>;
 	onPrimaryPlayer: (player: Player) => void;
+	watch: UseFormWatch<ClipDraftFormFields>;
+	getTeamOptions: (
+		pivotPlayer: Player | undefined,
+		getSameTeam: boolean
+	) => Player[];
 }
 
 export default function OffenseDetails(props: OffenseDetailsProps) {
+	const scorer = props.watch("playerScoring");
+
 	return (
 		<FormatInputGroup
 			labelInputs={[
@@ -65,8 +80,9 @@ export default function OffenseDetails(props: OffenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerSelect
 									{...field}
-									playerOptions={props.playerOptions}
+									playerOptions={props.getTeamOptions(scorer, true)}
 									error={!!props.errors.playerAssisting}
+									disabled={!scorer}
 								/>
 							)}
 						/>
@@ -81,8 +97,9 @@ export default function OffenseDetails(props: OffenseDetailsProps) {
 							render={({ field }) => (
 								<PlayerMultiSelect
 									{...field}
-									playerOptions={props.playerOptions}
+									playerOptions={props.getTeamOptions(scorer, false)}
 									error={!!props.errors.playersDefending}
+									disabled={!scorer}
 								/>
 							)}
 						/>
