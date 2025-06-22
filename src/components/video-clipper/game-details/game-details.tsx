@@ -80,7 +80,7 @@ export default function GameDetails() {
 	};
 
 	return (
-		<DashboardCard className="w-72 h-full space-y-4">
+		<DashboardCard className="w-72 h-full space-y-4 overflow-y-auto">
 			<DashboardCardHeader text="Game Details" />
 
 			<div className="space-y-2">
