@@ -105,10 +105,13 @@ export default function ClipDraftCard(props: ClipDraftCardProps) {
 
 	const saveChanges = async () => {
 		try {
-			const updatedClip = buildClipDraft(watch(), {
-				start: props.clip.startTime,
-				end: props.clip.endTime,
-			});
+			const updatedClip = buildClipDraft(
+				{ ...watch(), highlightTime: props.clip.highlightTime },
+				{
+					start: props.clip.startTime,
+					end: props.clip.endTime,
+				}
+			);
 
 			const res = await fetch(clipEndpoint, {
 				method: "PUT",
