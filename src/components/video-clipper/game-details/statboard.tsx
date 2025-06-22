@@ -13,7 +13,6 @@ interface StatboardProps {
 	label: string;
 	players: Player[];
 	clips: ClipDraft[];
-	setTeamScore: (score: number) => void;
 }
 
 export default function Statboard(props: StatboardProps) {
@@ -55,12 +54,10 @@ export default function Statboard(props: StatboardProps) {
 
 			setPlayerStats(stats);
 			setTeamStats(totals);
-			props.setTeamScore(totals.pts);
 		};
 
 		getStats();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.clips, props.players, props.setTeamScore]);
+	}, [props.clips, props.players]);
 
 	return (
 		<div className="w-full space-y-2">

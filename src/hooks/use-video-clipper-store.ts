@@ -25,12 +25,6 @@ type VideoClipperStore = {
 
 	sortClips: (clips: ClipDraft[]) => ClipDraft[];
 
-	homeScore: number;
-	setHomeScore: (score: number) => void;
-
-	awayScore: number;
-	setAwayScore: (score: number) => void;
-
 	previewClips: (i: number) => void;
 };
 
@@ -91,13 +85,6 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		setClipIndex: (clipIndex: number | null) => set({ clipIndex }),
 
 		sortClips,
-
-		homeScore: 0,
-		setHomeScore: (homeScore: number) => set({ homeScore }),
-
-		awayScore: 0,
-		setAwayScore: (awayScore: number) => set({ awayScore }),
-
 		previewClips,
 	};
 });

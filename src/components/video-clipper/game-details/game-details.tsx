@@ -17,8 +17,6 @@ import { useMemo } from "react";
 
 export default function GameDetails() {
 	const draft = useVideoClipperStore((state) => state.draft);
-	const setHomeScore = useVideoClipperStore((state) => state.setHomeScore);
-	const setAwayScore = useVideoClipperStore((state) => state.setAwayScore);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
 
@@ -124,7 +122,6 @@ export default function GameDetails() {
 				label="Home Stats"
 				clips={memoClips}
 				players={memoHomePlayers}
-				setTeamScore={setHomeScore}
 			/>
 
 			<hr className="text-neutral-700" />
@@ -133,7 +130,6 @@ export default function GameDetails() {
 				label="Away Stats"
 				clips={memoClips}
 				players={memoAwayPlayers}
-				setTeamScore={setAwayScore}
 			/>
 
 			<div className="space-y-2">

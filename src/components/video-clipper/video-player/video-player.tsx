@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import VideoOverlayController from "./overlay/video-overlay-controller";
 import VideoOverlaySlider from "./overlay/video-overlay-slider";
+import { useRealtimeScore } from "@/hooks/use-realtime-score";
 
 export default function VideoPlayer() {
 	const draft = useVideoClipperStore((state) => state.draft);
@@ -15,13 +16,12 @@ export default function VideoPlayer() {
 	const setCurrentTime = useVideoClipperStore((state) => state.setCurrentTime);
 	const videoRef = useVideoClipperStore((state) => state.videoRef);
 	const source = useVideoClipperStore((state) => state.source);
-	const homeScore = useVideoClipperStore((state) => state.homeScore);
-	const awayScore = useVideoClipperStore((state) => state.awayScore);
 	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
 	const setClipIndex = useVideoClipperStore((state) => state.setClipIndex);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
+	const score = useRealtimeScore(draft?.clipDrafts, currentTime);
 
 	const handleLoadedMetadata = () => {
 		if (videoRef.current) {
@@ -88,7 +88,6 @@ export default function VideoPlayer() {
 							currentTime={currentTime}
 						/>
 					</div>
-
 					<div className="w-full">
 						<VideoOverlaySlider
 							videoRef={videoRef}
@@ -97,9 +96,8 @@ export default function VideoPlayer() {
 							currentTime={currentTime}
 						/>
 					</div>
-
-					<VideoOverlayWrapper>{`Home: ${homeScore}`}</VideoOverlayWrapper>
-					<VideoOverlayWrapper>{`Away: ${awayScore}`}</VideoOverlayWrapper>
+					<VideoOverlayWrapper>{`Home: ${score.home}`}</VideoOverlayWrapper>
+					<VideoOverlayWrapper>{`Away: ${score.away}`}</VideoOverlayWrapper>
 				</div>
 			)}
 		</div>
