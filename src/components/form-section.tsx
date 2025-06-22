@@ -63,7 +63,10 @@ export default function FormSection(props: FormSectionProps) {
 					<Button
 						type="button"
 						size="sm"
-						disabled={props.step === props.sections.length - 1}
+						disabled={
+							props.step === props.sections.length - 1 ||
+							props.disableNavigation
+						}
 						onClick={onNext}
 					>
 						<span>Next</span>

@@ -12,7 +12,6 @@ import { NewGameFormSection } from "@/types/form-section";
 interface NewGameDialogProps {
 	videoFile: File | null;
 	open: boolean;
-	// setOpen: () => void;
 }
 
 export default function NewGameDialog(props: NewGameDialogProps) {

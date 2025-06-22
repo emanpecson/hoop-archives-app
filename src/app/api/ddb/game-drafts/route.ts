@@ -25,19 +25,16 @@ export async function GET(req: NextRequest) {
 	try {
 		const command = new GetItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: {
-				title: {
-					S: query.title,
-				},
-			},
+			Key: { title: { S: query.title } },
 		});
 
 		const { Item } = await client.send(command);
-		if (!Item)
+		if (!Item) {
 			return NextResponse.json(
 				{ error: "Could not retrieve item" },
 				{ status: 500 }
 			);
+		}
 
 		return NextResponse.json(unmarshall(Item), { status: 200 });
 	} catch (error) {

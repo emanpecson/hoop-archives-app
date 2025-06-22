@@ -1,17 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, JSX, SetStateAction } from "react";
-import {
-	Control,
-	FieldErrors,
-	SubmitErrorHandler,
-	SubmitHandler,
-	UseFormHandleSubmit,
-	UseFormSetValue,
-	UseFormWatch,
-} from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { ClipTime } from "./clip-time";
 import { ClipDraft } from "./clip-draft";
-import { ClipDraftFormFields } from "./schema/new-clip-form/clip-draft-schema";
 
 // base form props
 export interface FormSectionProps {
@@ -26,6 +17,7 @@ export interface FormSectionProps {
 	) => (e?: React.BaseSyntheticEvent) => Promise<void>;
 	saveData: (data: any) => void;
 	form: any;
+	disableNavigation?: boolean;
 }
 
 export interface FormSection {
