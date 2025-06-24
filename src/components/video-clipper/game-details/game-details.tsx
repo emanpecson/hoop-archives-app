@@ -68,8 +68,6 @@ export default function GameDetails() {
 						},
 						clips: draft.clipDrafts.map((clipDraft, i) => ({
 							clipId: draft.title + "_" + String(i),
-							startTime: clipDraft.startTime,
-							endTime: clipDraft.endTime,
 							gameTitle: draft.title,
 							tags: clipDraft.tags,
 							url: clipUrls[i],
