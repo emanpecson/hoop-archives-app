@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	CalendarIcon,
 	FolderPenIcon,
@@ -14,8 +16,13 @@ import { Player } from "@/types/model/player";
 import Statboard from "./statboard";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { useMemo } from "react";
+import { NewGameRequestBody } from "@/types/api/new-game";
+import { tempLeagueId } from "@/data/temp";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function GameDetails() {
+	const router = useRouter();
 	const draft = useVideoClipperStore((state) => state.draft);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
@@ -27,7 +34,7 @@ export default function GameDetails() {
 
 	const createVideoClips = async (draft: GameDraft) => {
 		try {
-			const res = await fetch(
+			const createClipUrlsResponse = await fetch(
 				`${process.env.NEXT_PUBLIC_CLIPPER_URL}/video-clipper`,
 				{
 					method: "POST",
@@ -41,11 +48,45 @@ export default function GameDetails() {
 				}
 			);
 
-			if (res.ok) {
-				const clipUrls = await res.json();
+			if (createClipUrlsResponse.ok) {
+				const clipUrls = await createClipUrlsResponse.json();
 				console.log("clip urls", clipUrls);
+
+				// create game w/ underlying clips
+				const createGameResponse = await fetch("/api/ddb/games", {
+					method: "POST",
+
+					// build game + clips data
+					body: JSON.stringify({
+						game: {
+							leagueId: tempLeagueId,
+							home: draft.home,
+							away: draft.away,
+							date: new Date(draft.date),
+							title: draft.title,
+							type: draft.type,
+						},
+						clips: draft.clipDrafts.map((clipDraft, i) => ({
+							clipId: draft.title + "_" + String(i),
+							startTime: clipDraft.startTime,
+							endTime: clipDraft.endTime,
+							gameTitle: draft.title,
+							tags: clipDraft.tags,
+							url: clipUrls[i],
+							offense: clipDraft.offense,
+							defense: clipDraft.defense,
+						})),
+					} as NewGameRequestBody),
+				});
+
+				if (createGameResponse.ok) {
+					toast.success(`Created game: ${draft.title}`);
+					// router.push(`/${tempLeagueId}/${draft.title}`);
+				} else {
+					throw Error("Failed to create game");
+				}
 			} else {
-				throw Error("Failed to complete game");
+				throw Error("Failed to create clip URLs");
 			}
 		} catch (error) {
 			console.log(error);

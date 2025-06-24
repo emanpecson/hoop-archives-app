@@ -1,5 +1,9 @@
-import VideoUploader from "@/components/video-uploader/video-uploader";
+import GamesGallery from "@/components/game/games-gallery";
 
-export default function HomePage() {
-	return <VideoUploader />;
+export default function DashboardPage() {
+	return (
+		<div>
+			<GamesGallery />
+		</div>
+	);
 }

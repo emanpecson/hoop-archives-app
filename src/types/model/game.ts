@@ -2,7 +2,8 @@ import { GameType } from "../enum/game-type";
 import { Player } from "./player";
 
 export interface Game {
-	gameId: string; // partition key: unique game title
+	leagueId: string; // partition key: group games by league
+	title: string; // sort key: unique game title; for getting a specific game
 	date: Date;
 	type: GameType;
 
