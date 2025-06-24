@@ -51,7 +51,7 @@ export default function GameDetails() {
 			);
 
 			if (createClipUrlsResponse.ok) {
-				const clipUrls = await createClipUrlsResponse.json();
+				const { data: clipUrls } = await createClipUrlsResponse.json();
 				console.log("clip urls", clipUrls);
 
 				// create game w/ underlying clips
