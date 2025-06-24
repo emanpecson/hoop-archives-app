@@ -79,7 +79,7 @@ export default function GameDetails() {
 
 				if (createGameResponse.ok) {
 					toast.success(`Created game: ${draft.title}`);
-					// router.push(`/${tempLeagueId}/${draft.title}`);
+					router.push(`/${tempLeagueId}/${draft.title}`);
 				} else {
 					throw Error("Failed to create game");
 				}
