@@ -8,7 +8,6 @@ interface GamePreviewProps {
 export default function GamePreview({ game }: GamePreviewProps) {
 	return (
 		<Link href={`${game.leagueId}/${game.title}`}>
-			{JSON.stringify(game)}
 			<div className="border rounded-lg p-4">{game.title}</div>
 		</Link>
 	);

@@ -20,6 +20,8 @@ import { NewGameRequestBody } from "@/types/api/new-game";
 import { tempLeagueId } from "@/data/temp";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { GameClip } from "@/types/model/game-clip";
+import { Game } from "@/types/model/game";
 
 export default function GameDetails() {
 	const router = useRouter();
@@ -65,15 +67,20 @@ export default function GameDetails() {
 							date: new Date(draft.date),
 							title: draft.title,
 							type: draft.type,
-						},
-						clips: draft.clipDrafts.map((clipDraft, i) => ({
-							clipId: draft.title + "_" + String(i),
-							gameTitle: draft.title,
-							tags: clipDraft.tags,
-							url: clipUrls[i],
-							offense: clipDraft.offense,
-							defense: clipDraft.defense,
-						})),
+						} as Game,
+						clips: draft.clipDrafts.map(
+							(clipDraft, i) =>
+								({
+									clipId: draft.title + "_" + String(i),
+									gameTitle: draft.title,
+									tags: clipDraft.tags,
+									startTime: clipDraft.startTime,
+									endTime: clipDraft.endTime,
+									url: clipUrls[i],
+									offense: clipDraft.offense,
+									defense: clipDraft.defense,
+								} as GameClip)
+						),
 					} as NewGameRequestBody),
 				});
 
