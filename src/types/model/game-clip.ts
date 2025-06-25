@@ -7,7 +7,7 @@ export interface GameClip {
 	tags: string[];
 	startTime: number;
 	endTime: number;
-	url?: string; // set on backend-clipper
+	url: string;
 
 	offense?: OffensivePlay;
 	defense?: DefensivePlay;

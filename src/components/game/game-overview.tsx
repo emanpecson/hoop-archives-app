@@ -1,7 +1,8 @@
 "use client";
 
 import { Game } from "@/types/model/game";
-import { useEffect, useState } from "react";
+import { GameClip } from "@/types/model/game-clip";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface GameOverviewProps {
@@ -14,13 +15,20 @@ interface GameOverviewProps {
 export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 	const [isFetching, setIsFetching] = useState(true);
 	const [game, setGame] = useState<Game | null>(null);
+	const [clips, setClips] = useState<GameClip[]>([]);
+	const videoRef = useRef<HTMLVideoElement>(null);
+	const clipIndex = useRef(0);
 
-	const fetchGame = async () => {
+	const fetchGameAndClips = async () => {
 		try {
 			setIsFetching(true);
-			const res = await fetch(`/api/ddb/games/${leagueId}/${title}`);
-			const data = await res.json();
-			setGame(data);
+			const gameResponse = await fetch(`/api/ddb/games/${leagueId}/${title}`);
+			setGame(await gameResponse.json());
+
+			const clipsResponse = await fetch(`/api/ddb/game-clips/${title}`);
+			const clips: GameClip[] = await clipsResponse.json();
+			setClips(clips);
+
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
 			toast.error("Error fetching game");
@@ -29,17 +37,47 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 		}
 	};
 
+	const handleNextClip = () => {
+		if (videoRef.current) {
+			clipIndex.current = (clipIndex.current + 1) % clips.length;
+
+			videoRef.current.src = clips[clipIndex.current].url;
+			videoRef.current.load();
+			videoRef.current.play();
+		}
+	};
+
 	useEffect(() => {
-		fetchGame();
+		fetchGameAndClips();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		if (videoRef.current && clips.length > 0) {
+			console.log("visits here");
+			videoRef.current.src = clips[0].url;
+			videoRef.current.load();
+			videoRef.current.play();
+		}
+	}, [clips]);
 
 	return (
 		<div>
 			{isFetching ? (
 				<p>Loading game...</p>
 			) : game ? (
-				<div>{game.title}</div>
+				<div>
+					{JSON.stringify(clips)}
+					{/* <video ref={videoRef} onEnded={handleNextClip} className="w-full" /> */}
+					<video
+						ref={videoRef}
+						onEnded={handleNextClip}
+						className="w-full"
+						muted
+						autoPlay
+						controls
+					/>
+				</div>
 			) : (
 				<p>Failed to load game</p>
 			)}
