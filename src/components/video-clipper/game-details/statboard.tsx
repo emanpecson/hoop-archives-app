@@ -1,6 +1,7 @@
 import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
-import { ClipDraft } from "@/types/clip-draft";
 import { Player } from "@/types/model/player";
+import { DefensivePlay, OffensivePlay } from "@/types/play";
+import { collectStats } from "@/utils/stats";
 import { useEffect, useState } from "react";
 
 type Stats = {
@@ -12,7 +13,7 @@ type Stats = {
 interface StatboardProps {
 	label: string;
 	players: Player[];
-	clips: ClipDraft[];
+	clips: { offense?: OffensivePlay; defense?: DefensivePlay }[];
 }
 
 export default function Statboard(props: StatboardProps) {
@@ -20,43 +21,9 @@ export default function Statboard(props: StatboardProps) {
 	const [teamStats, setTeamStats] = useState<Stats>({ pts: 0, ast: 0, blk: 0 });
 
 	useEffect(() => {
-		const getStats = () => {
-			// initialize stats w/ 0
-			const stats: typeof playerStats = Object.fromEntries(
-				props.players.map((p) => [p.playerId, { pts: 0, ast: 0, blk: 0 }])
-			);
-			const totals: Stats = { pts: 0, ast: 0, blk: 0 };
-
-			// calculate player stats by clip
-			for (const clip of props.clips) {
-				if (clip.offense) {
-					const scorer = clip.offense.playerScoring;
-
-					if (scorer.playerId in stats) {
-						stats[scorer.playerId].pts += clip.offense.pointsAdded;
-						totals.pts += clip.offense.pointsAdded;
-
-						const assister = clip.offense.playerAssisting;
-						if (assister) {
-							stats[assister.playerId].ast++;
-							totals.ast++;
-						}
-					}
-				} else if (clip.defense) {
-					const defender = clip.defense.playerDefending;
-
-					if (defender.playerId in stats) {
-						stats[defender.playerId].blk++;
-						totals.blk++;
-					}
-				}
-			}
-
-			setPlayerStats(stats);
-			setTeamStats(totals);
-		};
-
-		getStats();
+		const { playerStats, teamStats } = collectStats(props.players, props.clips);
+		setPlayerStats(playerStats);
+		setTeamStats(teamStats);
 	}, [props.clips, props.players]);
 
 	return (
