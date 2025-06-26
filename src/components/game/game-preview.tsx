@@ -1,14 +1,54 @@
 import { Game } from "@/types/model/game";
+import { Player } from "@/types/model/player";
+import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
+import GamePreviewDialog from "./game-preview-dialog";
 
 interface GamePreviewProps {
 	game: Game;
 }
 
 export default function GamePreview({ game }: GamePreviewProps) {
+	const url = `${game.leagueId}/${game.title}`;
+
+	const displayPlayers = (players: Player[]) => {
+		return players.map((x) => `${x.firstName[0]}. ${x.lastName}`).join(", ");
+	};
+
 	return (
-		<Link href={`${game.leagueId}/${game.title}`}>
-			<div className="border rounded-lg p-4">{game.title}</div>
-		</Link>
+		<div className="space-y-1">
+			<Link href={url} className="flex justify-center">
+				{/* thumbnail */}
+				<div className="rounded-lg bg-neutral-800 h-40 w-80" />
+			</Link>
+
+			<div className="space-y-0.5">
+				<div className="flex justify-center place-items-center space-x-2.5">
+					<Link
+						href={url}
+						className="font-semibold text-center hover:underline text-sm"
+					>
+						{game.title}
+					</Link>
+					<span className="text-xs text-neutral-400">
+						{new Date(game.date).toLocaleDateString()}
+					</span>
+					<GamePreviewDialog game={game}>
+						<button className="p-0.5 bg-neutral-800 rounded-full cursor-pointer">
+							<EllipsisIcon
+								size={16}
+								strokeWidth={1.5}
+								className="text-neutral-400"
+							/>
+						</button>
+					</GamePreviewDialog>
+				</div>
+
+				<div className="flex flex-col place-items-center text-neutral-400">
+					<p className="text-xs">{displayPlayers(game.home)}</p>
+					<p className="text-xs">{displayPlayers(game.away)}</p>
+				</div>
+			</div>
+		</div>
 	);
 }

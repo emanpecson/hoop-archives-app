@@ -64,14 +64,14 @@ export default function GamesGallery() {
 			{isFetching ? (
 				<p>Loading...</p>
 			) : games && games.length > 0 ? (
-				<div>
-					<div className="grid grid-cols-3">
+				<div className="max-w-[100rem] mx-auto">
+					<div className="grid grid-cols-4 gap-3">
 						{games.map((game, i) => (
 							<GamePreview game={game} key={i} />
 						))}
 					</div>
 					{/* pagination */}
-					<div className="py-1 px-2 flex justify-end gap-1">
+					<div className="py-1 px-2 flex gap-1">
 						<Button
 							type="button"
 							variant="outline"
