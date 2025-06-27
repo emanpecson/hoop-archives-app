@@ -3,6 +3,7 @@ import { Player } from "@/types/model/player";
 import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
 import GamePreviewDialog from "./game-preview-dialog";
+import Image from "next/image";
 
 interface GamePreviewProps {
 	game: Game;
@@ -18,8 +19,14 @@ export default function GamePreview({ game }: GamePreviewProps) {
 	return (
 		<div className="space-y-1">
 			<Link href={url} className="flex justify-center">
-				{/* thumbnail */}
-				<div className="rounded-lg bg-neutral-800 h-40 w-80" />
+				<Image
+					src={game.thumbnailUrl}
+					alt={`${game.title} thumbnail`}
+					width={80}
+					height={40}
+					className="w-80 h-40 object-cover rounded-lg"
+					unoptimized
+				/>
 			</Link>
 
 			<div className="space-y-0.5">

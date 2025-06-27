@@ -6,6 +6,7 @@ export interface Game {
 	title: string; // sort key: unique game title; for getting a specific game
 	date: Date;
 	type: GameType;
+	thumbnailUrl: string;
 
 	home: Player[];
 	away: Player[];

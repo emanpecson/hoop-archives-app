@@ -10,7 +10,6 @@ import DashboardCard from "../../dashboard/dashboard-card";
 import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
 import { GameDraft } from "@/types/model/game-draft";
-import { TrimRequest } from "@/types/trim-request";
 import CardButton from "../../card-button";
 import { Player } from "@/types/model/player";
 import Statboard from "./statboard";
@@ -22,6 +21,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { GameClip } from "@/types/model/game-clip";
 import { Game } from "@/types/model/game";
+import { TrimRequest, TrimResponse } from "@/types/api/clipper-service";
 
 export default function GameDetails() {
 	const router = useRouter();
@@ -51,7 +51,8 @@ export default function GameDetails() {
 			);
 
 			if (createClipUrlsResponse.ok) {
-				const { data: clipUrls } = await createClipUrlsResponse.json();
+				const { data } = await createClipUrlsResponse.json();
+				const { clipUrls, thumbnailUrl }: TrimResponse = data;
 				console.log("clip urls", clipUrls);
 
 				// create game w/ underlying clips
@@ -67,6 +68,7 @@ export default function GameDetails() {
 							date: new Date(draft.date),
 							title: draft.title,
 							type: draft.type,
+							thumbnailUrl,
 						} as Game,
 						clips: draft.clipDrafts.map(
 							(clipDraft, i) =>
