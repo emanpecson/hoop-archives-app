@@ -7,7 +7,7 @@ export interface ClipDraft {
 	highlightTime: number;
 	tags: string[];
 
-	teamBeneficiary?: string;
+	teamBeneficiary: string;
 	offense?: OffensivePlay;
 	defense?: DefensivePlay;
 

@@ -7,6 +7,8 @@ export interface GameClip {
 	tags: string[];
 	startTime: number;
 	endTime: number;
+	highlightTime: number;
+	teamBeneficiary: string;
 	url: string;
 
 	offense?: OffensivePlay;

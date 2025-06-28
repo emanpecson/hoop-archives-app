@@ -1,10 +1,16 @@
-import { ClipDraft } from "@/types/clip-draft";
+import { OffensivePlay } from "@/types/play";
 import { useMemo } from "react";
 
 type Score = { home: number; away: number };
 
 export function useRealtimeScore(
-	clips: ClipDraft[] | undefined,
+	clips:
+		| {
+				highlightTime: number;
+				offense?: OffensivePlay;
+				teamBeneficiary: string;
+		  }[]
+		| undefined,
 	currentTime: number
 ) {
 	return useMemo((): Score => {

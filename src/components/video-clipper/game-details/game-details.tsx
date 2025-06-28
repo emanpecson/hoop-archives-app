@@ -78,6 +78,8 @@ export default function GameDetails() {
 									tags: clipDraft.tags,
 									startTime: clipDraft.startTime,
 									endTime: clipDraft.endTime,
+									highlightTime: clipDraft.highlightTime,
+									teamBeneficiary: clipDraft.teamBeneficiary,
 									url: clipUrls[i],
 									offense: clipDraft.offense,
 									defense: clipDraft.defense,
