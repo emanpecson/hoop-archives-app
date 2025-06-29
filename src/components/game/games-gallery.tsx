@@ -11,8 +11,16 @@ import {
 } from "@/types/api/paginated-games";
 import { Button } from "../ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { Player } from "@/types/model/player";
 
-export default function GamesGallery() {
+interface GamesGalleryProps {
+	title: string | undefined;
+	startDate: Date | undefined;
+	endDate: Date | undefined;
+	players: Player[];
+}
+
+export default function GamesGallery(props: GamesGalleryProps) {
 	const [games, setGames] = useState<Game[]>([]);
 	const [isFetching, setIsFetching] = useState(true);
 	const [page, setPage] = useState(0);
@@ -26,8 +34,11 @@ export default function GamesGallery() {
 			const res = await fetch(
 				`/api/ddb/games?leagueId=${tempLeagueId}&exclusiveStartKey=${encodeURIComponent(
 					JSON.stringify(key)
-				)}`
+				)}&title=${props.title}&startDate=${props.startDate}&endDate=${
+					props.endDate
+				}&${props.players.map((p) => `playerIds[]=${p.playerId}`).join("&")}`
 			);
+
 			const { games, lastEvaluatedKey }: PaginatedGamesResponse =
 				await res.json();
 
@@ -57,19 +68,21 @@ export default function GamesGallery() {
 	useEffect(() => {
 		fetchGames(pageKeys[page]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [page]);
+	}, [page, props]);
 
 	return (
-		<div>
+		<div className="w-full">
 			{isFetching ? (
 				<p>Loading...</p>
 			) : games && games.length > 0 ? (
-				<div className="max-w-[100rem] mx-auto">
+				<div className="w-full space-y-4">
+					{/* games */}
 					<div className="grid grid-cols-4 gap-3">
 						{games.map((game, i) => (
 							<GamePreview game={game} key={i} />
 						))}
 					</div>
+
 					{/* pagination */}
 					<div className="py-1 px-2 flex gap-1">
 						<Button

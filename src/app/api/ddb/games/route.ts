@@ -10,26 +10,55 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import processExclusiveStartKey from "@/utils/server/process-exclusive-start-key";
 import { PaginatedGamesResponse } from "@/types/api/paginated-games";
+import { Game } from "@/types/model/game";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 const docClient = DynamoDBDocumentClient.from(client);
+
+const gameFilter = (
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	items: Record<string, any>[] | undefined,
+	title: string | null,
+	startDate: string | null,
+	endDate: string | null,
+	playerIds: string[] | null
+) => {
+	if (items) {
+		let filtered = items as Game[];
+
+		if (title && title !== "undefined") {
+			filtered = filtered.filter((g) => g.title.startsWith(title));
+		}
+		if (startDate && startDate !== "undefined") {
+			filtered = filtered.filter((g) => g.date >= new Date(startDate));
+		}
+		if (endDate && endDate !== "undefined") {
+			filtered = filtered.filter((g) => g.date <= new Date(endDate));
+		}
+		if (playerIds && playerIds.length > 0 && playerIds[0] !== "") {
+			filtered = filtered.filter((g) =>
+				g.away
+					.concat(g.home)
+					.some((player) => playerIds.includes(player.playerId))
+			);
+		}
+
+		return filtered;
+	}
+	return [];
+};
 
 export async function GET(req: NextRequest) {
 	const query = {
 		exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
 		leagueId: req.nextUrl.searchParams.get("leagueId"),
-		// * potentially more filters
+		title: req.nextUrl.searchParams.get("title") || null,
+		startDate: req.nextUrl.searchParams.get("startDate") || null,
+		endDate: req.nextUrl.searchParams.get("endDate") || null,
+		playerIds: req.nextUrl.searchParams.getAll("playerIds[]") || null,
 	};
 
 	console.log("query:", query);
-	console.log(
-		"processed key:",
-		processExclusiveStartKey(query.exclusiveStartKey as string)
-	);
-	console.log(
-		"processed key:",
-		processExclusiveStartKey(String(query.exclusiveStartKey))
-	);
 
 	if (!query.leagueId) {
 		return NextResponse.json(
@@ -59,9 +88,17 @@ export async function GET(req: NextRequest) {
 			new QueryCommand(queryInput)
 		);
 
+		const filteredGames = gameFilter(
+			Items,
+			query.title,
+			query.startDate,
+			query.endDate,
+			query.playerIds
+		);
+
 		return NextResponse.json(
 			{
-				games: Items,
+				games: filteredGames,
 				lastEvaluatedKey: LastEvaluatedKey,
 			} as PaginatedGamesResponse,
 			{ status: 200 }

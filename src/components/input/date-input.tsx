@@ -8,14 +8,20 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface DateInputProps {
-	value?: Date;
+	value?: Date | undefined;
 	onChange?: (date: Date | undefined) => void;
 	error?: boolean;
+	placeholder?: string;
 }
 
 export default function DateInput(props: DateInputProps) {
 	const handleSelect = (date?: Date) => {
-		if (props.onChange) props.onChange(date);
+		if (props.onChange) {
+			console.log("prop:", props.value, date);
+			props.onChange(
+				props.value?.toDateString() === date?.toDateString() ? undefined : date
+			);
+		}
 	};
 
 	return (
@@ -45,7 +51,9 @@ export default function DateInput(props: DateInputProps) {
 									: "text-input-muted"
 							)}
 						>
-							{props.value ? format(props.value, "PPP") : "Select date..."}
+							{props.value
+								? format(props.value, "PPP")
+								: props.placeholder || "Select date..."}
 						</span>
 					</Button>
 				</div>
