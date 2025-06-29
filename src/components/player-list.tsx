@@ -5,6 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useDebounceCallback } from "usehooks-ts";
 import { Skeleton } from "./ui/skeleton";
+import { tempLeagueId } from "@/data/temp";
 
 type PageKey = {
 	playerId: string;
@@ -43,7 +44,7 @@ export default function PlayerList(props: PlayerListProps) {
 
 			// encode param so it can later be parsed as an object
 			const res = await fetch(
-				`/api/ddb/players?search=${search}&exclusiveStartKey=${encodeURIComponent(
+				`/api/ddb/players/table?leagueId=${tempLeagueId}&search=${search}&exclusiveStartKey=${encodeURIComponent(
 					JSON.stringify(key)
 				)}`
 			);

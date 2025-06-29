@@ -62,6 +62,8 @@ export async function PUT(req: NextRequest) {
 				playerId: { S: player.playerId },
 				firstName: { S: player.firstName },
 				lastName: { S: player.lastName },
+				fullName: { S: player.fullName },
+				leagueId: { S: player.leagueId },
 			},
 		})),
 	});
@@ -105,11 +107,7 @@ export async function DELETE(req: NextRequest) {
 	try {
 		const command = new DeleteItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: {
-				title: {
-					S: query.title,
-				},
-			},
+			Key: { title: { S: query.title } },
 		});
 
 		await client.send(command);

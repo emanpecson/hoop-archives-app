@@ -14,6 +14,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 export async function GET(req: NextRequest) {
 	const query = {
+		leagueId: req.nextUrl.searchParams.get("leagueId"),
 		exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
 		search: req.nextUrl.searchParams.get("search"),
 	};
@@ -26,15 +27,16 @@ export async function GET(req: NextRequest) {
 	}
 
 	try {
-		// if query provided, search entire table by first name via gsi
-		// note: query must match exactly
+		// if query provided, search entire table for full name
 		if (query.search) {
 			const params: QueryCommandInput = {
 				TableName: process.env.AWS_DDB_PLAYERS_TABLE,
-				IndexName: "FirstNameIndex",
-				KeyConditionExpression: "#firstName = :firstName",
-				ExpressionAttributeNames: { "#firstName": "firstName" },
-				ExpressionAttributeValues: { ":firstName": query.search },
+				KeyConditionExpression:
+					"leagueId = :leagueId AND begins_with(fullName, :fullName)",
+				ExpressionAttributeValues: {
+					":leagueId": query.leagueId,
+					":fullName": query.search,
+				},
 				Limit: 4,
 				ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
 			};
