@@ -4,7 +4,11 @@ import { CheckUniqueTitleResponse } from "@/types/api/check-unique-title";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
-export async function GET(req: NextRequest) {
+export async function GET(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string }> }
+) {
+	const { leagueId } = await params;
 	const query = { title: req.nextUrl.searchParams.get("title") };
 
 	if (!query.title) {
@@ -17,7 +21,7 @@ export async function GET(req: NextRequest) {
 	try {
 		const command = new GetItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { title: { S: query.title } },
+			Key: { leagueId: { S: leagueId }, title: { S: query.title } },
 			ProjectionExpression: "title",
 		});
 

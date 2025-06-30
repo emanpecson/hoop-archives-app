@@ -10,17 +10,10 @@ const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 const docClient = DynamoDBDocumentClient.from(client);
 
 export async function GET(
-	req: NextRequest,
+	_req: NextRequest,
 	{ params }: { params: Promise<{ leagueId: string }> }
 ) {
 	const { leagueId } = await params;
-
-	if (!leagueId) {
-		return NextResponse.json(
-			{ error: "Missing query parameter: leagueId" },
-			{ status: 400 }
-		);
-	}
 
 	try {
 		const queryInput: QueryCommandInput = {

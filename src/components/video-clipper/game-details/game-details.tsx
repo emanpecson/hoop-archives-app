@@ -56,41 +56,45 @@ export default function GameDetails() {
 				console.log("clip urls", clipUrls);
 
 				// create game w/ underlying clips
-				const createGameResponse = await fetch("/api/ddb/games", {
-					method: "POST",
+				const createGameResponse = await fetch(
+					`/api/ddb/${tempLeagueId}/games`,
+					{
+						method: "POST",
 
-					// build game + clips data
-					body: JSON.stringify({
-						game: {
-							leagueId: tempLeagueId,
-							home: draft.home,
-							away: draft.away,
-							date: new Date(draft.date),
-							title: draft.title,
-							type: draft.type,
-							thumbnailUrl,
-						} as Game,
-						clips: draft.clipDrafts.map(
-							(clipDraft, i) =>
-								({
-									clipId: draft.title + "_" + String(i),
-									gameTitle: draft.title,
-									tags: clipDraft.tags,
-									startTime: clipDraft.startTime,
-									endTime: clipDraft.endTime,
-									highlightTime: clipDraft.highlightTime,
-									teamBeneficiary: clipDraft.teamBeneficiary,
-									url: clipUrls[i],
-									offense: clipDraft.offense,
-									defense: clipDraft.defense,
-								} as GameClip)
-						),
-					} as NewGameRequestBody),
-				});
+						// build game + clips data
+						body: JSON.stringify({
+							game: {
+								leagueId: tempLeagueId,
+								home: draft.home,
+								away: draft.away,
+								date: new Date(draft.date),
+								title: draft.title,
+								type: draft.type,
+								thumbnailUrl,
+							} as Game,
+							clips: draft.clipDrafts.map(
+								(clipDraft, i) =>
+									({
+										leagueId: tempLeagueId,
+										clipId: draft.title + "_" + String(i),
+										gameTitle: draft.title,
+										tags: clipDraft.tags,
+										startTime: clipDraft.startTime,
+										endTime: clipDraft.endTime,
+										highlightTime: clipDraft.highlightTime,
+										teamBeneficiary: clipDraft.teamBeneficiary,
+										url: clipUrls[i],
+										offense: clipDraft.offense,
+										defense: clipDraft.defense,
+									} as GameClip)
+							),
+						} as NewGameRequestBody),
+					}
+				);
 
 				if (createGameResponse.ok) {
 					toast.success(`Created game: ${draft.title}`);
-					router.push(`/${tempLeagueId}/${draft.title}`);
+					router.push(`/${tempLeagueId}/game/${draft.title}`);
 				} else {
 					throw Error("Failed to create game");
 				}

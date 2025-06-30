@@ -1,1 +1,1 @@
-export const tempLeagueId = "EMAN_LEAGUE_ID";
+export const tempLeagueId = "eman-lv-league";

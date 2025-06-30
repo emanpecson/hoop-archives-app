@@ -2,8 +2,9 @@ import { DefensivePlay, OffensivePlay } from "../play";
 
 export interface GameClip {
 	// * common attributes
-	gameTitle: string; // parititon key: unique game title
-	clipId: string; // sort key: unique game title + order
+	leagueId: string; // partition key
+	gameTitle: string; // sort key: unique game title
+	clipId: string;
 	tags: string[];
 	startTime: number;
 	endTime: number;

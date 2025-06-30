@@ -10,7 +10,7 @@ interface GamePreviewProps {
 }
 
 export default function GamePreview({ game }: GamePreviewProps) {
-	const url = `${game.leagueId}/${game.title}`;
+	const url = `/${game.leagueId}/game/${game.title}`;
 
 	const displayPlayers = (players: Player[]) => {
 		return players.map((x) => `${x.firstName[0]}. ${x.lastName}`).join(", ");

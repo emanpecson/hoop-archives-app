@@ -1,6 +1,7 @@
 "use client";
 
 import FormSection from "@/components/form-section";
+import { tempLeagueId } from "@/data/temp";
 import { NewGameFormSectionProps } from "@/types/form-section";
 import { GameDraft } from "@/types/model/game-draft";
 import { S3Uploader } from "@/utils/s3-uploader";
@@ -28,10 +29,11 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 		try {
 			const ext = videoFile.name.substring(videoFile.name.indexOf("."));
 
-			const res = await fetch(`/api/ddb/game-drafts`, {
-				method: "PUT",
+			const res = await fetch(`/api/ddb/${tempLeagueId}/game-drafts`, {
+				method: "POST",
 				body: JSON.stringify({
 					...props.form,
+					leagueId: tempLeagueId,
 					bucketKey: title + ext,
 				} as GameDraft),
 			});

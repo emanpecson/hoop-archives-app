@@ -14,6 +14,7 @@ export default function ClipDraftSection(props: NewClipFormSectionProps) {
 		handleSubmit,
 		watch,
 		setValue,
+		unregister,
 		formState: { errors },
 	} = useForm<ClipDraftFormFields>({
 		resolver: zodResolver(clipDraftSchema),
@@ -27,6 +28,7 @@ export default function ClipDraftSection(props: NewClipFormSectionProps) {
 				errors={errors}
 				setValue={setValue}
 				watch={watch}
+				unregister={unregister}
 			/>
 		</FormSection>
 	);

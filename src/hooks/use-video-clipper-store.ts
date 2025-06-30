@@ -1,3 +1,4 @@
+import { tempLeagueId } from "@/data/temp";
 import { ClipDraft } from "@/types/clip-draft";
 import { GameDraft } from "@/types/model/game-draft";
 import { createRef, RefObject } from "react";
@@ -35,7 +36,7 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 	};
 
 	const fetchDraft = async (key: string) => {
-		const res = await fetch(`/api/ddb/game-drafts?title=${key}`);
+		const res = await fetch(`/api/ddb/${tempLeagueId}/game-drafts/${key}`);
 		const data = (await res.json()) as GameDraft;
 
 		set({ unsortedClips: data.clipDrafts });

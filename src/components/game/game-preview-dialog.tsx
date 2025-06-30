@@ -17,6 +17,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { tempLeagueId } from "@/data/temp";
 
 interface GamePreviewDialogProps {
 	game: Game;
@@ -30,7 +31,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 	const gameUrl = `/${props.game.leagueId}/${props.game.title}`;
 
 	useLoadData({
-		endpoint: `/api/ddb/game-clips/${props.game.title}`,
+		endpoint: `/api/ddb/${tempLeagueId}/game-clips/${props.game.title}`,
 		onDataLoaded: setClips,
 		setIsLoading: setIsFetchingClips,
 		onError: () => toast.error("Error fetching game clips"),

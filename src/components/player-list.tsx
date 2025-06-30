@@ -44,7 +44,7 @@ export default function PlayerList(props: PlayerListProps) {
 
 			// encode param so it can later be parsed as an object
 			const res = await fetch(
-				`/api/ddb/players/table?leagueId=${tempLeagueId}&search=${search}&exclusiveStartKey=${encodeURIComponent(
+				`/api/ddb/${tempLeagueId}/players/table?search=${search}&exclusiveStartKey=${encodeURIComponent(
 					JSON.stringify(key)
 				)}`
 			);

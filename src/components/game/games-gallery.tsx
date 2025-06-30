@@ -32,7 +32,7 @@ export default function GamesGallery(props: GamesGalleryProps) {
 		try {
 			setIsFetching(true);
 			const res = await fetch(
-				`/api/ddb/games?leagueId=${tempLeagueId}&exclusiveStartKey=${encodeURIComponent(
+				`/api/ddb/${tempLeagueId}/games?exclusiveStartKey=${encodeURIComponent(
 					JSON.stringify(key)
 				)}&title=${props.title}&startDate=${props.startDate}&endDate=${
 					props.endDate

@@ -5,15 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
-export async function POST(req: NextRequest) {
-	const query = { title: req.nextUrl.searchParams.get("title") };
+export async function POST(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+) {
+	const { leagueId, title } = await params;
 	const clip: ClipDraft = await req.json();
-
-	if (!query.title)
-		return NextResponse.json(
-			{ error: "Missing required param: title" },
-			{ status: 400 }
-		);
 
 	if (!clip)
 		return NextResponse.json(
@@ -24,7 +21,7 @@ export async function POST(req: NextRequest) {
 	try {
 		const command = new UpdateItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { title: { S: query.title } },
+			Key: { leagueId: { S: leagueId }, title: { S: title } },
 			UpdateExpression:
 				"SET clipDrafts = list_append(if_not_exists(clipDrafts, :empty), :clip)",
 			ExpressionAttributeValues: marshall({
@@ -43,18 +40,20 @@ export async function POST(req: NextRequest) {
 	}
 }
 
-export async function PUT(req: NextRequest) {
-	const query = {
-		title: req.nextUrl.searchParams.get("title"),
-		clipIndex: req.nextUrl.searchParams.get("clipIndex"),
-	};
+export async function PUT(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+) {
+	const { leagueId, title } = await params;
+	const query = { clipIndex: req.nextUrl.searchParams.get("clipIndex") };
 	const clip: ClipDraft = await req.json();
 
-	if (!query.title || !query.clipIndex)
+	if (!query.clipIndex)
 		return NextResponse.json(
 			{ error: "Missing required parameters" },
 			{ status: 400 }
 		);
+
 	if (!clip)
 		return NextResponse.json(
 			{ error: "Missing body request" },
@@ -64,7 +63,7 @@ export async function PUT(req: NextRequest) {
 	try {
 		const command = new UpdateItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { title: { S: query.title } },
+			Key: { leagueId: { S: leagueId }, title: { S: title } },
 			UpdateExpression: `SET clipDrafts[${query.clipIndex}] = :clip`,
 			ExpressionAttributeValues: marshall({ ":clip": clip }),
 		});
@@ -79,13 +78,14 @@ export async function PUT(req: NextRequest) {
 	}
 }
 
-export async function DELETE(req: NextRequest) {
-	const query = {
-		title: req.nextUrl.searchParams.get("title"),
-		clipIndex: req.nextUrl.searchParams.get("clipIndex"),
-	};
+export async function DELETE(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+) {
+	const { leagueId, title } = await params;
+	const query = { clipIndex: req.nextUrl.searchParams.get("clipIndex") };
 
-	if (!query.title || !query.clipIndex)
+	if (!query.clipIndex)
 		return NextResponse.json(
 			{ error: "Missing required parameters" },
 			{ status: 400 }
@@ -94,7 +94,7 @@ export async function DELETE(req: NextRequest) {
 	try {
 		const command = new UpdateItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { title: { S: query.title } },
+			Key: { leagueId: { S: leagueId }, title: { S: title } },
 			UpdateExpression: `REMOVE clipDrafts[${query.clipIndex}]`,
 		});
 

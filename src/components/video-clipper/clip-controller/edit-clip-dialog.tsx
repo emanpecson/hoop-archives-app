@@ -10,6 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { tempLeagueId } from "@/data/temp";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { ClipDraft } from "@/types/clip-draft";
 import {
@@ -58,9 +59,9 @@ export default function EditClipDialog(props: EditClipDialogProps) {
 	const clipIndex = unsortedClips.findIndex(
 		(x) => x.startTime === props.clip.startTime
 	);
-	const clipEndpoint = `/api/ddb/game-drafts/clip-drafts?title=${
+	const clipEndpoint = `/api/ddb/${tempLeagueId}/game-drafts/${
 		draft!.title
-	}&clipIndex=${clipIndex}`;
+	}/clip-drafts?clipIndex=${clipIndex}`;
 
 	const onSubmit = handleSubmit(
 		(data) => saveChanges(data),

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { debounce } from "lodash";
 import { CheckUniqueTitleResponse } from "@/types/api/check-unique-title";
+import { tempLeagueId } from "@/data/temp";
 
 const fileNameSafeRegex = /^[a-zA-Z0-9_-]+$/;
 
@@ -8,7 +9,9 @@ const debouncedTitleCheck = debounce(
 	async (title: string): Promise<boolean> => {
 		try {
 			const res = await fetch(
-				`/api/ddb/game-drafts/check-unique?title=${encodeURIComponent(title)}`
+				`/api/ddb/${tempLeagueId}/game-drafts/check-unique?title=${encodeURIComponent(
+					title
+				)}`
 			);
 			const { titleExists }: CheckUniqueTitleResponse = await res.json();
 			console.log("title exists:", titleExists);

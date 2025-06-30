@@ -14,10 +14,7 @@ export async function GET(
 	try {
 		const command = new GetCommand({
 			TableName: process.env.AWS_DDB_GAMES_TABLE,
-			Key: {
-				leagueId, // partition key
-				title, // sort key
-			},
+			Key: { leagueId, title },
 		});
 
 		const { Item } = await docClient.send(command);

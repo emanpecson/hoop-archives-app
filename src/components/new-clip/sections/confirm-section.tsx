@@ -1,5 +1,6 @@
 import FormSection from "@/components/form-section";
 import { Button } from "@/components/ui/button";
+import { tempLeagueId } from "@/data/temp";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { NewClipFormSectionProps } from "@/types/form-section";
 import { buildClipDraft } from "@/utils/clip-form";
@@ -12,7 +13,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 			const newClip = buildClipDraft(props.form, props.clipTime);
 
 			const res = await fetch(
-				`/api/ddb/game-drafts/clip-drafts?title=${draft.title}`,
+				`/api/ddb/${tempLeagueId}/game-drafts/${draft.title}/clip-drafts`,
 				{
 					method: "POST",
 					body: JSON.stringify(newClip),

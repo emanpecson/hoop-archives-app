@@ -48,24 +48,18 @@ const gameFilter = (
 	return [];
 };
 
-export async function GET(req: NextRequest) {
+export async function GET(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string }> }
+) {
+	const { leagueId } = await params;
 	const query = {
 		exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
-		leagueId: req.nextUrl.searchParams.get("leagueId"),
 		title: req.nextUrl.searchParams.get("title") || null,
 		startDate: req.nextUrl.searchParams.get("startDate") || null,
 		endDate: req.nextUrl.searchParams.get("endDate") || null,
 		playerIds: req.nextUrl.searchParams.getAll("playerIds[]") || null,
 	};
-
-	console.log("query:", query);
-
-	if (!query.leagueId) {
-		return NextResponse.json(
-			{ error: "Missing query parameter: leagueId" },
-			{ status: 400 }
-		);
-	}
 
 	if (!query.exclusiveStartKey) {
 		return NextResponse.json(
@@ -81,7 +75,7 @@ export async function GET(req: NextRequest) {
 			ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
 			KeyConditionExpression: "#leagueId = :leagueId",
 			ExpressionAttributeNames: { "#leagueId": "leagueId" },
-			ExpressionAttributeValues: { ":leagueId": query.leagueId },
+			ExpressionAttributeValues: { ":leagueId": leagueId },
 		};
 
 		const { Items, LastEvaluatedKey } = await docClient.send(

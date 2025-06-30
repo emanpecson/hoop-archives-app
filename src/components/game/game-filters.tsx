@@ -26,7 +26,7 @@ export default function GameFilters(props: GameFiltersProps) {
 	const [tempSearch, setTempSearch] = useState("");
 
 	useLoadData({
-		endpoint: `/api/ddb/players/${props.leagueId}`,
+		endpoint: `/api/ddb/${props.leagueId}/players`,
 		onDataLoaded: setPlayerOptions,
 		setIsLoading: setIsFetchingPlayerOptions,
 	});

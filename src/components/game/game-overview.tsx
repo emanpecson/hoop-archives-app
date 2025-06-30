@@ -39,13 +39,13 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 	const score = useRealtimeScore(clips, currentTime);
 
 	useLoadData({
-		endpoint: `/api/ddb/games/${leagueId}/${title}`,
+		endpoint: `/api/ddb/${leagueId}/games/${title}`,
 		onDataLoaded: setGame,
 		setIsLoading: setIsFetchingGame,
 		onError: () => toast.error("Error fetching game"),
 	});
 	useLoadData({
-		endpoint: `/api/ddb/game-clips/${title}`,
+		endpoint: `/api/ddb/${leagueId}/game-clips/${title}`,
 		onDataLoaded: setClips,
 		setIsLoading: setIsFetchingClips,
 		onError: () => toast.error("Error fetching game clips"),

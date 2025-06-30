@@ -4,7 +4,8 @@ import { Player } from "./player";
 
 export interface GameDraft {
 	// * defined in new-game
-	title: string; // partition key
+	leagueId: string; // partition key
+	title: string; // sort key
 	bucketKey: string;
 	date: string;
 	type: GameType;
