@@ -78,6 +78,7 @@ export default function GameDetails() {
 										leagueId: tempLeagueId,
 										clipId: draft.title + "_" + String(i),
 										gameTitle: draft.title,
+										date: new Date(draft.date),
 										tags: clipDraft.tags,
 										startTime: clipDraft.startTime,
 										endTime: clipDraft.endTime,

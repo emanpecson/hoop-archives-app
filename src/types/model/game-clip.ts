@@ -11,6 +11,7 @@ export interface GameClip {
 	highlightTime: number;
 	teamBeneficiary: string;
 	url: string;
+	date: Date;
 
 	offense?: OffensivePlay;
 	defense?: DefensivePlay;
