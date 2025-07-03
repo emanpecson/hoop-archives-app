@@ -1,130 +1,63 @@
 "use client";
 
-import OffenseHighlights from "@/components/highlights/offense-highlights";
-import { useLoadData } from "@/hooks/use-load-data";
-import { Player } from "@/types/model/player";
-import {
-	DefensiveHighlightsFormFields,
-	HighlightsFormFields,
-	highlightsSchema,
-	OffensiveHighlightsFormFields,
-} from "@/types/schema/highlights-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { Control, useForm } from "react-hook-form";
-import DefenseHighlights from "./defense-highlights";
-import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
-import { Loader2Icon, ShieldIcon, SwordIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import HighlightFilterDialog from "./highlight-builder-dialog";
+import { GameClip } from "@/types/model/game-clip";
+import { toast } from "sonner";
 
 interface HighlightBuilderProps {
 	leagueId: string;
 }
 
 export default function HighlightBuilder(props: HighlightBuilderProps) {
-	const router = useRouter();
-	const [playerOptions, setPlayerOptions] = useState<Player[]>([]);
-	const [isFetchingPlayers, setIsFetchingPlayers] = useState(true);
-	const {
-		handleSubmit,
-		watch,
-		control,
-		setValue,
-		formState: { errors },
-	} = useForm<HighlightsFormFields>({
-		resolver: zodResolver(highlightsSchema),
-		defaultValues: { play: "offense" },
-	});
+	const [open, setOpen] = useState(false);
+	const [clips, setClips] = useState<GameClip[]>([]);
+	const [isFetchingClips, setIsFetchingClips] = useState(false);
+	const [queries, setQueries] = useState<string[]>([]);
+	// const [selectedClipIds, setSelectedClipIds] = useState<string[]>([]);
 
-	useLoadData({
-		endpoint: `/api/ddb/${props.leagueId}/players`,
-		onDataLoaded: setPlayerOptions,
-		setIsLoading: setIsFetchingPlayers,
-	});
+	useEffect(() => {
+		const fetchClips = async () => {
+			try {
+				setIsFetchingClips(true);
 
-	const playTypes = { offense: SwordIcon, defense: ShieldIcon };
-	const selectedPlay = watch("play");
+				const queryString = queries.join("&");
+				const url = `/api/ddb/${props.leagueId}/game-clips?${queryString}`;
 
-	// on submission: build out the filters as params onto a new page
-	const onSubmit = (data: HighlightsFormFields) => {
-		console.log(data);
-		const url = `/${props.leagueId}/highlights?`;
-		const queries = [];
+				const res = await fetch(url);
+				const data = await res.json();
 
-		if (data.tags) data.tags.forEach((t) => queries.push(`tags[]=${t}`));
-
-		if (data.play === "offense") {
-			if (data.playerScoring)
-				queries.push(`playerScoringId=${data.playerScoring.playerId}`);
-			if (data.playerAssisting)
-				queries.push(`playerAssistingId=${data.playerAssisting.playerId}`);
-			if (data.playersDefending) {
-				data.playersDefending.forEach((p) =>
-					queries.push(`playersDefendingIds[]=${p.playerId}`)
-				);
+				setClips(data);
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			} catch (error) {
+				toast.error("Error fetching clips");
+			} finally {
+				setIsFetchingClips(false);
 			}
-		} else {
-			if (data.playerDefending)
-				queries.push(`playerDefendingId=${data.playerDefending.playerId}`);
-			if (data.playerStopped)
-				queries.push(`playerStoppedId=${data.playerStopped.playerId}`);
-		}
-
-		router.push(url + queries.join("&"));
-	};
+		};
+		fetchClips();
+	}, [props.leagueId, queries]);
 
 	return (
-		<div className="mx-auto max-w-[50rem] w-full my-8 border border-input-border bg-input-background rounded-2xl p-8">
-			<div className="flex divide-x divide-neutral-700">
-				<div className="space-y-4 flex flex-col pr-2">
-					{Object.keys(playTypes).map((play) => {
-						const Icon = playTypes[play as keyof typeof playTypes];
-						return (
-							<Button
-								key={play}
-								type="button"
-								className={cn(
-									selectedPlay === play ? "text-white" : "text-input-muted"
-								)}
-								onClick={() => setValue("play", play as keyof typeof playTypes)}
-							>
-								<Icon />
-								<span className="capitalize">{play}</span>
-							</Button>
-						);
-					})}
-				</div>
+		<div className="flex flex-col space-y-8">
+			<button onClick={() => setOpen(true)}>open dialog</button>
+			<HighlightFilterDialog
+				leagueId={props.leagueId}
+				open={open}
+				setOpen={setOpen}
+				onSubmit={setQueries}
+			/>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
-					{isFetchingPlayers && (
-						<div className="flex place-items-center space-x-2 justify-center opacity-60">
-							<Loader2Icon className="animate-spin" />
-							<span>Loading players...</span>
-						</div>
-					)}
+			<div>{JSON.stringify(queries)}</div>
+			<div>{`/api/ddb/${props.leagueId}/game-clips?${queries.join("&")}`}</div>
 
-					{selectedPlay === "offense" ? (
-						<OffenseHighlights
-							playerOptions={playerOptions}
-							control={control as Control<OffensiveHighlightsFormFields>}
-							errors={errors}
-						/>
-					) : (
-						<DefenseHighlights
-							playerOptions={playerOptions}
-							control={control as Control<DefensiveHighlightsFormFields>}
-							errors={errors}
-						/>
-					)}
-
-					<div className="flex justify-end">
-						<Button variant="input" className="w-fit" type="submit">
-							Show highlights
-						</Button>
-					</div>
-				</form>
-			</div>
+			{isFetchingClips ? (
+				<p>Loading clips...</p>
+			) : clips && clips.length > 0 ? (
+				<div>{JSON.stringify(clips)}</div>
+			) : (
+				<p>no clips</p>
+			)}
 		</div>
 	);
 }

@@ -18,6 +18,7 @@ export async function GET(
 	try {
 		const queryInput: QueryCommandInput = {
 			TableName: process.env.AWS_DDB_GAME_CLIPS_TABLE,
+			IndexName: "GameTitleIndex",
 			KeyConditionExpression: "leagueId = :leagueId AND gameTitle = :gameTitle",
 			ExpressionAttributeValues: {
 				":gameTitle": gameTitle,

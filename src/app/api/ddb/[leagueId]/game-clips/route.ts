@@ -55,7 +55,7 @@ const filterClips = (
 				return false;
 			});
 		}
-		if (filters.playersDefendingIds) {
+		if (filters.playersDefendingIds && filters.playersDefendingIds.length > 0) {
 			clips = clips.filter((clip) => {
 				const defenders = clip.offense!.playersDefending;
 				if (defenders && defenders.length > 0) {
@@ -86,6 +86,7 @@ const filterClips = (
 		}
 	}
 
+	console.log("clips:", clips);
 	return clips;
 };
 
@@ -100,9 +101,7 @@ export async function GET(
 		const queryInput: QueryCommandInput = {
 			TableName: process.env.AWS_DDB_GAME_CLIPS_TABLE,
 			KeyConditionExpression: "leagueId = :leagueId",
-			ExpressionAttributeValues: {
-				":leagueId": leagueId,
-			},
+			ExpressionAttributeValues: { ":leagueId": leagueId },
 		};
 
 		const { Items } = await docClient.send(new QueryCommand(queryInput));
