@@ -18,7 +18,6 @@ import { cn } from "@/lib/utils";
 import { Loader2Icon, ShieldIcon, SwordIcon } from "lucide-react";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
@@ -72,7 +71,6 @@ export default function HighlightFilterDialog(
 	};
 
 	const onSubmit = (data: HighlightsFormFields) => {
-		console.log(data);
 		const queries = [];
 
 		if (data.tags) data.tags.forEach((t) => queries.push(`tags[]=${t}`));
@@ -99,6 +97,7 @@ export default function HighlightFilterDialog(
 		}
 
 		props.onSubmit(queries, data);
+		props.setOpen(false);
 	};
 
 	return (
@@ -131,7 +130,12 @@ export default function HighlightFilterDialog(
 						})}
 					</div>
 
-					<form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+					<form
+						onSubmit={handleSubmit(onSubmit, (errors) =>
+							console.log("errors:", errors)
+						)}
+						className="w-full space-y-4"
+					>
 						{isFetchingPlayers && (
 							<div className="flex place-items-center space-x-2 justify-center opacity-60">
 								<Loader2Icon className="animate-spin" />
@@ -172,16 +176,15 @@ export default function HighlightFilterDialog(
 							>
 								Reset filters
 							</Button>
-							<DialogClose asChild>
-								<Button
-									variant="input"
-									className="w-fit"
-									type="submit"
-									disabled={!isDirty}
-								>
-									Apply filters
-								</Button>
-							</DialogClose>
+
+							<Button
+								variant="input"
+								className="w-fit"
+								type="submit"
+								disabled={!isDirty}
+							>
+								Apply filters
+							</Button>
 						</div>
 					</form>
 				</div>

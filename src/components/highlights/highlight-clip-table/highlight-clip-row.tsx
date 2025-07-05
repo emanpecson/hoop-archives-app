@@ -72,7 +72,7 @@ export default function HighlightClipRow(props: HighlightClipRowProps) {
 					<span>{homePlayers.join(" + ")}</span>
 					{awayPlayers.length > 0 && (
 						<>
-							<span>vs</span>
+							<span className="text-neutral-500">vs</span>
 							<span>{awayPlayers.join(" + ")}</span>
 						</>
 					)}
