@@ -3,7 +3,7 @@ import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { GameClip } from "@/types/model/game-clip";
-import { XIcon } from "lucide-react";
+import { CircleCheckIcon, FilterIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 
@@ -48,9 +48,9 @@ export default function HighlightClipManager(props: HighlightClipManagerProps) {
 										onClick={() => removeClip(clip)}
 										variant="ghost"
 										size="icon"
-										className="rounded-full size-7"
+										className="rounded-full size-6"
 									>
-										<XIcon size={20} />
+										<XIcon />
 									</Button>
 									<span>{clip.clipId}</span>
 								</li>
@@ -66,12 +66,14 @@ export default function HighlightClipManager(props: HighlightClipManagerProps) {
 
 			<div className="space-y-2">
 				<Button variant="input" onClick={() => props.onAddFiltersOpen(true)}>
-					Add filters
+					<FilterIcon />
+					<span>Filters</span>
 				</Button>
 
-				<Link href={highlightsUrl}>
-					<Button variant="input">Complete highlights</Button>
-				</Link>
+				<Button disabled={props.selectedClips.length === 0} variant="input">
+					<CircleCheckIcon />
+					<Link href={highlightsUrl}>Complete</Link>
+				</Button>
 			</div>
 		</DashboardCard>
 	);

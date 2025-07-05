@@ -31,9 +31,25 @@ export default function HighlightClipRow(props: HighlightClipRowProps) {
 	const playing = props.activeClipId && props.activeClipId === clip.clipId;
 	const length = `${(clip.endTime - clip.startTime).toFixed(1)}s`;
 	const date = new Date(clip.date).toLocaleDateString();
+
 	const primaryPlayer = clip.offense
 		? playerName(clip.offense.playerScoring)
 		: playerName(clip.defense!.playerDefending);
+
+	const homePlayers: string[] = [primaryPlayer];
+	let awayPlayers: string[] = [];
+
+	if (clip.offense) {
+		const assister = clip.offense.playerAssisting;
+		if (assister) homePlayers.push(playerName(assister));
+
+		const defenders = clip.offense.playersDefending;
+		if (defenders && defenders.length > 0)
+			awayPlayers = defenders.map((def) => playerName(def));
+	} else if (clip.defense) {
+		const offender = clip.defense.playerStopped;
+		if (offender) awayPlayers.push(playerName(offender));
+	}
 
 	return (
 		<tr className={cn(playing && "bg-blue-500/10 text-blue-400", "text-sm")}>
@@ -48,8 +64,20 @@ export default function HighlightClipRow(props: HighlightClipRowProps) {
 			<td className="px-4 py-1.5 text-left">{clip.clipId}</td>
 			<td className="px-4 py-1.5 text-left">{date}</td>
 			<td className="px-4 py-1.5 text-left">{length}</td>
-			<td className="px-4 py-1.5 text-left">{clip.tags.join(", ")}</td>
-			<td className="px-4 py-1.5 text-left">{primaryPlayer}</td>
+			<td className="px-4 py-1.5 text-left max-w-[16rem]">
+				{clip.tags.join(" ")}
+			</td>
+			<td className="px-4 py-1.5 text-left max-w-[16rem]">
+				<div className="space-x-1.5">
+					<span>{homePlayers.join(" + ")}</span>
+					{awayPlayers.length > 0 && (
+						<>
+							<span>vs</span>
+							<span>{awayPlayers.join(" + ")}</span>
+						</>
+					)}
+				</div>
+			</td>
 			<td className="px-4 py-1.5 text-right">
 				<Button
 					variant="ghost"

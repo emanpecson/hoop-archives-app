@@ -15,7 +15,7 @@ interface HighlightClipTableProps {
 }
 
 export default function HighlightClipTable(props: HighlightClipTableProps) {
-	const headers = ["id", "date", "length", "tags", "primary player", ""];
+	const headers = ["id", "date", "length", "tags", "players", ""];
 
 	const selectAll = (checked: boolean) => {
 		if (checked) {
