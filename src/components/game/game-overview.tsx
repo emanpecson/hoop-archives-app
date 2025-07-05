@@ -11,6 +11,8 @@ import { Input } from "../ui/input";
 import { CalendarIcon, FolderPenIcon } from "lucide-react";
 import Statboard from "../video-clipper/game-details/statboard";
 import ClipPlayer from "../clip-player";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface GameOverviewProps {
 	leagueId: string;
@@ -45,31 +47,39 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 					<ClipPlayer clips={clips} />
 
 					{/* game details */}
-					<DashboardCard className="space-y-4 overflow-y-auto h-full">
-						<DashboardCardHeader text="Game Details" />
-						<div className="space-y-2">
-							<Input
-								readOnly
-								Icon={FolderPenIcon}
-								value={game ? game.title : "Loading..."}
-								className="pointer-events-none"
-							/>
-							<Input
-								readOnly
-								Icon={CalendarIcon}
-								value={
-									game ? new Date(game.date).toLocaleDateString() : "Loading..."
-								}
-								className="pointer-events-none"
-							/>
+					<DashboardCard className="h-full flex flex-col justify-between">
+						<div className="space-y-4 overflow-y-auto h-full">
+							<DashboardCardHeader text="Game Details" />
+							<div className="space-y-2">
+								<Input
+									readOnly
+									Icon={FolderPenIcon}
+									value={game ? game.title : "Loading..."}
+									className="pointer-events-none"
+								/>
+								<Input
+									readOnly
+									Icon={CalendarIcon}
+									value={
+										game
+											? new Date(game.date).toLocaleDateString()
+											: "Loading..."
+									}
+									className="pointer-events-none"
+								/>
+							</div>
+							<hr className="text-neutral-700" />
+
+							<Statboard label="Home Stats" clips={clips} players={game.home} />
+
+							<hr className="text-neutral-700" />
+
+							<Statboard label="Away Stats" clips={clips} players={game.away} />
 						</div>
-						<hr className="text-neutral-700" />
 
-						<Statboard label="Home Stats" clips={clips} players={game.home} />
-
-						<hr className="text-neutral-700" />
-
-						<Statboard label="Away Stats" clips={clips} players={game.away} />
+						<Button variant="input">
+							<Link href="/">Return to games</Link>
+						</Button>
 					</DashboardCard>
 				</div>
 			) : (
