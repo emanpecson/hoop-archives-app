@@ -20,6 +20,7 @@ const filterClips = (
 	const filters = {
 		play: query.get("play"),
 		tags: query.getAll("tags[]"),
+		clipIds: query.getAll("clipIds[]"),
 
 		// * offense filters
 		playerScoringId: query.get("playerScoringId"),
@@ -30,6 +31,10 @@ const filterClips = (
 		playerDefendingId: query.get("playerDefendingId"),
 		playerStoppedId: query.get("playerStoppedId"),
 	};
+
+	if (filters.clipIds && filters.clipIds.length > 0) {
+		clips = clips.filter((clip) => filters.clipIds.includes(clip.clipId));
+	}
 
 	// filter clips that have at least one of the filtered tags
 	if (filters.tags && filters.tags.length > 0) {
@@ -86,7 +91,6 @@ const filterClips = (
 		}
 	}
 
-	console.log("clips:", clips);
 	return clips;
 };
 

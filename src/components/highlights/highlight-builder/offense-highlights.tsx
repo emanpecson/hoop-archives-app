@@ -1,12 +1,13 @@
 import { Player } from "@/types/model/player";
 import { OffensiveHighlightsFormFields } from "@/types/schema/highlights-schema";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import FormatInputGroup from "../new-clip/sections/clip-draft/format-input-group";
-import PlayerSelect from "../input/player-select";
-import PlayerMultiSelect from "../input/player-multi-select";
-import TagsCombobox from "../input/tags-combobox";
+import FormatInputGroup from "@/components/new-clip/sections/clip-draft/format-input-group";
+import PlayerSelect from "@/components/input/player-select";
+import PlayerMultiSelect from "@/components/input/player-multi-select";
+import TagsCombobox from "@/components/input/tags-combobox";
 
 interface OffenseDetailsProps {
+	key: number;
 	playerOptions: Player[];
 	control: Control<OffensiveHighlightsFormFields>;
 	errors: Partial<FieldErrors<OffensiveHighlightsFormFields>>;

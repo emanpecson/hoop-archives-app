@@ -1,4 +1,4 @@
-import HighlightBuilder from "@/components/highlights/highlight-builder";
+import HighlightBuilder from "@/components/highlights/highlight-builder/highlight-builder";
 
 export default async function HighlightBuilderPage({
 	params,

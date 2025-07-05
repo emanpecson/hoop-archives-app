@@ -1,6 +1,6 @@
 "use client";
 
-import OffenseHighlights from "@/components/highlights/offense-highlights";
+import OffenseHighlights from "@/components/highlights/highlight-builder/offense-highlights";
 import { useLoadData } from "@/hooks/use-load-data";
 import { Player } from "@/types/model/player";
 import {
@@ -10,10 +10,10 @@ import {
 	OffensiveHighlightsFormFields,
 } from "@/types/schema/highlights-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import DefenseHighlights from "./defense-highlights";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
 import { Loader2Icon, ShieldIcon, SwordIcon } from "lucide-react";
 import {
@@ -23,13 +23,14 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "../ui/dialog";
+} from "../../ui/dialog";
 
 interface HighlightFilterDialogProps {
 	open: boolean;
 	setOpen: (open: boolean) => void;
 	leagueId: string;
-	onSubmit: (queries: string[]) => void;
+	onSubmit: (queries: string[], form: HighlightsFormFields) => void;
+	defaultFields: HighlightsFormFields | null;
 }
 
 export default function HighlightFilterDialog(
@@ -42,10 +43,11 @@ export default function HighlightFilterDialog(
 		watch,
 		control,
 		setValue,
-		formState: { errors },
+		reset,
+		formState: { errors, isDirty },
 	} = useForm<HighlightsFormFields>({
 		resolver: zodResolver(highlightsSchema),
-		defaultValues: { play: "offense" },
+		defaultValues: props.defaultFields ?? { play: "offense" },
 	});
 
 	useLoadData({
@@ -54,8 +56,20 @@ export default function HighlightFilterDialog(
 		setIsLoading: setIsFetchingPlayers,
 	});
 
+	useEffect(() => {
+		if (props.open) {
+			reset(props.defaultFields ?? { play: "offense" });
+		}
+	}, [props.open, reset, props.defaultFields]);
+
 	const playTypes = { offense: SwordIcon, defense: ShieldIcon };
 	const selectedPlay = watch("play");
+	const [resetKey, setResetKey] = useState(0);
+
+	const handleReset = () => {
+		reset({ play: "offense" });
+		setResetKey((k) => k + 1);
+	};
 
 	const onSubmit = (data: HighlightsFormFields) => {
 		console.log(data);
@@ -84,7 +98,7 @@ export default function HighlightFilterDialog(
 				queries.push(`playerStoppedId=${data.playerStopped.playerId}`);
 		}
 
-		props.onSubmit(queries);
+		props.onSubmit(queries, data);
 	};
 
 	return (
@@ -127,22 +141,45 @@ export default function HighlightFilterDialog(
 
 						{selectedPlay === "offense" ? (
 							<OffenseHighlights
+								key={resetKey} // * re-render on reset
 								playerOptions={playerOptions}
 								control={control as Control<OffensiveHighlightsFormFields>}
 								errors={errors}
 							/>
 						) : (
 							<DefenseHighlights
+								key={resetKey} // * re-render on reset
 								playerOptions={playerOptions}
 								control={control as Control<DefensiveHighlightsFormFields>}
 								errors={errors}
 							/>
 						)}
 
-						<div className="flex justify-end">
+						<div className="flex justify-end space-x-2">
+							<Button
+								variant="input"
+								className="w-fit"
+								type="button"
+								onClick={handleReset}
+								disabled={
+									JSON.stringify(watch()) ===
+									JSON.stringify({
+										play: "offense",
+										playersDefending: [],
+										tags: [],
+									})
+								}
+							>
+								Reset filters
+							</Button>
 							<DialogClose asChild>
-								<Button variant="input" className="w-fit" type="submit">
-									Show highlights
+								<Button
+									variant="input"
+									className="w-fit"
+									type="submit"
+									disabled={!isDirty}
+								>
+									Apply filters
 								</Button>
 							</DialogClose>
 						</div>
