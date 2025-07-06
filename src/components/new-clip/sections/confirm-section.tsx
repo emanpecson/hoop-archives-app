@@ -4,6 +4,7 @@ import { tempLeagueId } from "@/data/temp";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { NewClipFormSectionProps } from "@/types/form-section";
 import { buildClipDraft } from "@/utils/clip-form";
+import { clipHeadline } from "@/utils/clip-headline";
 
 export function ConfirmSection(props: NewClipFormSectionProps) {
 	const draft = useVideoClipperStore((state) => state.draft!);
@@ -33,8 +34,18 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 
 	return (
 		<FormSection {...props} handleSubmit={undefined}>
-			<Button type="button" onClick={saveClipDraft}>
-				create clip
+			<div className="space-y-4 text-sm">
+				<p>{clipHeadline(buildClipDraft(props.form, props.clipTime))}</p>
+				<p>{(props.form.tags as string[]).join(" ")}</p>
+			</div>
+
+			<Button
+				type="button"
+				variant="input"
+				className="w-fit"
+				onClick={saveClipDraft}
+			>
+				Create clip
 			</Button>
 		</FormSection>
 	);
