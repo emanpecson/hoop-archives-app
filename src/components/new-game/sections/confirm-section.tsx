@@ -1,26 +1,50 @@
 "use client";
 
 import FormSection from "@/components/form-section";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { tempLeagueId } from "@/data/temp";
 import { NewGameFormSectionProps } from "@/types/form-section";
 import { GameDraft } from "@/types/model/game-draft";
 import { S3Uploader } from "@/utils/s3-uploader";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function ConfirmSection(props: NewGameFormSectionProps) {
-	const [isComplete, setIsComplete] = useState(false);
 	const s3Uploader = new S3Uploader();
 	const router = useRouter();
+	const [progress, setProgress] = useState(0);
+
+	const s3Upload = async (key: string, vid: File) => {
+		// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
+		const partSize = 10 * 1024 * 1024;
+
+		const { uploadId, presignedUrls } = await s3Uploader.startUpload(
+			key,
+			vid,
+			partSize
+		);
+		const uploadParts = await s3Uploader.uploadByParts(
+			vid,
+			partSize,
+			presignedUrls,
+			(p) => {
+				console.log("update:", p);
+				setProgress(p);
+			}
+		);
+		await s3Uploader.completeUpload(uploadId, key, uploadParts);
+	};
 
 	const uploadVideo = async (videoFile: File) => {
 		try {
 			const ext = videoFile.name.substring(videoFile.name.indexOf("."));
 
-			await s3Uploader.handleUpload(props.form.title + ext, videoFile);
-			setIsComplete(true);
+			await s3Upload(props.form.title + ext, videoFile);
 		} catch (error) {
-			console.log(error); // TODO: notify
+			console.log(error);
+			toast.error("Failed to upload video");
 		}
 	};
 
@@ -57,18 +81,27 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 
 	return (
 		<FormSection {...props} handleSubmit={undefined}>
-			{isComplete && props.videoFile ? (
-				<div>
-					<button
+			<div className="text-sm flex flex-col space-y-2">
+				<label>
+					Video status:{" "}
+					{progress !== 1
+						? `Preparing... ${(progress * 100).toFixed(0)}%`
+						: "Ready"}
+				</label>
+
+				{progress !== 1 ? (
+					<Progress value={progress * 100} />
+				) : (
+					<Button
+						className="w-fit"
+						variant="input"
 						type="button"
 						onClick={() => createDraft(props.form.title, props.videoFile!)}
 					>
 						Create project
-					</button>
-				</div>
-			) : (
-				<p>Loading...</p>
-			)}
+					</Button>
+				)}
+			</div>
 		</FormSection>
 	);
 }

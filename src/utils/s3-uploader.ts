@@ -1,22 +1,5 @@
 export class S3Uploader {
-	public handleUpload = async (key: string, vid: File) => {
-		// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
-		const partSize = 10 * 1024 * 1024;
-
-		console.time("uploadTimer");
-
-		const { uploadId, presignedUrls } = await this.startUpload(
-			key,
-			vid,
-			partSize
-		);
-		const uploadParts = await this.uploadByParts(vid, partSize, presignedUrls);
-		await this.completeUpload(uploadId, key, uploadParts);
-
-		console.timeEnd("uploadTimer");
-	};
-
-	private startUpload = async (key: string, vid: File, partSize: number) => {
+	public startUpload = async (key: string, vid: File, partSize: number) => {
 		const res = await fetch("/api/s3/start-upload", {
 			method: "POST",
 			body: JSON.stringify({
@@ -32,11 +15,14 @@ export class S3Uploader {
 		return data;
 	};
 
-	private uploadByParts = async (
+	public uploadByParts = async (
 		vid: File,
 		partSize: number,
-		presignedUrls: string[]
+		presignedUrls: string[],
+		onProgress?: (progress: number) => void
 	) => {
+		let count = 0;
+
 		const uploadParts = await Promise.all(
 			presignedUrls.map(async (url, i) => {
 				const start = i * partSize;
@@ -47,6 +33,9 @@ export class S3Uploader {
 
 				if (!res.ok) throw new Error(`Upload failed at part ${i + 1}`);
 
+				count += 1;
+				if (onProgress) onProgress(count / presignedUrls.length);
+
 				// remove wrapped quotations
 				const eTag = res.headers.get("ETag");
 				return { ETag: eTag, PartNumber: i + 1 };
@@ -56,7 +45,7 @@ export class S3Uploader {
 		return uploadParts;
 	};
 
-	private completeUpload = async (
+	public completeUpload = async (
 		uploadId: string,
 		key: string,
 		parts: { ETag: string | null; PartNumber: number }[]
