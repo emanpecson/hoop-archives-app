@@ -1,7 +1,8 @@
 import { RefObject } from "react";
 import VideoOverlayWrapper from "./video-overlay-wrapper";
-import { PauseIcon, PlayIcon, Volume2Icon } from "lucide-react";
+import { PauseIcon, PlayIcon } from "lucide-react";
 import { getTimestamp } from "@/utils/time";
+import VolumeSlider from "@/components/volume-slider";
 
 interface VideoOverlayControllerProps {
 	videoRef: RefObject<HTMLVideoElement | null>;
@@ -42,9 +43,7 @@ export default function VideoOverlayController(
 					)}
 				</button>
 				<span className="pointer-events-none">{timestamps}</span>
-				<button type="button">
-					<Volume2Icon strokeWidth={1.5} />
-				</button>
+				<VolumeSlider videoRef={props.videoRef} />
 			</VideoOverlayWrapper>
 		);
 	}

@@ -6,10 +6,10 @@ import {
 	ChevronRightIcon,
 	PauseIcon,
 	PlayIcon,
-	Volume2Icon,
 } from "lucide-react";
 import { useRealtimeScore } from "@/hooks/use-realtime-score";
 import { cn } from "@/lib/utils";
+import VolumeSlider from "./volume-slider";
 
 interface ClipPlayerProps {
 	clips: GameClip[];
@@ -114,7 +114,7 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 					)}
 				>
 					<VideoOverlayWrapper>
-						<Volume2Icon strokeWidth={1.5} />
+						<VolumeSlider videoRef={vid} />
 						<div className="flex place-items-center space-x-2">
 							<button
 								onClick={handlePrevClip}
