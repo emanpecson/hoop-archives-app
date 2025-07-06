@@ -114,7 +114,7 @@ export default function HighlightFilterDialog(
 					<DialogDescription>Choose your highlights</DialogDescription>
 				</DialogHeader>
 
-				<div className="flex divide-x divide-neutral-700">
+				<div className="flex divide-x divide-neutral-800">
 					<div className="space-y-4 flex flex-col pr-2">
 						{Object.keys(playTypes).map((play) => {
 							const Icon = playTypes[play as keyof typeof playTypes];

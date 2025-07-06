@@ -68,11 +68,11 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 									className="pointer-events-none"
 								/>
 							</div>
-							<hr className="text-neutral-700" />
+							<hr className="border-neutral-800" />
 
 							<Statboard label="Home Stats" clips={clips} players={game.home} />
 
-							<hr className="text-neutral-700" />
+							<hr className="border-neutral-800" />
 
 							<Statboard label="Away Stats" clips={clips} players={game.away} />
 						</div>

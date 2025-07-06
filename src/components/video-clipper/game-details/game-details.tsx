@@ -154,7 +154,7 @@ export default function GameDetails() {
 					className="pointer-events-none"
 				/>
 				<CardButton>
-					<div className="divide-y divide-neutral-700 w-full">
+					<div className="divide-y divide-neutral-800 w-full">
 						<h3 className="pb-2 flex place-items-center gap-2">
 							<SwordsIcon size={20} className="text-input-muted" />
 							<span className="text-foreground font-medium">
@@ -171,7 +171,7 @@ export default function GameDetails() {
 				</CardButton>
 			</div>
 
-			<hr className="text-neutral-700" />
+			<hr className="text-neutral-800" />
 
 			<Statboard
 				label="Home Stats"
@@ -179,7 +179,7 @@ export default function GameDetails() {
 				players={memoHomePlayers}
 			/>
 
-			<hr className="text-neutral-700" />
+			<hr className="text-neutral-800" />
 
 			<Statboard
 				label="Away Stats"

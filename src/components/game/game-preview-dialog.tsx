@@ -47,7 +47,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 					<DialogDescription>View game details</DialogDescription>
 				</DialogHeader>
 
-				<hr className="border-neutral-700" />
+				<hr className="border-neutral-800" />
 
 				<div>
 					{isFetchingClips ? (
@@ -62,7 +62,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 					)}
 				</div>
 
-				<hr className="border-neutral-700" />
+				<hr className="border-neutral-800" />
 
 				<DialogFooter className="w-full flex justify-end">
 					<Button variant="outline">

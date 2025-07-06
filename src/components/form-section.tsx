@@ -42,11 +42,11 @@ export default function FormSection(props: FormSectionProps) {
 				</div>
 			)}
 
-			<hr className="border-neutral-700" />
+			<hr className="border-neutral-800" />
 
 			<div className="space-y-4">{props.children}</div>
 
-			<hr className="border-neutral-700" />
+			<hr className="border-neutral-800" />
 
 			{/* footer */}
 			{props.sections.length > 0 && (
