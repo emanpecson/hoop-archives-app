@@ -21,6 +21,8 @@ const filterClips = (
 		play: query.get("play"),
 		tags: query.getAll("tags[]"),
 		clipIds: query.getAll("clipIds[]"),
+		dateStart: query.get("dateStart"),
+		dateEnd: query.get("dateEnd"),
 
 		// * offense filters
 		playerScoringId: query.get("playerScoringId"),
@@ -41,6 +43,17 @@ const filterClips = (
 		clips = clips.filter((clip) =>
 			clip.tags.some((tag) => filters.tags.includes(tag))
 		);
+	}
+
+	// filter by dates
+	const start = filters.dateStart;
+	const end = filters.dateEnd;
+
+	if (start) {
+		clips = clips.filter((clip) => new Date(start) <= new Date(clip.date));
+	}
+	if (end) {
+		clips = clips.filter((clip) => new Date(clip.date) <= new Date(end));
 	}
 
 	// filter offensive clips
@@ -113,9 +126,7 @@ export async function GET(
 
 		return NextResponse.json(filteredClips, { status: 200 });
 	} catch (error) {
-		return NextResponse.json(
-			{ error: "Server error: " + error },
-			{ status: 500 }
-		);
+		console.error(error);
+		return NextResponse.json({ error: "Server error" }, { status: 500 });
 	}
 }

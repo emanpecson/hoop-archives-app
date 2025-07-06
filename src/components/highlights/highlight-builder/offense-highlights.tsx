@@ -5,6 +5,7 @@ import FormatInputGroup from "@/components/new-clip/sections/clip-draft/format-i
 import PlayerSelect from "@/components/input/player-select";
 import PlayerMultiSelect from "@/components/input/player-multi-select";
 import TagsCombobox from "@/components/input/tags-combobox";
+import DateRangeInput from "@/components/input/date-range-input";
 
 interface OffenseDetailsProps {
 	key: number;
@@ -66,13 +67,25 @@ export default function OffenseHighlights(props: OffenseDetailsProps) {
 					),
 				},
 				{
-					label: "Tags*",
+					label: "Tags",
 					input: (
 						<Controller
 							control={props.control}
 							name="tags"
 							render={({ field }) => (
 								<TagsCombobox {...field} error={!!props.errors.tags} />
+							)}
+						/>
+					),
+				},
+				{
+					label: "Date range",
+					input: (
+						<Controller
+							control={props.control}
+							name="dateRange"
+							render={({ field }) => (
+								<DateRangeInput {...field} error={!!props.errors.dateRange} />
 							)}
 						/>
 					),

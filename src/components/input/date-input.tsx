@@ -12,12 +12,12 @@ interface DateInputProps {
 	onChange?: (date: Date | undefined) => void;
 	error?: boolean;
 	placeholder?: string;
+	className?: string;
 }
 
 export default function DateInput(props: DateInputProps) {
 	const handleSelect = (date?: Date) => {
 		if (props.onChange) {
-			console.log("prop:", props.value, date);
 			props.onChange(
 				props.value?.toDateString() === date?.toDateString() ? undefined : date
 			);
@@ -27,7 +27,7 @@ export default function DateInput(props: DateInputProps) {
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
-				<div className="relative">
+				<div className="relative w-full">
 					<CalendarIcon
 						className={cn(
 							"absolute top-2 left-3",
@@ -39,7 +39,10 @@ export default function DateInput(props: DateInputProps) {
 						type="button"
 						size="md"
 						variant="input"
-						className={cn(props.error && "border border-error-foreground/50")}
+						className={cn(
+							props.error && "border border-error-foreground/50",
+							props.className
+						)}
 					>
 						<span
 							className={cn(

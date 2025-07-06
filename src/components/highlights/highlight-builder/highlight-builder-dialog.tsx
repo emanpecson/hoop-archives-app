@@ -71,9 +71,15 @@ export default function HighlightFilterDialog(
 	};
 
 	const onSubmit = (data: HighlightsFormFields) => {
-		const queries = [];
+		const queries: string[] = [];
 
 		if (data.tags) data.tags.forEach((t) => queries.push(`tags[]=${t}`));
+
+		const dates = data.dateRange;
+		if (dates) {
+			if (dates.start) queries.push(`dateStart=${dates.start.toISOString()}`);
+			if (dates.end) queries.push(`dateEnd=${dates.end.toISOString()}`);
+		}
 
 		if (data.play === "offense") {
 			queries.push("play=offense");

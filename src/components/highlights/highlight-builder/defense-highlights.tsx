@@ -4,6 +4,7 @@ import { Control, Controller, FieldErrors } from "react-hook-form";
 import FormatInputGroup from "@/components/new-clip/sections/clip-draft/format-input-group";
 import PlayerSelect from "@/components/input/player-select";
 import TagsCombobox from "@/components/input/tags-combobox";
+import DateRangeInput from "@/components/input/date-range-input";
 
 interface DefenseHighlightsProps {
 	key: number;
@@ -56,6 +57,18 @@ export default function DefenseHighlights(props: DefenseHighlightsProps) {
 							name="tags"
 							render={({ field }) => (
 								<TagsCombobox {...field} error={!!props.errors.tags} />
+							)}
+						/>
+					),
+				},
+				{
+					label: "Date range",
+					input: (
+						<Controller
+							control={props.control}
+							name="dateRange"
+							render={({ field }) => (
+								<DateRangeInput {...field} error={!!props.errors.dateRange} />
 							)}
 						/>
 					),

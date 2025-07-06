@@ -25,8 +25,6 @@ export default function HighlightBuilder(props: HighlightBuilderProps) {
 	const [selectedClips, setSelectedClips] = useState<GameClip[]>([]);
 
 	const handleAddFilters = (filters: string[], form: HighlightsFormFields) => {
-		console.log("form:", form); //!
-
 		setFilters(filters);
 		setFiltersForm(form);
 		setSelectedClips([]);
