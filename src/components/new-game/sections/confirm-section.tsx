@@ -29,10 +29,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 			vid,
 			partSize,
 			presignedUrls,
-			(p) => {
-				console.log("update:", p);
-				setProgress(p);
-			}
+			(p) => setProgress(p)
 		);
 		await s3Uploader.completeUpload(uploadId, key, uploadParts);
 	};
