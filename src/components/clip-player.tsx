@@ -24,12 +24,19 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 	const score = useRealtimeScore(clips, currentTime);
 	const clipIndex = useRef(0);
 	const vid = useRef<HTMLVideoElement>(null);
+	const globalTime = useRef(0);
 
 	const handlePlayPause = () => {
 		if (vid.current) {
 			if (vid.current.paused) vid.current.play();
 			else vid.current.pause();
 		}
+	};
+
+	const calculateGlobalTime = () => {
+		globalTime.current = clips
+			.slice(0, clipIndex.current)
+			.reduce((acc, clip) => acc + (clip.endTime - clip.startTime), 0);
 	};
 
 	const handlePrevClip = () => {
@@ -39,6 +46,8 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 
 			if (currClip) {
 				if (props.onClipPlaying) props.onClipPlaying(currClip.clipId);
+
+				calculateGlobalTime();
 
 				vid.current.src = currClip.url;
 				vid.current.load();
@@ -55,6 +64,8 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 			if (currClip) {
 				if (props.onClipPlaying) props.onClipPlaying(currClip.clipId);
 
+				calculateGlobalTime();
+
 				vid.current.src = currClip.url;
 				vid.current.load();
 				vid.current.play();
@@ -64,7 +75,7 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 
 	const handleTimeUpdate = () => {
 		if (vid.current) {
-			setCurrentTime(vid.current.currentTime);
+			setCurrentTime(globalTime.current + vid.current.currentTime);
 		}
 	};
 

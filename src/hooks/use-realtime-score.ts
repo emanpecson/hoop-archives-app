@@ -2,15 +2,14 @@ import { OffensivePlay } from "@/types/play";
 import { useMemo } from "react";
 
 type Score = { home: number; away: number };
+type OffensiveClip = {
+	highlightTime: number;
+	offense?: OffensivePlay;
+	teamBeneficiary: string;
+};
 
 export function useRealtimeScore(
-	clips:
-		| {
-				highlightTime: number;
-				offense?: OffensivePlay;
-				teamBeneficiary: string;
-		  }[]
-		| undefined,
+	clips: OffensiveClip[] | undefined,
 	currentTime: number
 ) {
 	return useMemo((): Score => {
@@ -18,7 +17,8 @@ export function useRealtimeScore(
 
 		if (clips) {
 			for (const clip of clips) {
-				if (clip.highlightTime <= currentTime && clip.offense) {
+				// update score when point-of-score has been reached
+				if (clip.offense && clip.highlightTime <= currentTime) {
 					if (clip.teamBeneficiary === "home") {
 						score.home += clip.offense.pointsAdded;
 					} else if (clip.teamBeneficiary === "away") {
