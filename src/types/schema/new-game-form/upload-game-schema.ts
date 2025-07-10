@@ -12,7 +12,7 @@ export const uploadGameSchema = z.object({
 			);
 		},
 		{
-			message: "File must be a video and less than 2GB",
+			message: "Please upload a video file less than 2GB",
 		}
 	),
 });

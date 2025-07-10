@@ -80,7 +80,7 @@ export default function VideoUploader(props: VideoUploaderProps) {
 							</div>
 						</div>
 						<p className="text-sm">
-							<span>Drop your files here, </span>
+							<span>Drop your file here, </span>
 							<button
 								className="underline underline-offset-4 text-blue-400/60 hover:text-blue-400 cursor-pointer duration-150"
 								onClick={browseFiles}
