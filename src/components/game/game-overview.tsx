@@ -5,12 +5,9 @@ import { Game } from "@/types/model/game";
 import { GameClip } from "@/types/model/game-clip";
 import { useState } from "react";
 import { toast } from "sonner";
-import DashboardCard from "../dashboard/dashboard-card";
-import DashboardCardHeader from "../dashboard/dashboard-card-header";
-import { Input } from "../ui/input";
-import { CalendarIcon, FolderPenIcon } from "lucide-react";
-import Statboard from "../video-clipper/game-details/statboard";
 import ClipPlayer from "../clip-player";
+import GameOverviewDetails from "./game-overview-details";
+import { Loader2Icon } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -31,6 +28,7 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 		setIsLoading: setIsFetchingGame,
 		onError: () => toast.error("Error fetching game"),
 	});
+
 	useLoadData({
 		endpoint: `/api/ddb/${leagueId}/game-clips/${title}`,
 		onDataLoaded: setClips,
@@ -41,49 +39,31 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 	return (
 		<div className="w-full h-full flex-col">
 			{isFetchingGame || isFetchingClips ? (
-				<p>Loading game...</p>
-			) : game ? (
+				<div className="w-full h-1/2 flex flex-col justify-center place-items-center text-neutral-400">
+					<p className="animate-bounce text-2xl">🏀</p>
+					<div className="flex space-x-2">
+						<Loader2Icon className="animate-spin" />
+						<p className="font-medium text-base">
+							{`Loading "${title}", please wait...`}
+						</p>
+					</div>
+					<Button variant="input" className="w-fit mt-3">
+						<Link href="/">Return to games</Link>
+					</Button>
+				</div>
+			) : game && clips.length > 0 ? (
 				<div className="flex h-full gap-2">
 					<ClipPlayer clips={clips} />
-
-					{/* game details */}
-					<DashboardCard className="h-full flex flex-col justify-between">
-						<div className="space-y-4 overflow-y-auto h-full">
-							<DashboardCardHeader text="Game Details" />
-							<div className="space-y-2">
-								<Input
-									readOnly
-									Icon={FolderPenIcon}
-									value={game ? game.title : "Loading..."}
-									className="pointer-events-none"
-								/>
-								<Input
-									readOnly
-									Icon={CalendarIcon}
-									value={
-										game
-											? new Date(game.date).toLocaleDateString()
-											: "Loading..."
-									}
-									className="pointer-events-none"
-								/>
-							</div>
-							<hr className="border-neutral-800" />
-
-							<Statboard label="Home Stats" clips={clips} players={game.home} />
-
-							<hr className="border-neutral-800" />
-
-							<Statboard label="Away Stats" clips={clips} players={game.away} />
-						</div>
-
-						<Button variant="input">
-							<Link href="/">Return to games</Link>
-						</Button>
-					</DashboardCard>
+					<GameOverviewDetails game={game} clips={clips} />
 				</div>
 			) : (
-				<p>Failed to load game</p>
+				<div className="w-full h-1/2 flex flex-col justify-center place-items-center text-neutral-400">
+					<p className="text-2xl">🏀 🚫</p>
+					<p className="font-medium text-base">{`Failed to load "${title}"`}</p>
+					<Button variant="input" className="w-fit mt-3">
+						<Link href="/">Return to games</Link>
+					</Button>
+				</div>
 			)}
 		</div>
 	);

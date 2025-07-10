@@ -28,7 +28,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 	const [clips, setClips] = useState<GameClip[]>([]);
 	const [isFetchingClips, setIsFetchingClips] = useState(true);
 	const [open, setOpen] = useState(false);
-	const gameUrl = `/${props.game.leagueId}/${props.game.title}`;
+	const gameUrl = `/${props.game.leagueId}/game/${props.game.title}`;
 
 	useLoadData({
 		endpoint: `/api/ddb/${tempLeagueId}/game-clips/${props.game.title}`,
@@ -51,7 +51,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 
 				<div>
 					{isFetchingClips ? (
-						<p>Loading...</p>
+						<p>Loading data...</p>
 					) : clips && clips.length > 0 ? (
 						<div className="flex place-items-center justify-between space-x-20">
 							<Statboard label="Home" players={props.game.home} clips={clips} />
@@ -62,13 +62,17 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 					)}
 				</div>
 
-				<hr className="border-neutral-800" />
+				{clips.length > 0 && (
+					<>
+						<hr className="border-neutral-800" />
 
-				<DialogFooter className="w-full flex justify-end">
-					<Button variant="outline">
-						<Link href={gameUrl}>Play game</Link>
-					</Button>
-				</DialogFooter>
+						<DialogFooter className="w-full flex justify-end">
+							<Button variant="outline">
+								<Link href={gameUrl}>Watch game</Link>
+							</Button>
+						</DialogFooter>
+					</>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
