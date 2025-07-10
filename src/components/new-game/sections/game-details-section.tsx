@@ -29,12 +29,6 @@ export default function GameDetailsSection(props: NewGameFormSectionProps) {
 	const title = watch("title");
 	const [isValidatingTitle, setIsValidatingTitle] = useState(false);
 
-	const getDefaultTitle = () => {
-		const filename = props.videoFile!.name;
-		const dotIndex = filename.indexOf(".");
-		return filename.substring(0, dotIndex);
-	};
-
 	// force revalidation after a delay to catch async zod validation results
 	useEffect(() => {
 		if (title) {
@@ -47,6 +41,14 @@ export default function GameDetailsSection(props: NewGameFormSectionProps) {
 			return () => clearTimeout(timer);
 		}
 	}, [title, trigger]);
+
+	const getDefaultTitle = () => {
+		const filename = props.form.videoFile.name;
+		const dotIndex = filename.indexOf(".");
+		return filename.substring(0, dotIndex);
+	};
+
+	if (!props.form.videoFile) return;
 
 	return (
 		<FormSection
@@ -72,7 +74,7 @@ export default function GameDetailsSection(props: NewGameFormSectionProps) {
 			</div>
 
 			<Controller
-				defaultValue={new Date(props.videoFile!.lastModified)}
+				defaultValue={new Date(props.form.videoFile.lastModified)}
 				control={control}
 				name="date"
 				render={({ field }) => <DateInput {...field} error={!!errors.date} />}

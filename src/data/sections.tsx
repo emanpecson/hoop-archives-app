@@ -10,28 +10,36 @@ import {
 import ReviewClipSection from "@/components/new-clip/sections/review-clip-section";
 import ClipDraftSection from "@/components/new-clip/sections/clip-draft/clip-draft-section";
 import { ConfirmSection as NewClipConfirmSection } from "@/components/new-clip/sections/confirm-section";
+import UploadGameSection from "@/components/new-game/sections/upload-game-section";
 
 export const newGameSections: NewGameFormSection[] = [
+	{
+		component: (props: NewGameFormSectionProps) => (
+			<UploadGameSection {...props} />
+		),
+		label: "Upload game",
+		step: 0,
+	},
 	{
 		component: (props: NewGameFormSectionProps) => (
 			<GameDetailsSection {...props} />
 		),
 		label: "Game details",
-		step: 0,
+		step: 1,
 	},
 	{
 		component: (props: NewGameFormSectionProps) => (
 			<AddPlayersSection {...props} />
 		),
 		label: "Add players",
-		step: 1,
+		step: 2,
 	},
 	{
 		component: (props: NewGameFormSectionProps) => (
 			<NewGameConfirmSection {...props} />
 		),
 		label: "Confirm",
-		step: 2,
+		step: 3,
 	},
 ];
 

@@ -5,13 +5,13 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "../ui/dialog";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { newGameSections } from "@/data/sections";
 import { NewGameFormSection } from "@/types/form-section";
 
 interface NewGameDialogProps {
-	videoFile: File | null;
 	open: boolean;
+	setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function NewGameDialog(props: NewGameDialogProps) {
@@ -28,8 +28,17 @@ export default function NewGameDialog(props: NewGameDialogProps) {
 		}
 	};
 
+	const handleOpenChange = (open: boolean) => {
+		// reset
+		if (!open) {
+			setStep(0);
+			setNewGameForm({});
+		}
+		props.setOpen(open);
+	};
+
 	return (
-		<Dialog open={props.open}>
+		<Dialog open={props.open} onOpenChange={handleOpenChange}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>New Game</DialogTitle>
@@ -45,7 +54,6 @@ export default function NewGameDialog(props: NewGameDialogProps) {
 						sections={newGameSections}
 						saveData={handleSaveData}
 						form={newGameForm}
-						videoFile={props.videoFile} // extended
 					/>
 				))}
 			</DialogContent>

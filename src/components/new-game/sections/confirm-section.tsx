@@ -70,11 +70,11 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 	};
 
 	useEffect(() => {
-		if (props.form.title && props.videoFile) {
-			uploadVideo(props.videoFile);
+		if (props.form.title && props.form.videoFile) {
+			uploadVideo(props.form.videoFile);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.videoFile, props.form]);
+	}, [props.form.videoFile, props.form]);
 
 	return (
 		<FormSection {...props} handleSubmit={undefined}>
@@ -93,7 +93,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 						className="w-fit"
 						variant="input"
 						type="button"
-						onClick={() => createDraft(props.form.title, props.videoFile!)}
+						onClick={() => createDraft(props.form.title, props.form.videoFile)}
 					>
 						Create project
 					</Button>

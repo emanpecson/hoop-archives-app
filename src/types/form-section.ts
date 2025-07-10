@@ -31,7 +31,6 @@ export interface FormSection {
 // override sections + include video file
 export interface NewGameFormSectionProps
 	extends Omit<FormSectionProps, "sections"> {
-	videoFile: File | null;
 	sections: NewGameFormSection[];
 }
 
