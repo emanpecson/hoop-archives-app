@@ -36,7 +36,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 		<FormSection {...props} handleSubmit={undefined}>
 			<div className="space-y-4 text-sm">
 				<p>{clipHeadline(buildClipDraft(props.form, props.clipTime))}</p>
-				<p>{(props.form.tags as string[]).join(" ")}</p>
+				<p>{props.form.tags && (props.form.tags as string[]).join(" ")}</p>
 			</div>
 
 			<Button

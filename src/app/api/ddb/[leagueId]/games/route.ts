@@ -2,7 +2,6 @@ import { NewGameRequestBody } from "@/types/api/new-game";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 import {
-	BatchWriteCommand,
 	DynamoDBDocumentClient,
 	PutCommand,
 	QueryCommand,
@@ -104,9 +103,9 @@ export async function GET(
 }
 
 export async function POST(req: NextRequest) {
-	const { game, clips }: NewGameRequestBody = await req.json();
+	const { game }: NewGameRequestBody = await req.json();
 
-	if (!game || !clips || !Array.isArray(clips) || clips.length === 0) {
+	if (!game) {
 		return NextResponse.json(
 			{ error: "Missing request body" },
 			{ status: 400 }
@@ -114,21 +113,11 @@ export async function POST(req: NextRequest) {
 	}
 
 	try {
-		// create game w/ game clips
 		const putCommand = new PutCommand({
 			TableName: process.env.AWS_DDB_GAMES_TABLE,
 			Item: game,
 		});
 		await docClient.send(putCommand);
-
-		const batchWriteCommand = new BatchWriteCommand({
-			RequestItems: {
-				GameClips: clips.map((clip) => ({
-					PutRequest: { Item: clip },
-				})),
-			},
-		});
-		await docClient.send(batchWriteCommand);
 
 		return new NextResponse(null, { status: 200 });
 	} catch (error) {

@@ -19,9 +19,10 @@ import { NewGameRequestBody } from "@/types/api/new-game";
 import { tempLeagueId } from "@/data/temp";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { GameClip } from "@/types/model/game-clip";
 import { Game } from "@/types/model/game";
-import { TrimRequest, TrimResponse } from "@/types/api/clipper-service";
+import { GameStatus } from "@/types/enum/game-status";
+import { SqsClipRequest, SqsUploadRequest } from "@/types/api/sqs-message";
+import { ClipDraft } from "@/types/clip-draft";
 
 export default function GameDetails() {
 	const router = useRouter();
@@ -34,73 +35,55 @@ export default function GameDetails() {
 	const memoHomePlayers = useMemo(() => (draft ? draft.home : []), [draft]);
 	const memoAwayPlayers = useMemo(() => (draft ? draft.away : []), [draft]);
 
-	const createVideoClips = async (draft: GameDraft) => {
+	const startUpload = async (draft: GameDraft) => {
 		try {
-			const createClipUrlsResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_CLIPPER_URL}/video-clipper`,
-				{
+			// create Game
+			const createGameResponse = await fetch(`/api/ddb/${tempLeagueId}/games`, {
+				method: "POST",
+				body: JSON.stringify({
+					game: {
+						leagueId: tempLeagueId,
+						home: draft.home,
+						away: draft.away,
+						date: new Date(draft.date),
+						title: draft.title,
+						type: draft.type,
+						status: GameStatus.PENDING,
+					} as Game,
+				} as NewGameRequestBody),
+			});
+
+			if (createGameResponse.ok) {
+				// send SQS message (upload request)
+				await fetch(`/api/sqs/send-message`, {
 					method: "POST",
 					body: JSON.stringify({
+						leagueId: tempLeagueId,
+						gameTitle: draft.title,
 						key: draft.bucketKey,
-						clips: draft.clipDrafts.map((cd) => ({
-							start: cd.startTime,
-							duration: cd.endTime - cd.startTime,
-						})),
-					} as TrimRequest),
-				}
-			);
+						date: new Date(draft.date),
+						clipRequests: draft.clipDrafts.map(
+							(clip: ClipDraft, i: number) =>
+								({
+									clipId: `${draft.title}_${i}`,
+									tags: clip.tags,
+									startTime: clip.startTime,
+									endTime: clip.endTime,
+									highlightTime: clip.highlightTime,
+									teamBeneficiary: clip.teamBeneficiary,
+									offense: clip.offense,
+									defense: clip.defense,
+								} as SqsClipRequest)
+						),
+					} as SqsUploadRequest),
+				});
 
-			if (createClipUrlsResponse.ok) {
-				const { data } = await createClipUrlsResponse.json();
-				const { clipUrls, thumbnailUrl }: TrimResponse = data;
-				console.log("clip urls", clipUrls);
-
-				// create game w/ underlying clips
-				const createGameResponse = await fetch(
-					`/api/ddb/${tempLeagueId}/games`,
-					{
-						method: "POST",
-
-						// build game + clips data
-						body: JSON.stringify({
-							game: {
-								leagueId: tempLeagueId,
-								home: draft.home,
-								away: draft.away,
-								date: new Date(draft.date),
-								title: draft.title,
-								type: draft.type,
-								thumbnailUrl,
-							} as Game,
-							clips: draft.clipDrafts.map(
-								(clipDraft, i) =>
-									({
-										leagueId: tempLeagueId,
-										clipId: draft.title + "_" + String(i),
-										gameTitle: draft.title,
-										date: new Date(draft.date),
-										tags: clipDraft.tags,
-										startTime: clipDraft.startTime,
-										endTime: clipDraft.endTime,
-										highlightTime: clipDraft.highlightTime,
-										teamBeneficiary: clipDraft.teamBeneficiary,
-										url: clipUrls[i],
-										offense: clipDraft.offense,
-										defense: clipDraft.defense,
-									} as GameClip)
-							),
-						} as NewGameRequestBody),
-					}
+				toast.success(
+					`${draft.title} upload initiated. This may take a few minutes.`
 				);
-
-				if (createGameResponse.ok) {
-					toast.success(`Created game: ${draft.title}`);
-					router.push(`/${tempLeagueId}/game/${draft.title}`);
-				} else {
-					throw Error("Failed to create game");
-				}
+				router.push(`/`); // games dashboard
 			} else {
-				throw Error("Failed to create clip URLs");
+				throw Error("Failed to create game");
 			}
 		} catch (error) {
 			console.log(error);
@@ -199,7 +182,7 @@ export default function GameDetails() {
 					<span>Preview clips</span>
 				</CardButton>
 				<CardButton
-					onClick={() => createVideoClips(draft!)}
+					onClick={() => startUpload(draft!)}
 					disabled={!draft || draft.clipDrafts.length === 0}
 					className="text-center py-2"
 				>
