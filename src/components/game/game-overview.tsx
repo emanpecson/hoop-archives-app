@@ -7,9 +7,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import ClipPlayer from "../clip-player";
 import GameOverviewDetails from "./game-overview-details";
-import { Loader2Icon } from "lucide-react";
-import { Button } from "../ui/button";
-import Link from "next/link";
+import LoadingPrompt from "../loading-prompt";
+import EmptyPrompt from "../empty-prompt";
 
 interface GameOverviewProps {
 	leagueId: string;
@@ -39,31 +38,17 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 	return (
 		<div className="w-full h-full flex-col">
 			{isFetchingGame || isFetchingClips ? (
-				<div className="w-full h-1/2 flex flex-col justify-center place-items-center text-neutral-400">
-					<p className="animate-bounce text-2xl">🏀</p>
-					<div className="flex space-x-2">
-						<Loader2Icon className="animate-spin" />
-						<p className="font-medium text-base">
-							{`Loading "${title}", please wait...`}
-						</p>
-					</div>
-					<Button variant="input" className="w-fit mt-3">
-						<Link href="/">Return to games</Link>
-					</Button>
-				</div>
+				<LoadingPrompt
+					text={`Loading "${title}", please wait...`}
+					goBackUrl="/"
+				/>
 			) : game && clips.length > 0 ? (
 				<div className="flex h-full gap-2">
 					<ClipPlayer clips={clips} />
 					<GameOverviewDetails game={game} clips={clips} />
 				</div>
 			) : (
-				<div className="w-full h-1/2 flex flex-col justify-center place-items-center text-neutral-400">
-					<p className="text-2xl">🏀 🚫</p>
-					<p className="font-medium text-base">{`Failed to load "${title}"`}</p>
-					<Button variant="input" className="w-fit mt-3">
-						<Link href="/">Return to games</Link>
-					</Button>
-				</div>
+				<EmptyPrompt text={`Failed to load "${title}"`} goBackUrl="/" />
 			)}
 		</div>
 	);
