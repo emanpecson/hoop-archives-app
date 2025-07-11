@@ -1,10 +1,10 @@
 import { Player } from "@/types/model/player";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { useDebounceCallback } from "usehooks-ts";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { tempLeagueId } from "@/data/temp";
 
 type PageKey = {

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Player } from "@/types/model/player";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 interface PlayerSlotProps {
 	player: Player | null;

@@ -1,5 +1,5 @@
 import FormSection from "@/components/form-section";
-import PlayerList from "@/components/player-list";
+import PlayerList from "@/components/player/player-list";
 import PlayersPreview from "@/components/players-preview";
 import { NewGameFormSectionProps } from "@/types/form-section";
 import { Player } from "@/types/model/player";

@@ -1,7 +1,7 @@
 import { FieldErrors } from "react-hook-form";
 import ErrorLabel from "./error-label";
 import { DynamicPlayersForm } from "@/types/schema/new-game-form/add-players-schema";
-import PlayerSlot from "./player-slot";
+import PlayerSlot from "@/components/player/player-slot";
 import { Player } from "@/types/model/player";
 
 interface PlayersPreviewProps {
