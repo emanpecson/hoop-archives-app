@@ -1,4 +1,5 @@
 import { Player } from "@/types/model/player";
+import Image from "next/image";
 // import Image from "next/image";
 
 interface PlayerCardProps {
@@ -7,26 +8,41 @@ interface PlayerCardProps {
 
 export default function PlayerCard(props: PlayerCardProps) {
 	return (
-		<div className="rounded-lg bg-neutral-800 w-40 h-60 flex flex-col">
-			<div className="-space-y-1.5 text-base font-bold p-3">
-				<p>{props.player.firstName}</p>
-				<p>{props.player.lastName}</p>
+		<div className="rounded-xl bg-neutral-800 w-40 h-60 flex flex-col place-items-center justify-between py-2 px-4">
+			<div className="flex h-full place-items-center">
+				<Image
+					src={props.player.imageUrl}
+					alt={`${props.player.fullName} image`}
+					width={24}
+					height={24}
+					className="object-cover rounded-full w-32 h-32"
+					unoptimized
+				/>
 			</div>
 
-			{/* <div className="border-y border-input-border">
-				{props.player.imageUrl ? (
-					<Image
-						src={props.player.imageUrl}
-						alt={`${props.player.fullName} image`}
-						width={64}
-						height={64}
-						className="object-cover w-24 h-24"
-						unoptimized
-					/>
-				) : (
-					<div className="w-32 h-32 bg-neutral-700/70" />
-				)}
-			</div> */}
+			<div className="text-center w-full">
+				<div className="flex justify-between text-sm text-neutral-400">
+					<div className="-space-y-1">
+						<p>Pts</p>
+						<p>0</p>
+					</div>
+
+					<div className="-space-y-1">
+						<p>Ast</p>
+						<p>0</p>
+					</div>
+
+					<div className="-space-y-1">
+						<p>Blk</p>
+						<p>0</p>
+					</div>
+				</div>
+
+				<div className="-space-y-1.5 text-base font-semibold">
+					<p>{props.player.firstName}</p>
+					<p>{props.player.lastName}</p>
+				</div>
+			</div>
 		</div>
 	);
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useDebounceCallback } from "usehooks-ts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { tempLeagueId } from "@/data/temp";
+import Image from "next/image";
 
 type PageKey = {
 	playerId: string;
@@ -108,6 +109,13 @@ export default function PlayerList(props: PlayerListProps) {
 						>
 							<div className="flex place-items-center gap-2">
 								<div className="rounded-full w-6 h-6 bg-neutral-800" />
+								<Image
+									src={player.imageUrl}
+									className="rounded-full w-6 h-6 object-cover"
+									width={24}
+									height={24}
+									alt="headshot"
+								/>
 								<p className="text-sm flex gap-2">
 									<span>
 										{player.firstName} {player.lastName}
