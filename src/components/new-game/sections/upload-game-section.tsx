@@ -8,7 +8,7 @@ import {
 	uploadGameSchema,
 } from "@/types/schema/new-game-form/upload-game-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import VideoUploader from "@/components/input/video-uploader";
+import FileUploader from "@/components/input/file-uploader";
 
 export default function UploadGameSection(props: NewGameFormSectionProps) {
 	const {
@@ -25,8 +25,11 @@ export default function UploadGameSection(props: NewGameFormSectionProps) {
 				control={control}
 				name="videoFile"
 				render={({ field }) => (
-					<VideoUploader
+					<FileUploader
 						{...field}
+						accepts="video"
+						supportedFiles=".mp4, .mov"
+						maxSize="2GB"
 						errorMessage={
 							errors.videoFile ? errors.videoFile.message : undefined
 						}

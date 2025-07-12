@@ -1,22 +1,27 @@
+import {
+	S3CompleteUploadResponse,
+	S3StartUploadResponse,
+} from "@/types/api/s3-upload";
+
 export class S3Uploader {
-	public startUpload = async (key: string, vid: File, partSize: number) => {
+	public startUpload = async (key: string, file: File, partSize: number) => {
 		const res = await fetch("/api/s3/start-upload", {
 			method: "POST",
 			body: JSON.stringify({
 				key,
-				fileSize: vid.size,
+				fileSize: file.size,
 				partSize,
 			}),
 			headers: { "Content-Type": "application/json" },
 		});
 
 		if (!res.ok) throw new Error("Failed to start upload");
-		const data = await res.json();
+		const data: S3StartUploadResponse = await res.json();
 		return data;
 	};
 
 	public uploadByParts = async (
-		vid: File,
+		file: File,
 		partSize: number,
 		presignedUrls: string[],
 		onProgress?: (progress: number) => void
@@ -26,8 +31,8 @@ export class S3Uploader {
 		const uploadParts = await Promise.all(
 			presignedUrls.map(async (url, i) => {
 				const start = i * partSize;
-				const end = Math.min(start + partSize, vid.size);
-				const chunk = vid.slice(start, end);
+				const end = Math.min(start + partSize, file.size);
+				const chunk = file.slice(start, end);
 
 				const res = await fetch(url, { method: "PUT", body: chunk });
 
@@ -61,7 +66,7 @@ export class S3Uploader {
 		});
 
 		if (!res.ok) throw new Error("Failed to complete upload");
-		const data = await res.json();
+		const data: S3CompleteUploadResponse = await res.json();
 		return data;
 	};
 }

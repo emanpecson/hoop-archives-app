@@ -25,12 +25,14 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 			vid,
 			partSize
 		);
+
 		const uploadParts = await s3Uploader.uploadByParts(
 			vid,
 			partSize,
 			presignedUrls,
 			(p) => setProgress(p)
 		);
+
 		await s3Uploader.completeUpload(uploadId, key, uploadParts);
 	};
 

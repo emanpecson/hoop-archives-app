@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024; // 2GB
+const maxFileSize = 2 * 1024 * 1024 * 1024; // 2GB
 
 export const uploadGameSchema = z.object({
 	videoFile: z.custom<File>(
@@ -8,12 +8,10 @@ export const uploadGameSchema = z.object({
 			return (
 				file instanceof File &&
 				file.type.startsWith("video/") &&
-				file.size <= MAX_FILE_SIZE
+				file.size <= maxFileSize
 			);
 		},
-		{
-			message: "Please upload a video file less than 2GB",
-		}
+		{ message: "Please upload a video file less than 2GB" }
 	),
 });
 

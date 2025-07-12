@@ -3,15 +3,20 @@ import { formatBytes } from "@/utils/format-bytes";
 import { CheckCircle2Icon, CloudUploadIcon, FileIcon } from "lucide-react";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
-interface VideoUploaderProps {
+interface FileUploaderProps {
 	value: File;
 	onChange: (file: File) => void;
+	supportedFiles: string;
+	maxSize: string;
 	errorMessage?: string;
+	accepts: "video" | "image";
 }
 
-export default function VideoUploader(props: VideoUploaderProps) {
+export default function FileUploader(props: FileUploaderProps) {
 	const [dragging, setDragging] = useState(false);
 	const uploaderRef = useRef<HTMLInputElement>(null);
+	const acceptsVideo = "video/*";
+	const acceptsImage = "image/*";
 
 	const handleFileChange = (
 		ev: ChangeEvent<HTMLInputElement> | DragEvent<HTMLDivElement>
@@ -48,7 +53,7 @@ export default function VideoUploader(props: VideoUploaderProps) {
 			<input
 				type="file"
 				ref={uploaderRef}
-				accept="video/*"
+				accept={props.accepts === "video" ? acceptsVideo : acceptsImage}
 				onChange={handleFileChange}
 				hidden
 			/>
@@ -93,8 +98,8 @@ export default function VideoUploader(props: VideoUploaderProps) {
 				</div>
 
 				<div className="w-full flex justify-between text-sm text-neutral-600">
-					<p>Supported files: .mp4, .mov</p>
-					<p>Maximum size: 2GB</p>
+					<p>Supported files: {props.supportedFiles}</p>
+					<p>Maximum size: {props.maxSize}</p>
 				</div>
 
 				{props.errorMessage && (

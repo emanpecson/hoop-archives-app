@@ -18,6 +18,7 @@ export interface FormSectionProps {
 	saveData: (data: any) => void;
 	form: any;
 	disableNavigation?: boolean;
+	onClose?: () => void;
 }
 
 export interface FormSection {
