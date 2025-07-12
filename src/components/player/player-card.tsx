@@ -24,17 +24,17 @@ export default function PlayerCard(props: PlayerCardProps) {
 				<div className="flex justify-between text-sm text-neutral-400">
 					<div className="-space-y-1">
 						<p>Pts</p>
-						<p>0</p>
+						<p>n/a</p>
 					</div>
 
 					<div className="-space-y-1">
 						<p>Ast</p>
-						<p>0</p>
+						<p>n/a</p>
 					</div>
 
 					<div className="-space-y-1">
 						<p>Blk</p>
-						<p>0</p>
+						<p>n/a</p>
 					</div>
 				</div>
 
