@@ -8,6 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { NewPlayerRequestBody } from "@/types/api/new-player";
 import { Player } from "@/types/model/player";
+import { generateId } from "@/utils/generate-id";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 const docClient = DynamoDBDocumentClient.from(client);
@@ -48,7 +49,7 @@ export async function POST(
 		lastName,
 		imageUrl,
 		fullName: `${firstName} ${lastName}`,
-		playerId: crypto.randomUUID(),
+		playerId: generateId("player"),
 	};
 
 	try {

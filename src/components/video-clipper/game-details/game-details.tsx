@@ -23,6 +23,7 @@ import { Game } from "@/types/model/game";
 import { GameStatus } from "@/types/enum/game-status";
 import { SqsClipRequest, SqsUploadRequest } from "@/types/api/sqs-message";
 import { ClipDraft } from "@/types/clip-draft";
+import { generateId } from "@/utils/generate-id";
 
 export default function GameDetails() {
 	const router = useRouter();
@@ -43,6 +44,7 @@ export default function GameDetails() {
 				body: JSON.stringify({
 					game: {
 						leagueId: tempLeagueId,
+						gameId: generateId("game"),
 						home: draft.home,
 						away: draft.away,
 						date: new Date(draft.date),
@@ -63,9 +65,9 @@ export default function GameDetails() {
 						key: draft.bucketKey,
 						date: new Date(draft.date),
 						clipRequests: draft.clipDrafts.map(
-							(clip: ClipDraft, i: number) =>
+							(clip: ClipDraft) =>
 								({
-									clipId: `${draft.title}_${i}`,
+									clipId: generateId("clip"),
 									tags: clip.tags,
 									startTime: clip.startTime,
 									endTime: clip.endTime,

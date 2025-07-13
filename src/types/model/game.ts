@@ -4,7 +4,8 @@ import { Player } from "./player";
 
 export interface Game {
 	leagueId: string; // partition key: group games by league
-	title: string; // sort key: unique game title; for getting a specific game
+	gameId: string; // sort key
+	title: string;
 	date: Date;
 	type: GameType;
 	thumbnailUrl?: string; // undefined until upload-request completed
