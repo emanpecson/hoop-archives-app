@@ -6,11 +6,11 @@ import { Game } from "@/types/model/game";
 import Statboard from "../video-clipper/game-details/statboard";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 
 interface GameOverviewDetailsProps {
 	game: Game;
-	clips: GameClip[];
+	clips: Clip[];
 }
 
 export default function GameOverviewDetails(props: GameOverviewDetailsProps) {

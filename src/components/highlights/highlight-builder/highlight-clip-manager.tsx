@@ -2,7 +2,7 @@ import DashboardCard from "@/components/dashboard/dashboard-card";
 import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { CircleCheckIcon, FilterIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
@@ -10,8 +10,8 @@ import { Dispatch, SetStateAction } from "react";
 interface HighlightClipManagerProps {
 	activeClipId: string | null;
 	leagueId: string;
-	selectedClips: GameClip[];
-	setSelectedClips: Dispatch<SetStateAction<GameClip[]>>;
+	selectedClips: Clip[];
+	setSelectedClips: Dispatch<SetStateAction<Clip[]>>;
 	onAddFiltersOpen: (open: boolean) => void;
 }
 
@@ -21,7 +21,7 @@ export default function HighlightClipManager(props: HighlightClipManagerProps) {
 		.join("&");
 	const highlightsUrl = `/${props.leagueId}/highlights?${queries}`;
 
-	const removeClip = (removeClip: GameClip) => {
+	const removeClip = (removeClip: Clip) => {
 		props.setSelectedClips((clips) =>
 			clips.filter((clip) => clip.clipId !== removeClip.clipId)
 		);

@@ -1,4 +1,4 @@
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { useEffect, useRef, useState } from "react";
 import VideoOverlayWrapper from "./video-clipper/video-player/overlay/video-overlay-wrapper";
 import {
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import VolumeSlider from "./volume-slider";
 
 interface ClipPlayerProps {
-	clips: GameClip[];
+	clips: Clip[];
 	hideScore?: boolean;
 	onClipPlaying?: (clipId: string) => void;
 }

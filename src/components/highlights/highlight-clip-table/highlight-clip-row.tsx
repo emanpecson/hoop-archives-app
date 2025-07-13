@@ -4,7 +4,7 @@ import ClipDialog from "@/components/clip-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { Player } from "@/types/model/player";
 import { EllipsisVerticalIcon } from "lucide-react";
 import { useState } from "react";
@@ -12,9 +12,9 @@ import { useState } from "react";
 interface HighlightClipRowProps {
 	index: number;
 	activeClipId: string | null;
-	clip: GameClip;
-	onSelect: (clip: GameClip) => void;
-	selectedClips: GameClip[];
+	clip: Clip;
+	onSelect: (clip: Clip) => void;
+	selectedClips: Clip[];
 }
 
 export default function HighlightClipRow(props: HighlightClipRowProps) {

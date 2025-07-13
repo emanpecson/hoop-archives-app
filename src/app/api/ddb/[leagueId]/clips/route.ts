@@ -1,4 +1,4 @@
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
 	DynamoDBDocumentClient,
@@ -15,7 +15,7 @@ const filterClips = (
 	items: Record<string, any>[] | undefined,
 	query: URLSearchParams
 ) => {
-	let clips = items as GameClip[];
+	let clips = items as Clip[];
 
 	const filters = {
 		play: query.get("play"),

@@ -25,11 +25,11 @@ export async function GET(
 		}));
 
 		const command = new BatchGetItemCommand({
-			RequestItems: { GameClips: { Keys: keys } },
+			RequestItems: { Clips: { Keys: keys } },
 		});
 
 		const res = await client.send(command);
-		const items = res.Responses?.GameClips;
+		const items = res.Responses?.Clips;
 		return NextResponse.json(
 			items ? items.map((item) => unmarshall(item)) : [],
 			{ status: 200 }

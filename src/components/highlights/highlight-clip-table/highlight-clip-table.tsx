@@ -1,4 +1,4 @@
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { Dispatch, SetStateAction } from "react";
 import { Checkbox } from "../../ui/checkbox";
 import DashboardCard from "../../dashboard/dashboard-card";
@@ -7,11 +7,11 @@ import HighlightClipRowSkeleton from "./highlight-clip-row-skeleton";
 import { cn } from "@/lib/utils";
 
 interface HighlightClipTableProps {
-	clips: GameClip[];
+	clips: Clip[];
 	isLoading: boolean;
 	activeClipId: string | null;
-	selectedClips: GameClip[];
-	setSelectedClips: Dispatch<SetStateAction<GameClip[]>>;
+	selectedClips: Clip[];
+	setSelectedClips: Dispatch<SetStateAction<Clip[]>>;
 }
 
 export default function HighlightClipTable(props: HighlightClipTableProps) {
@@ -25,7 +25,7 @@ export default function HighlightClipTable(props: HighlightClipTableProps) {
 		}
 	};
 
-	const select = (selectedClip: GameClip) => {
+	const select = (selectedClip: Clip) => {
 		props.setSelectedClips((clips) => {
 			if (clips.some((clip) => clip.clipId === selectedClip.clipId))
 				return clips.filter((clip) => clip.clipId !== selectedClip.clipId);

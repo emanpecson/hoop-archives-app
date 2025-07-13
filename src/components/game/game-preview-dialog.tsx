@@ -4,7 +4,7 @@ import { Game } from "@/types/model/game";
 import Statboard from "../video-clipper/game-details/statboard";
 import { useLoadData } from "@/hooks/use-load-data";
 import { useState } from "react";
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { toast } from "sonner";
 import {
 	Dialog,
@@ -25,13 +25,13 @@ interface GamePreviewDialogProps {
 }
 
 export default function GamePreviewDialog(props: GamePreviewDialogProps) {
-	const [clips, setClips] = useState<GameClip[]>([]);
+	const [clips, setClips] = useState<Clip[]>([]);
 	const [isFetchingClips, setIsFetchingClips] = useState(true);
 	const [open, setOpen] = useState(false);
 	const gameUrl = `/${props.game.leagueId}/game/${props.game.title}`;
 
 	useLoadData({
-		endpoint: `/api/ddb/${tempLeagueId}/game-clips/${props.game.title}`,
+		endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.title}`,
 		onDataLoaded: setClips,
 		setIsLoading: setIsFetchingClips,
 		onError: () => toast.error("Error fetching game clips"),

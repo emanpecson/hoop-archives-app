@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import HighlightFilterDialog from "./highlight-builder-dialog";
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { toast } from "sonner";
 import ClipPlayer from "@/components/clip-player";
 import HighlightClipTable from "@/components/highlights/highlight-clip-table/highlight-clip-table";
@@ -15,14 +15,14 @@ interface HighlightBuilderProps {
 
 export default function HighlightBuilder(props: HighlightBuilderProps) {
 	const [open, setOpen] = useState(false);
-	const [clips, setClips] = useState<GameClip[]>([]);
+	const [clips, setClips] = useState<Clip[]>([]);
 	const [isFetchingClips, setIsFetchingClips] = useState(false);
 	const [filters, setFilters] = useState<string[]>([]);
 	const [filtersForm, setFiltersForm] = useState<HighlightsFormFields | null>(
 		null
 	);
 	const [activeClipId, setActiveClipId] = useState<string | null>(null);
-	const [selectedClips, setSelectedClips] = useState<GameClip[]>([]);
+	const [selectedClips, setSelectedClips] = useState<Clip[]>([]);
 
 	const handleAddFilters = (filters: string[], form: HighlightsFormFields) => {
 		setFilters(filters);
@@ -36,7 +36,7 @@ export default function HighlightBuilder(props: HighlightBuilderProps) {
 				setIsFetchingClips(true);
 
 				const queryString = filters.join("&");
-				const url = `/api/ddb/${props.leagueId}/game-clips?${queryString}`;
+				const url = `/api/ddb/${props.leagueId}/clips?${queryString}`;
 
 				const res = await fetch(url);
 				const data = await res.json();

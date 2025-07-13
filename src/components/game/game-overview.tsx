@@ -2,7 +2,7 @@
 
 import { useLoadData } from "@/hooks/use-load-data";
 import { Game } from "@/types/model/game";
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import { useState } from "react";
 import { toast } from "sonner";
 import ClipPlayer from "../clip-player";
@@ -19,7 +19,7 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 	const [isFetchingGame, setIsFetchingGame] = useState(true);
 	const [isFetchingClips, setIsFetchingClips] = useState(true);
 	const [game, setGame] = useState<Game | null>(null);
-	const [clips, setClips] = useState<GameClip[]>([]);
+	const [clips, setClips] = useState<Clip[]>([]);
 
 	useLoadData({
 		endpoint: `/api/ddb/${leagueId}/games/${title}`,
@@ -29,7 +29,7 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 	});
 
 	useLoadData({
-		endpoint: `/api/ddb/${leagueId}/game-clips/${title}`,
+		endpoint: `/api/ddb/${leagueId}/clips/${title}`,
 		onDataLoaded: setClips,
 		setIsLoading: setIsFetchingClips,
 		onError: () => toast.error("Error fetching game clips"),

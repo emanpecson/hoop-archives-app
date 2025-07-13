@@ -1,6 +1,6 @@
 import { DefensivePlay, OffensivePlay } from "../play";
 
-export interface GameClip {
+export interface Clip {
 	leagueId: string; // partition key
 	gameTitle: string; // sort key: unique game title
 	date: Date; // ! is this coming back as a string in ddb?

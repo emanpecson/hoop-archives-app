@@ -1,4 +1,4 @@
-import { GameClip } from "@/types/model/game-clip";
+import { Clip } from "@/types/model/clip";
 import {
 	Dialog,
 	DialogClose,
@@ -12,10 +12,10 @@ import { useRef } from "react";
 import { Button } from "./ui/button";
 
 interface ClipDialogProps {
-	clip: GameClip;
+	clip: Clip;
 	open: boolean;
 	setOpen: (open: boolean) => void;
-	toggleClipSelection: (clip: GameClip) => void;
+	toggleClipSelection: (clip: Clip) => void;
 	isSelected: boolean;
 }
 
