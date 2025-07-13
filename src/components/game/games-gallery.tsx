@@ -12,6 +12,8 @@ import {
 import { Button } from "../ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Player } from "@/types/model/player";
+import LoadingPrompt from "../loading-prompt";
+import EmptyPrompt from "../empty-prompt";
 
 interface GamesGalleryProps {
 	title: string | undefined;
@@ -73,7 +75,7 @@ export default function GamesGallery(props: GamesGalleryProps) {
 	return (
 		<div className="w-full">
 			{isFetching ? (
-				<p>Loading...</p>
+				<LoadingPrompt text="Loading Games" />
 			) : games && games.length > 0 ? (
 				<div className="w-full space-y-4">
 					{/* games */}
@@ -104,7 +106,7 @@ export default function GamesGallery(props: GamesGalleryProps) {
 					</div>
 				</div>
 			) : (
-				<p>No games to display</p>
+				<EmptyPrompt text="No games to display" />
 			)}
 		</div>
 	);
