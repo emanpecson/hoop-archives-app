@@ -13,7 +13,7 @@ interface GamePreviewProps {
 export default function GamePreview({ game }: GamePreviewProps) {
 	const url =
 		game.status === GameStatus.COMPLETE
-			? `/${game.leagueId}/game/${game.title}`
+			? `/${game.leagueId}/game/${game.gameId}`
 			: undefined;
 
 	const displayPlayers = (players: Player[]) => {
