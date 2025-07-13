@@ -39,6 +39,7 @@ export async function POST(
 	try {
 		const item: Record<string, AttributeValue> = {
 			leagueId: { S: leagueId },
+			draftId: { S: draft.draftId },
 			title: { S: draft.title },
 			bucketKey: { S: draft.bucketKey },
 			date: { S: draft.date },

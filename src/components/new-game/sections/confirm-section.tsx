@@ -57,7 +57,6 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 				method: "POST",
 				body: JSON.stringify({
 					...props.form,
-					leagueId: tempLeagueId,
 					draftId: generateId("draft"),
 					bucketKey: title + ext,
 				} as Draft),
