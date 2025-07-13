@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { tempLeagueId } from "@/data/temp";
 import { NewGameFormSectionProps } from "@/types/form-section";
 import { Draft } from "@/types/model/draft";
+import { generateId } from "@/utils/generate-id";
 import { S3Uploader } from "@/utils/s3-uploader";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -57,6 +58,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 				body: JSON.stringify({
 					...props.form,
 					leagueId: tempLeagueId,
+					draftId: generateId("draft"),
 					bucketKey: title + ext,
 				} as Draft),
 			});
