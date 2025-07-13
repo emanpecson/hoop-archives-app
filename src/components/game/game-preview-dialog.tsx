@@ -28,10 +28,10 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 	const [clips, setClips] = useState<Clip[]>([]);
 	const [isFetchingClips, setIsFetchingClips] = useState(true);
 	const [open, setOpen] = useState(false);
-	const gameUrl = `/${props.game.leagueId}/game/${props.game.title}`;
+	const gameUrl = `/${props.game.leagueId}/game/${props.game.gameId}`;
 
 	useLoadData({
-		endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.title}`,
+		endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.gameId}`,
 		onDataLoaded: setClips,
 		setIsLoading: setIsFetchingClips,
 		onError: () => toast.error("Error fetching game clips"),

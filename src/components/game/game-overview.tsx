@@ -12,24 +12,24 @@ import EmptyPrompt from "../empty-prompt";
 
 interface GameOverviewProps {
 	leagueId: string;
-	title: string;
+	gameId: string;
 }
 
-export default function GameOverview({ leagueId, title }: GameOverviewProps) {
+export default function GameOverview({ leagueId, gameId }: GameOverviewProps) {
 	const [isFetchingGame, setIsFetchingGame] = useState(true);
 	const [isFetchingClips, setIsFetchingClips] = useState(true);
 	const [game, setGame] = useState<Game | null>(null);
 	const [clips, setClips] = useState<Clip[]>([]);
 
 	useLoadData({
-		endpoint: `/api/ddb/${leagueId}/games/${title}`,
+		endpoint: `/api/ddb/${leagueId}/games/${gameId}`,
 		onDataLoaded: setGame,
 		setIsLoading: setIsFetchingGame,
 		onError: () => toast.error("Error fetching game"),
 	});
 
 	useLoadData({
-		endpoint: `/api/ddb/${leagueId}/clips/${title}`,
+		endpoint: `/api/ddb/${leagueId}/clips/${gameId}`,
 		onDataLoaded: setClips,
 		setIsLoading: setIsFetchingClips,
 		onError: () => toast.error("Error fetching game clips"),
@@ -39,7 +39,7 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 		<div className="w-full h-full flex-col">
 			{isFetchingGame || isFetchingClips ? (
 				<LoadingPrompt
-					text={`Loading "${title}", please wait...`}
+					text={`Loading "${gameId}", please wait...`}
 					goBackUrl="/"
 				/>
 			) : game && clips.length > 0 ? (
@@ -48,7 +48,7 @@ export default function GameOverview({ leagueId, title }: GameOverviewProps) {
 					<GameOverviewDetails game={game} clips={clips} />
 				</div>
 			) : (
-				<EmptyPrompt text={`Failed to load "${title}"`} goBackUrl="/" />
+				<EmptyPrompt text={`Failed to load "${gameId}"`} goBackUrl="/" />
 			)}
 		</div>
 	);

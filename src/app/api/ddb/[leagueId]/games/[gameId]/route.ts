@@ -7,14 +7,14 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 export async function GET(
 	_req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+	{ params }: { params: Promise<{ leagueId: string; gameId: string }> }
 ) {
-	const { leagueId, title } = await params;
+	const { leagueId, gameId } = await params;
 
 	try {
 		const command = new GetCommand({
 			TableName: process.env.AWS_DDB_GAMES_TABLE,
-			Key: { leagueId, title },
+			Key: { leagueId, gameId },
 		});
 
 		const { Item } = await docClient.send(command);
