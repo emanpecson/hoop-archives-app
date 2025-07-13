@@ -5,6 +5,7 @@ import DashboardCard from "../../dashboard/dashboard-card";
 import HighlightClipRow from "./highlight-clip-row";
 import HighlightClipRowSkeleton from "./highlight-clip-row-skeleton";
 import { cn } from "@/lib/utils";
+import EmptyPrompt from "@/components/empty-prompt";
 
 interface HighlightClipTableProps {
 	clips: Clip[];
@@ -35,56 +36,54 @@ export default function HighlightClipTable(props: HighlightClipTableProps) {
 
 	return (
 		<DashboardCard className="p-0 h-full">
-			<table className="w-full">
-				<thead>
-					<tr>
-						<th className="px-4 py-2 border-b border-input-border">
-							<div className="flex justify-center place-items-center">
-								<Checkbox
-									onCheckedChange={selectAll}
-									checked={props.clips.length === props.selectedClips.length}
-								/>
-							</div>
-						</th>
-						{headers.map((h) => (
-							<th
-								key={h}
-								className="text-left last:text-right uppercase font-bold text-xs text-neutral-400 border-b border-input-border px-4 py-2.5"
-							>
-								{h}
-							</th>
-						))}
-					</tr>
-				</thead>
-
-				<tbody
-					className={cn(
-						props.isLoading ? "overflow-hidden" : "overflow-y-auto",
-						"w-full"
-					)}
-				>
-					{props.isLoading ? (
-						new Array(5)
-							.fill(0)
-							.map((_, i) => <HighlightClipRowSkeleton key={i} />)
-					) : props.clips.length > 0 ? (
-						props.clips.map((clip, i) => (
-							<HighlightClipRow
-								key={i}
-								index={i}
-								activeClipId={props.activeClipId}
-								clip={clip}
-								onSelect={select}
-								selectedClips={props.selectedClips}
-							/>
-						))
-					) : (
+			{props.isLoading || props.clips.length > 0 ? (
+				<table className="w-full">
+					<thead>
 						<tr>
-							<td>No clips</td>
+							<th className="px-4 py-2 border-b border-input-border">
+								<div className="flex justify-center place-items-center">
+									<Checkbox
+										onCheckedChange={selectAll}
+										checked={props.clips.length === props.selectedClips.length}
+									/>
+								</div>
+							</th>
+							{headers.map((h) => (
+								<th
+									key={h}
+									className="text-left last:text-right uppercase font-bold text-xs text-neutral-400 border-b border-input-border px-4 py-2.5"
+								>
+									{h}
+								</th>
+							))}
 						</tr>
-					)}
-				</tbody>
-			</table>
+					</thead>
+
+					<tbody
+						className={cn(
+							props.isLoading ? "overflow-hidden" : "overflow-y-auto",
+							"w-full"
+						)}
+					>
+						{props.isLoading
+							? new Array(5)
+									.fill(0)
+									.map((_, i) => <HighlightClipRowSkeleton key={i} />)
+							: props.clips.map((clip, i) => (
+									<HighlightClipRow
+										key={i}
+										index={i}
+										activeClipId={props.activeClipId}
+										clip={clip}
+										onSelect={select}
+										selectedClips={props.selectedClips}
+									/>
+							  ))}
+					</tbody>
+				</table>
+			) : (
+				<EmptyPrompt text="No clips" />
+			)}
 		</DashboardCard>
 	);
 }
