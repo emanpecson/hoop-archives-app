@@ -44,6 +44,7 @@ export default function GamesDashboard(props: GamesDashboardProps) {
 					</Button>
 				</div>
 				<GamesGallery
+					leaugeId={props.leagueId}
 					title={title}
 					startDate={startDate}
 					endDate={endDate}

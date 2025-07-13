@@ -4,18 +4,17 @@ import { Game } from "@/types/model/game";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import GamePreview from "./game-preview";
-import { tempLeagueId } from "@/data/temp";
 import {
 	GamePrimaryKey,
 	PaginatedGamesResponse,
 } from "@/types/api/paginated-games";
-import { Button } from "../ui/button";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Player } from "@/types/model/player";
 import LoadingPrompt from "../loading-prompt";
 import EmptyPrompt from "../empty-prompt";
+import Pagination from "../pagination";
 
 interface GamesGalleryProps {
+	leaugeId: string;
 	title: string | undefined;
 	startDate: Date | undefined;
 	endDate: Date | undefined;
@@ -34,7 +33,9 @@ export default function GamesGallery(props: GamesGalleryProps) {
 		try {
 			setIsFetching(true);
 			const res = await fetch(
-				`/api/ddb/${tempLeagueId}/games?exclusiveStartKey=${encodeURIComponent(
+				`/api/ddb/${
+					props.leaugeId
+				}/games?exclusiveStartKey=${encodeURIComponent(
 					JSON.stringify(key)
 				)}&title=${props.title}&startDate=${props.startDate}&endDate=${
 					props.endDate
@@ -85,25 +86,12 @@ export default function GamesGallery(props: GamesGalleryProps) {
 						))}
 					</div>
 
-					{/* pagination */}
-					<div className="py-1 px-2 flex gap-1">
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() => setPage(page - 1)}
-							disabled={page === 0}
-						>
-							<ChevronLeftIcon />
-						</Button>
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() => setPage(page + 1)}
-							disabled={!pageKeys[page + 1]}
-						>
-							<ChevronRightIcon />
-						</Button>
-					</div>
+					<Pagination
+						onPrevious={() => setPage(page - 1)}
+						previousDisabled={page === 0}
+						onNext={() => setPage(page + 1)}
+						nextDisabled={!pageKeys[page + 1]}
+					/>
 				</div>
 			) : (
 				<EmptyPrompt text="No games to display" />
