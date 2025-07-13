@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { tempLeagueId } from "@/data/temp";
 import { NewGameFormSectionProps } from "@/types/form-section";
-import { GameDraft } from "@/types/model/game-draft";
+import { Draft } from "@/types/model/draft";
 import { S3Uploader } from "@/utils/s3-uploader";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -52,13 +52,13 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 		try {
 			const ext = videoFile.name.substring(videoFile.name.indexOf("."));
 
-			const res = await fetch(`/api/ddb/${tempLeagueId}/game-drafts`, {
+			const res = await fetch(`/api/ddb/${tempLeagueId}/drafts`, {
 				method: "POST",
 				body: JSON.stringify({
 					...props.form,
 					leagueId: tempLeagueId,
 					bucketKey: title + ext,
-				} as GameDraft),
+				} as Draft),
 			});
 
 			if (res.ok) {

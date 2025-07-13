@@ -5,7 +5,7 @@ import {
 	PutItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
-import { GameDraft } from "@/types/model/game-draft";
+import { Draft } from "@/types/model/draft";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
@@ -14,7 +14,7 @@ export async function POST(
 	{ params }: { params: Promise<{ leagueId: string }> }
 ) {
 	const { leagueId } = await params;
-	const draft: GameDraft = await req.json();
+	const draft: Draft = await req.json();
 	console.log("Draft body request:", draft);
 
 	if (!draft) {

@@ -1,12 +1,12 @@
 import { tempLeagueId } from "@/data/temp";
 import { ClipDraft } from "@/types/clip-draft";
-import { GameDraft } from "@/types/model/game-draft";
+import { Draft } from "@/types/model/draft";
 import { createRef, RefObject } from "react";
 import { create } from "zustand";
 
 type VideoClipperStore = {
-	draft: GameDraft | null;
-	setDraft: (draft: GameDraft) => void;
+	draft: Draft | null;
+	setDraft: (draft: Draft) => void;
 	fetchDraft: (key: string) => Promise<void>;
 	unsortedClips: ClipDraft[];
 
@@ -36,8 +36,8 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 	};
 
 	const fetchDraft = async (key: string) => {
-		const res = await fetch(`/api/ddb/${tempLeagueId}/game-drafts/${key}`);
-		const data = (await res.json()) as GameDraft;
+		const res = await fetch(`/api/ddb/${tempLeagueId}/drafts/${key}`);
+		const data = (await res.json()) as Draft;
 
 		set({ unsortedClips: data.clipDrafts });
 		const sortedClips = sortClips(data.clipDrafts);
@@ -67,7 +67,7 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 
 	return {
 		draft: null,
-		setDraft: (draft: GameDraft) => set({ draft }),
+		setDraft: (draft: Draft) => set({ draft }),
 		fetchDraft,
 		unsortedClips: [],
 

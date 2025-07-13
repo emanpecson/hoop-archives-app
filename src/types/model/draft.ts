@@ -2,8 +2,7 @@ import { ClipDraft } from "../clip-draft";
 import { GameType } from "../enum/game-type";
 import { Player } from "./player";
 
-export interface GameDraft {
-	// * defined in new-game
+export interface Draft {
 	leagueId: string; // partition key
 	title: string; // sort key
 	bucketKey: string;
@@ -12,6 +11,5 @@ export interface GameDraft {
 	home: Player[];
 	away: Player[];
 
-	// * defined in video-clipper (new-clip)
 	clipDrafts: ClipDraft[];
 }

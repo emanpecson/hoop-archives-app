@@ -9,7 +9,7 @@ const debouncedTitleCheck = debounce(
 	async (title: string): Promise<boolean> => {
 		try {
 			const res = await fetch(
-				`/api/ddb/${tempLeagueId}/game-drafts/check-unique?title=${encodeURIComponent(
+				`/api/ddb/${tempLeagueId}/drafts/check-unique?title=${encodeURIComponent(
 					title
 				)}`
 			);

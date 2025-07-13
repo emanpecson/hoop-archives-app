@@ -1,8 +1,8 @@
-import { GameDraft } from "@/types/model/game-draft";
+import { Draft } from "@/types/model/draft";
 import { Player } from "@/types/model/player";
 
 export const getTeamOptions = (
-	draft: GameDraft,
+	draft: Draft,
 	pivotPlayer: Player | undefined,
 	getSameTeam: boolean
 ) => {
@@ -24,7 +24,7 @@ export const getTeamOptions = (
 };
 
 export const getPlayerTeam = (
-	draft: GameDraft,
+	draft: Draft,
 	player: Player | undefined
 ): "home" | "away" | null => {
 	if (player) {

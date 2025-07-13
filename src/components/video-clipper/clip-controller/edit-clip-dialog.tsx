@@ -59,7 +59,7 @@ export default function EditClipDialog(props: EditClipDialogProps) {
 	const clipIndex = unsortedClips.findIndex(
 		(x) => x.startTime === props.clip.startTime
 	);
-	const clipEndpoint = `/api/ddb/${tempLeagueId}/game-drafts/${
+	const clipEndpoint = `/api/ddb/${tempLeagueId}/drafts/${
 		draft!.title
 	}/clip-drafts?clipIndex=${clipIndex}`;
 

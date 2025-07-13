@@ -9,7 +9,7 @@ import {
 import DashboardCard from "../../dashboard/dashboard-card";
 import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
-import { GameDraft } from "@/types/model/game-draft";
+import { Draft } from "@/types/model/draft";
 import CardButton from "../../card-button";
 import { Player } from "@/types/model/player";
 import Statboard from "./statboard";
@@ -35,7 +35,7 @@ export default function GameDetails() {
 	const memoHomePlayers = useMemo(() => (draft ? draft.home : []), [draft]);
 	const memoAwayPlayers = useMemo(() => (draft ? draft.away : []), [draft]);
 
-	const startUpload = async (draft: GameDraft) => {
+	const startUpload = async (draft: Draft) => {
 		try {
 			// create Game
 			const createGameResponse = await fetch(`/api/ddb/${tempLeagueId}/games`, {
