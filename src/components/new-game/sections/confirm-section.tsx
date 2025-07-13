@@ -58,7 +58,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 			});
 
 			if (res.ok) {
-				router.push(`/video-clipper/${draftId}`);
+				router.push(`/draft/${draftId}`);
 			} else {
 				throw new Error("Failed to save game");
 			}

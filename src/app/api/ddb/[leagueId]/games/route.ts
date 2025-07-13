@@ -52,12 +52,13 @@ export async function GET(
 	{ params }: { params: Promise<{ leagueId: string }> }
 ) {
 	const { leagueId } = await params;
+	const { searchParams } = req.nextUrl;
 	const query = {
-		exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
-		title: req.nextUrl.searchParams.get("title") || null,
-		startDate: req.nextUrl.searchParams.get("startDate") || null,
-		endDate: req.nextUrl.searchParams.get("endDate") || null,
-		playerIds: req.nextUrl.searchParams.getAll("playerIds[]") || null,
+		exclusiveStartKey: searchParams.get("exclusiveStartKey"),
+		title: searchParams.get("title") || null,
+		startDate: searchParams.get("startDate") || null,
+		endDate: searchParams.get("endDate") || null,
+		playerIds: searchParams.getAll("playerIds[]") || null,
 	};
 
 	if (!query.exclusiveStartKey) {
@@ -72,8 +73,7 @@ export async function GET(
 			TableName: process.env.AWS_DDB_GAMES_TABLE,
 			Limit: 12,
 			ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
-			KeyConditionExpression: "#leagueId = :leagueId",
-			ExpressionAttributeNames: { "#leagueId": "leagueId" },
+			KeyConditionExpression: "leagueId = :leagueId",
 			ExpressionAttributeValues: { ":leagueId": leagueId },
 		};
 

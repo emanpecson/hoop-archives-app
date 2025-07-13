@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type { FormSection, FormSectionProps } from "@/types/form-section";
+import { DialogDivider } from "./ui/dialog";
 
 export default function FormSection(props: FormSectionProps) {
 	// save data and proceed to the next step
@@ -42,11 +43,11 @@ export default function FormSection(props: FormSectionProps) {
 				</div>
 			)}
 
-			<hr className="border-neutral-800" />
+			<DialogDivider />
 
 			<div className="space-y-4">{props.children}</div>
 
-			<hr className="border-neutral-800" />
+			<DialogDivider />
 
 			{/* footer */}
 			{props.sections.length > 0 && (

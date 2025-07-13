@@ -1,6 +1,6 @@
 import VideoClipper from "@/components/video-clipper/video-clipper";
 
-export default async function VideoClipperPage({
+export default async function DraftIdPage({
 	params,
 }: {
 	params: Promise<{ draftId: string }>;

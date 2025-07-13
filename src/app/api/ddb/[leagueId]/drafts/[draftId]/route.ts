@@ -1,4 +1,8 @@
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+import {
+	DeleteItemCommand,
+	DynamoDBClient,
+	GetItemCommand,
+} from "@aws-sdk/client-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -33,24 +37,22 @@ export async function GET(
 	}
 }
 
-// export async function DELETE(
-// 	req: NextRequest,
-// 	{ params }: Promise<{ params: { leagueId: string; draftId: string }> }
-// ) {
-//  const { leagueId, draftId } = await params;
+export async function DELETE(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string; draftId: string }> }
+) {
+	const { leagueId, draftId } = await params;
 
-// 	try {
-// 		const command = new DeleteItemCommand({
-// 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-// 			Key: { leagueId: { S: leagueId }, draftId: { S: query.draftId } },
-// 		});
+	try {
+		const command = new DeleteItemCommand({
+			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
+			Key: { leagueId: { S: leagueId }, draftId: { S: draftId } },
+		});
 
-// 		await client.send(command);
-// 		return NextResponse.json(null, { status: 204 });
-// 	} catch (error) {
-// 		return NextResponse.json(
-// 			{ error: "Server error: " + error },
-// 			{ status: 500 }
-// 		);
-// 	}
-// }
+		await client.send(command);
+		return NextResponse.json(null, { status: 204 });
+	} catch (error) {
+		console.error(error);
+		return NextResponse.json({ error: "Server error" }, { status: 500 });
+	}
+}

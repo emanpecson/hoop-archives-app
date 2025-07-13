@@ -33,3 +33,7 @@ export const getPlayerTeam = (
 	}
 	return null;
 };
+
+export const displayPlayers = (players: Player[]) => {
+	return players.map((x) => `${x.firstName[0]}. ${x.lastName}`).join(", ");
+};

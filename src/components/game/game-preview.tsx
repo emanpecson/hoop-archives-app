@@ -1,10 +1,10 @@
 import { Game } from "@/types/model/game";
-import { Player } from "@/types/model/player";
 import { EllipsisIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import GamePreviewDialog from "./game-preview-dialog";
 import Image from "next/image";
 import { GameStatus } from "@/types/enum/game-status";
+import { displayPlayers } from "@/utils/player-info";
 
 interface GamePreviewProps {
 	game: Game;
@@ -15,10 +15,6 @@ export default function GamePreview({ game }: GamePreviewProps) {
 		game.status === GameStatus.COMPLETE
 			? `/${game.leagueId}/game/${game.gameId}`
 			: undefined;
-
-	const displayPlayers = (players: Player[]) => {
-		return players.map((x) => `${x.firstName[0]}. ${x.lastName}`).join(", ");
-	};
 
 	return (
 		<div className="space-y-1">

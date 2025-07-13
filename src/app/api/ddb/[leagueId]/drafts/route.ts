@@ -6,8 +6,52 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 import { Draft } from "@/types/model/draft";
+import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import processExclusiveStartKey from "@/utils/server/process-exclusive-start-key";
+import { PaginatedDraftsResponse } from "@/types/api/paginated-drafts";
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
+const docClient = DynamoDBDocumentClient.from(client);
+
+export async function GET(
+	req: NextRequest,
+	{ params }: { params: Promise<{ leagueId: string }> }
+) {
+	const { leagueId } = await params;
+	const query = {
+		exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
+	};
+
+	if (!query.exclusiveStartKey) {
+		return NextResponse.json(
+			{ error: "Missing query parameter: exclusiveStartKey" },
+			{ status: 400 }
+		);
+	}
+
+	try {
+		const { Items, LastEvaluatedKey } = await docClient.send(
+			new QueryCommand({
+				TableName: process.env.AWS_DDB_DRAFTS_TABLE,
+				Limit: 12,
+				ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
+				KeyConditionExpression: "leagueId = :leagueId",
+				ExpressionAttributeValues: { ":leagueId": leagueId },
+			})
+		);
+
+		return NextResponse.json(
+			{
+				drafts: Items,
+				lastEvaluatedKey: LastEvaluatedKey,
+			} as PaginatedDraftsResponse,
+			{ status: 200 }
+		);
+	} catch (error) {
+		console.error(error);
+		return NextResponse.json({ error: "Server error" }, { status: 500 });
+	}
+}
 
 export async function POST(
 	req: NextRequest,

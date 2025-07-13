@@ -10,6 +10,7 @@ import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogDivider,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -47,7 +48,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 					<DialogDescription>View game details</DialogDescription>
 				</DialogHeader>
 
-				<hr className="border-neutral-800" />
+				<DialogDivider />
 
 				<div>
 					{isFetchingClips ? (
@@ -64,7 +65,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 
 				{clips.length > 0 && (
 					<>
-						<hr className="border-neutral-800" />
+						<DialogDivider />
 
 						<DialogFooter className="w-full flex justify-end">
 							<Button variant="outline">

@@ -12,6 +12,10 @@ function Dialog({
 	return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
+function DialogDivider() {
+	return <hr className="border-neutral-800" />;
+}
+
 function DialogTrigger({
 	...props
 }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
@@ -129,6 +133,7 @@ function DialogDescription({
 
 export {
 	Dialog,
+	DialogDivider,
 	DialogClose,
 	DialogContent,
 	DialogDescription,
