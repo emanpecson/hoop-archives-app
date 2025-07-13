@@ -24,11 +24,13 @@ import { GameStatus } from "@/types/enum/game-status";
 import { SqsClipRequest, SqsUploadRequest } from "@/types/api/sqs-message";
 import { ClipDraft } from "@/types/clip-draft";
 import { generateId } from "@/utils/generate-id";
+import { Stats } from "@/types/model/stats";
 
 export default function GameDetails() {
 	const router = useRouter();
 	const draft = useVideoClipperStore((state) => state.draft);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
+	const stats = useVideoClipperStore((state) => state.stats);
 	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
 
 	// prevent re-render from triggering unless draft changes
@@ -52,6 +54,7 @@ export default function GameDetails() {
 						title: draft.title,
 						type: draft.type,
 						status: GameStatus.PENDING,
+						stats: stats.map((stat) => ({ ...stat, gameId })) as Stats[],
 					} as Game,
 				} as NewGameRequestBody),
 			});

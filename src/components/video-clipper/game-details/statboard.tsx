@@ -1,14 +1,12 @@
 import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
+import { tempLeagueId } from "@/data/temp";
+import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { Player } from "@/types/model/player";
+import { initStats, TempStats } from "@/types/model/stats";
 import { DefensivePlay, OffensivePlay } from "@/types/play";
-import { collectStats } from "@/utils/stats";
+import { collectStats } from "@/utils/collect-stats";
+import Image from "next/image";
 import { useEffect, useState } from "react";
-
-type Stats = {
-	pts: number;
-	ast: number;
-	blk: number;
-};
 
 interface StatboardProps {
 	label: string;
@@ -17,13 +15,23 @@ interface StatboardProps {
 }
 
 export default function Statboard(props: StatboardProps) {
-	const [playerStats, setPlayerStats] = useState<{ [id: string]: Stats }>({});
-	const [teamStats, setTeamStats] = useState<Stats>({ pts: 0, ast: 0, blk: 0 });
+	const stats = useVideoClipperStore((state) => state.stats);
+	const setStats = useVideoClipperStore((state) => state.setStats);
+	const [playerStats, setPlayerStats] = useState<{ [id: string]: TempStats }>(
+		{}
+	);
+	const [teamStats, setTeamStats] = useState<TempStats>(initStats("", ""));
 
 	useEffect(() => {
-		const { playerStats, teamStats } = collectStats(props.players, props.clips);
+		const { playerStats, teamStats } = collectStats(
+			tempLeagueId,
+			props.players,
+			props.clips
+		);
 		setPlayerStats(playerStats);
+		setStats({ ...stats, ...Object.values(playerStats) });
 		setTeamStats(teamStats);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.clips, props.players]);
 
 	return (
@@ -51,17 +59,23 @@ export default function Statboard(props: StatboardProps) {
 					{props.players.map((p) => (
 						<tr key={p.playerId}>
 							<td className="text-left py-0.5 px-0.5 flex place-items-center gap-1.5">
-								<div className="w-5 h-5 rounded-full bg-neutral-700" />
+								<Image
+									src={p.imageUrl}
+									className="w-5 h-5 rounded-full object-cover"
+									alt="headshot"
+									width={20}
+									height={20}
+								/>
 								<span className="text-xs">{`${p.firstName[0]}. ${p.lastName}`}</span>
 							</td>
 							<td className="text-right py-0.5 px-0.5">
-								{playerStats[p.playerId] ? playerStats[p.playerId].pts : 0}
+								{playerStats[p.playerId] ? playerStats[p.playerId].points : 0}
 							</td>
 							<td className="text-right py-0.5 px-0.5">
-								{playerStats[p.playerId] ? playerStats[p.playerId].ast : 0}
+								{playerStats[p.playerId] ? playerStats[p.playerId].assists : 0}
 							</td>
 							<td className="text-right py-0.5 px-0.5">
-								{playerStats[p.playerId] ? playerStats[p.playerId].blk : 0}
+								{playerStats[p.playerId] ? playerStats[p.playerId].blocks : 0}
 							</td>
 						</tr>
 					))}
@@ -70,9 +84,9 @@ export default function Statboard(props: StatboardProps) {
 				<tfoot>
 					<tr>
 						<td className="text-left pt-0.5 px-0.5 text-xs">Totals</td>
-						<td className="text-right pt-0.5 px-0.5">{teamStats.pts}</td>
-						<td className="text-right pt-0.5 px-0.5">{teamStats.ast}</td>
-						<td className="text-right pt-0.5 px-0.5">{teamStats.blk}</td>
+						<td className="text-right pt-0.5 px-0.5">{teamStats.points}</td>
+						<td className="text-right pt-0.5 px-0.5">{teamStats.assists}</td>
+						<td className="text-right pt-0.5 px-0.5">{teamStats.blocks}</td>
 					</tr>
 				</tfoot>
 			</table>

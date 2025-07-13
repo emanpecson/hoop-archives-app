@@ -1,10 +1,12 @@
 import { GameStatus } from "../enum/game-status";
 import { GameType } from "../enum/game-type";
 import { Player } from "./player";
+import { Stats } from "./stats";
 
 export interface Game {
 	leagueId: string; // partition key: group games by league
 	gameId: string; // sort key
+
 	title: string;
 	date: Date;
 	type: GameType;
@@ -13,4 +15,6 @@ export interface Game {
 
 	home: Player[];
 	away: Player[];
+
+	stats: Stats[];
 }

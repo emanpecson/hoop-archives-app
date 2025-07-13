@@ -1,6 +1,7 @@
 import { tempLeagueId } from "@/data/temp";
 import { ClipDraft } from "@/types/clip-draft";
 import { Draft } from "@/types/model/draft";
+import { TempStats } from "@/types/model/stats";
 import { createRef, RefObject } from "react";
 import { create } from "zustand";
 
@@ -27,6 +28,9 @@ type VideoClipperStore = {
 	sortClips: (clips: ClipDraft[]) => ClipDraft[];
 
 	previewClips: (i: number) => void;
+
+	stats: TempStats[];
+	setStats: (stats: TempStats[]) => void;
 };
 
 const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
@@ -87,6 +91,9 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 
 		sortClips,
 		previewClips,
+
+		stats: [],
+		setStats: (stats: TempStats[]) => set({ stats }),
 	};
 });
 
