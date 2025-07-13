@@ -21,7 +21,13 @@ export default function DraftPreview(props: DraftPreviewProps) {
 		try {
 			setIsDeleting(true);
 
+			// delete draft object in ddb
 			await fetch(`/api/ddb/${props.leagueId}/drafts/${props.draft.draftId}`, {
+				method: "DELETE",
+			});
+
+			// delete video file in s3
+			await fetch(`/api/s3/delete?key=${props.draft.bucketKey}`, {
 				method: "DELETE",
 			});
 
