@@ -7,9 +7,9 @@ const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 export async function POST(
 	req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+	{ params }: { params: Promise<{ leagueId: string; draftId: string }> }
 ) {
-	const { leagueId, title } = await params;
+	const { leagueId, draftId } = await params;
 	const clip: ClipDraft = await req.json();
 
 	if (!clip)
@@ -21,7 +21,7 @@ export async function POST(
 	try {
 		const command = new UpdateItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { leagueId: { S: leagueId }, title: { S: title } },
+			Key: { leagueId: { S: leagueId }, draftId: { S: draftId } },
 			UpdateExpression:
 				"SET clipDrafts = list_append(if_not_exists(clipDrafts, :empty), :clip)",
 			ExpressionAttributeValues: marshall({
@@ -42,9 +42,9 @@ export async function POST(
 
 export async function PUT(
 	req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+	{ params }: { params: Promise<{ leagueId: string; draftId: string }> }
 ) {
-	const { leagueId, title } = await params;
+	const { leagueId, draftId } = await params;
 	const query = { clipIndex: req.nextUrl.searchParams.get("clipIndex") };
 	const clip: ClipDraft = await req.json();
 
@@ -63,7 +63,7 @@ export async function PUT(
 	try {
 		const command = new UpdateItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { leagueId: { S: leagueId }, title: { S: title } },
+			Key: { leagueId: { S: leagueId }, draftId: { S: draftId } },
 			UpdateExpression: `SET clipDrafts[${query.clipIndex}] = :clip`,
 			ExpressionAttributeValues: marshall({ ":clip": clip }),
 		});
@@ -80,9 +80,9 @@ export async function PUT(
 
 export async function DELETE(
 	req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+	{ params }: { params: Promise<{ leagueId: string; draftId: string }> }
 ) {
-	const { leagueId, title } = await params;
+	const { leagueId, draftId } = await params;
 	const query = { clipIndex: req.nextUrl.searchParams.get("clipIndex") };
 
 	if (!query.clipIndex)
@@ -94,7 +94,7 @@ export async function DELETE(
 	try {
 		const command = new UpdateItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { leagueId: { S: leagueId }, title: { S: title } },
+			Key: { leagueId: { S: leagueId }, draftId: { S: draftId } },
 			UpdateExpression: `REMOVE clipDrafts[${query.clipIndex}]`,
 		});
 

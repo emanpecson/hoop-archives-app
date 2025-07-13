@@ -14,7 +14,7 @@ export function ConfirmSection(props: NewClipFormSectionProps) {
 			const newClip = buildClipDraft(props.form, props.clipTime);
 
 			const res = await fetch(
-				`/api/ddb/${tempLeagueId}/drafts/${draft.title}/clip-drafts`,
+				`/api/ddb/${tempLeagueId}/drafts/${draft.draftId}/clip-drafts`,
 				{
 					method: "POST",
 					body: JSON.stringify(newClip),

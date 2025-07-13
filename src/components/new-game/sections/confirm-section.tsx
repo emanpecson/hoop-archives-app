@@ -9,7 +9,7 @@ import { Draft } from "@/types/model/draft";
 import { generateId } from "@/utils/generate-id";
 import { S3Uploader } from "@/utils/s3-uploader";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export function ConfirmSection(props: NewGameFormSectionProps) {
@@ -17,31 +17,28 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 	const router = useRouter();
 	const [progress, setProgress] = useState(0);
 
+	const draftId = useRef<string>("");
+	const bucketKey = useRef<string>("");
+
 	const s3Upload = async (key: string, vid: File) => {
-		// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
-		const partSize = 10 * 1024 * 1024;
-
-		const { uploadId, presignedUrls } = await s3Uploader.startUpload(
-			key,
-			vid,
-			partSize
-		);
-
-		const uploadParts = await s3Uploader.uploadByParts(
-			vid,
-			partSize,
-			presignedUrls,
-			(p) => setProgress(p)
-		);
-
-		await s3Uploader.completeUpload(uploadId, key, uploadParts);
-	};
-
-	const uploadVideo = async (videoFile: File) => {
 		try {
-			const ext = videoFile.name.substring(videoFile.name.indexOf("."));
+			// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
+			const partSize = 10 * 1024 * 1024;
 
-			await s3Upload(props.form.title + ext, videoFile);
+			const { uploadId, presignedUrls } = await s3Uploader.startUpload(
+				key,
+				vid,
+				partSize
+			);
+
+			const uploadParts = await s3Uploader.uploadByParts(
+				vid,
+				partSize,
+				presignedUrls,
+				(p) => setProgress(p)
+			);
+
+			await s3Uploader.completeUpload(uploadId, key, uploadParts);
 		} catch (error) {
 			console.log(error);
 			toast.error("Failed to upload video");
@@ -49,32 +46,36 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 	};
 
 	// upload form data to ddb
-	const createDraft = async (title: string, videoFile: File) => {
+	const createDraft = async () => {
 		try {
-			const ext = videoFile.name.substring(videoFile.name.indexOf("."));
-
 			const res = await fetch(`/api/ddb/${tempLeagueId}/drafts`, {
 				method: "POST",
 				body: JSON.stringify({
 					...props.form,
-					draftId: generateId("draft"),
-					bucketKey: title + ext,
+					draftId: draftId.current,
+					bucketKey: bucketKey.current,
 				} as Draft),
 			});
 
 			if (res.ok) {
-				router.push(`/video-clipper/${title}`);
+				router.push(`/video-clipper/${draftId}`);
 			} else {
 				throw new Error("Failed to save game");
 			}
 		} catch (error) {
-			console.log(error); // TODO: notify
+			console.log(error);
+			toast.error("Failed to create draft");
 		}
 	};
 
 	useEffect(() => {
-		if (props.form.title && props.form.videoFile) {
-			uploadVideo(props.form.videoFile);
+		const vid: File = props.form.videoFile;
+		if (vid) {
+			draftId.current = generateId("draft");
+			const fileExtension = vid.name.substring(vid.name.indexOf("."));
+
+			bucketKey.current = draftId.current + fileExtension;
+			s3Upload(bucketKey.current, props.form.videoFile);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.form.videoFile, props.form]);
@@ -96,7 +97,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 						className="w-fit"
 						variant="input"
 						type="button"
-						onClick={() => createDraft(props.form.title, props.form.videoFile)}
+						onClick={createDraft}
 					>
 						Create project
 					</Button>

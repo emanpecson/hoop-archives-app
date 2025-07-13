@@ -11,7 +11,7 @@ import { ClipDraft } from "@/types/clip-draft";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 
 interface VideoClipperProps {
-	title: string;
+	draftId: string;
 }
 
 export default function VideoClipper(props: VideoClipperProps) {
@@ -40,8 +40,8 @@ export default function VideoClipper(props: VideoClipperProps) {
 	};
 
 	useEffect(() => {
-		if (props.title) fetchDraft(props.title);
-	}, [props.title, fetchDraft]);
+		if (props.draftId) fetchDraft(props.draftId);
+	}, [props.draftId, fetchDraft]);
 
 	useEffect(() => {
 		if (draft) fetchSource(draft.bucketKey);

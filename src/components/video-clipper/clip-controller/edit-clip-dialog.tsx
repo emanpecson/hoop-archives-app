@@ -60,7 +60,7 @@ export default function EditClipDialog(props: EditClipDialogProps) {
 		(x) => x.startTime === props.clip.startTime
 	);
 	const clipEndpoint = `/api/ddb/${tempLeagueId}/drafts/${
-		draft!.title
+		draft!.draftId
 	}/clip-drafts?clipIndex=${clipIndex}`;
 
 	const onSubmit = handleSubmit(

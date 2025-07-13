@@ -39,8 +39,8 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		return clips.slice().sort((a, b) => a.startTime - b.endTime);
 	};
 
-	const fetchDraft = async (key: string) => {
-		const res = await fetch(`/api/ddb/${tempLeagueId}/drafts/${key}`);
+	const fetchDraft = async (draftId: string) => {
+		const res = await fetch(`/api/ddb/${tempLeagueId}/drafts/${draftId}`);
 		const data = (await res.json()) as Draft;
 
 		set({ unsortedClips: data.clipDrafts });

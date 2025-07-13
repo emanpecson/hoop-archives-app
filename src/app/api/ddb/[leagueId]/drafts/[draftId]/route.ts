@@ -6,14 +6,14 @@ const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 export async function GET(
 	_req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string; title: string }> }
+	{ params }: { params: Promise<{ leagueId: string; draftId: string }> }
 ) {
-	const { leagueId, title } = await params;
+	const { leagueId, draftId } = await params;
 
 	try {
 		const command = new GetItemCommand({
 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-			Key: { leagueId: { S: leagueId }, title: { S: title } },
+			Key: { leagueId: { S: leagueId }, draftId: { S: draftId } },
 		});
 
 		const { Item } = await client.send(command);
@@ -35,22 +35,14 @@ export async function GET(
 
 // export async function DELETE(
 // 	req: NextRequest,
-// 	{ params }: Promise<{ params: { leagueId: string }> }
+// 	{ params }: Promise<{ params: { leagueId: string; draftId: string }> }
 // ) {
-//  const { leagueId } = await params;
-// 	const query = { title: req.nextUrl.searchParams.get("title") };
-
-// 	if (!query.title) {
-// 		return NextResponse.json(
-// 			{ error: "Missing query param: title" },
-// 			{ status: 400 }
-// 		);
-// 	}
+//  const { leagueId, draftId } = await params;
 
 // 	try {
 // 		const command = new DeleteItemCommand({
 // 			TableName: process.env.AWS_DDB_DRAFTS_TABLE,
-// 			Key: { leagueId: { S: leagueId }, title: { S: query.title } },
+// 			Key: { leagueId: { S: leagueId }, draftId: { S: query.draftId } },
 // 		});
 
 // 		await client.send(command);
