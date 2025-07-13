@@ -1,20 +1,23 @@
+"use client";
+
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
+	DialogTrigger,
 } from "../ui/dialog";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { newGameSections } from "@/data/sections";
 import { NewGameFormSection } from "@/types/form-section";
 
 interface NewGameDialogProps {
-	open: boolean;
-	setOpen: Dispatch<SetStateAction<boolean>>;
+	children: React.ReactNode;
 }
 
 export default function NewGameDialog(props: NewGameDialogProps) {
+	const [open, setOpen] = useState(false);
 	const [step, setStep] = useState(0);
 	const [newGameForm, setNewGameForm] = useState({});
 
@@ -34,11 +37,13 @@ export default function NewGameDialog(props: NewGameDialogProps) {
 			setStep(0);
 			setNewGameForm({});
 		}
-		props.setOpen(open);
+		setOpen(open);
 	};
 
 	return (
-		<Dialog open={props.open} onOpenChange={handleOpenChange}>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
+			<DialogTrigger asChild>{props.children}</DialogTrigger>
+
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>New Game</DialogTitle>
