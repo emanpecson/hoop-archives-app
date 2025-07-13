@@ -116,7 +116,7 @@ export async function GET(
 
 	try {
 		const queryInput: QueryCommandInput = {
-			TableName: process.env.AWS_DDB_GAME_CLIPS_TABLE,
+			TableName: process.env.AWS_DDB_CLIPS_TABLE,
 			KeyConditionExpression: "leagueId = :leagueId",
 			ExpressionAttributeValues: { ":leagueId": leagueId },
 		};
