@@ -11,17 +11,17 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 export async function GET(
 	_req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string; gameTitle: string }> }
+	{ params }: { params: Promise<{ leagueId: string; gameId: string }> }
 ) {
-	const { gameTitle, leagueId } = await params;
+	const { gameId, leagueId } = await params;
 
 	try {
 		const queryInput: QueryCommandInput = {
 			TableName: process.env.AWS_DDB_CLIPS_TABLE,
 			IndexName: process.env.AWS_DDB_CLIPS_GSI_GAME_TITLE,
-			KeyConditionExpression: "leagueId = :leagueId AND gameTitle = :gameTitle",
+			KeyConditionExpression: "leagueId = :leagueId AND gameId = :gameId",
 			ExpressionAttributeValues: {
-				":gameTitle": gameTitle,
+				":gameId": gameId,
 				":leagueId": leagueId,
 			},
 		};

@@ -2,10 +2,11 @@ import { DefensivePlay, OffensivePlay } from "../play";
 
 export interface Clip {
 	leagueId: string; // partition key
-	gameTitle: string; // sort key: unique game title
+	clipId: string; // sort key
+
+	gameId: string;
 	date: Date; // ! is this coming back as a string in ddb?
 
-	clipId: string;
 	tags: string[];
 	startTime: number;
 	endTime: number;

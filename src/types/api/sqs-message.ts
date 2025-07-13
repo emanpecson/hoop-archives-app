@@ -2,7 +2,7 @@ import { DefensivePlay, OffensivePlay } from "../play";
 
 export type SqsUploadRequest = {
 	leagueId: string;
-	gameTitle: string;
+	gameId: string;
 	key: string; // game title + extention
 	date: Date;
 

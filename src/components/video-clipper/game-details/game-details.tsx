@@ -39,12 +39,13 @@ export default function GameDetails() {
 	const startUpload = async (draft: Draft) => {
 		try {
 			// create Game
+			const gameId = generateId("game");
 			const createGameResponse = await fetch(`/api/ddb/${tempLeagueId}/games`, {
 				method: "POST",
 				body: JSON.stringify({
 					game: {
 						leagueId: tempLeagueId,
-						gameId: generateId("game"),
+						gameId,
 						home: draft.home,
 						away: draft.away,
 						date: new Date(draft.date),
@@ -61,7 +62,7 @@ export default function GameDetails() {
 					method: "POST",
 					body: JSON.stringify({
 						leagueId: tempLeagueId,
-						gameTitle: draft.title,
+						gameId,
 						key: draft.bucketKey,
 						date: new Date(draft.date),
 						clipRequests: draft.clipDrafts.map(
