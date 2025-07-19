@@ -18,20 +18,20 @@ export class PageRouter {
 		this.leagueId = leagueId;
 
 		this.routes = {
-			home: { name: "Home", path: `/${leagueId}`, Icon: HouseIcon },
+			home: { name: "Home", path: `/league/${leagueId}`, Icon: HouseIcon },
 			draft: {
 				name: "Draft",
-				path: `/${leagueId}/draft`,
+				path: `/league/${leagueId}/draft`,
 				Icon: SquareScissorsIcon,
 			},
 			highlightBuilder: {
 				name: "Highlight Builder",
-				path: `/${leagueId}/highlight-builder`,
+				path: `/league/${leagueId}/highlight-builder`,
 				Icon: PaperclipIcon,
 			},
 			players: {
 				name: "Players",
-				path: `/${leagueId}/player`,
+				path: `/league/${leagueId}/player`,
 				Icon: UsersIcon,
 			},
 		};

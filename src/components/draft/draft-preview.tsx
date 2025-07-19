@@ -13,7 +13,7 @@ interface DraftPreviewProps {
 }
 
 export default function DraftPreview(props: DraftPreviewProps) {
-	const url = `/${props.draft.leagueId}/draft/${props.draft.draftId}`;
+	const url = `/league/${props.draft.leagueId}/draft/${props.draft.draftId}`;
 
 	const [isDeleting, setIsDeleting] = useState(false);
 

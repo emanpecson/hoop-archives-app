@@ -29,7 +29,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 	const [clips, setClips] = useState<Clip[]>([]);
 	const [isFetchingClips, setIsFetchingClips] = useState(true);
 	const [open, setOpen] = useState(false);
-	const gameUrl = `/${props.game.leagueId}/game/${props.game.gameId}`;
+	const gameUrl = `/league/${props.game.leagueId}/game/${props.game.gameId}`;
 
 	useLoadData({
 		endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.gameId}`,

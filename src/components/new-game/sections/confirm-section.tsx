@@ -58,7 +58,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 			});
 
 			if (res.ok) {
-				router.push(`/draft/${draftId}`);
+				router.push(`/league/${tempLeagueId}/draft/${draftId}`);
 			} else {
 				throw new Error("Failed to save game");
 			}

@@ -19,7 +19,7 @@ export default function HighlightClipManager(props: HighlightClipManagerProps) {
 	const queries = props.selectedClips
 		.map((clip) => `clipIds[]=${clip.clipId}`)
 		.join("&");
-	const highlightsUrl = `/${props.leagueId}/highlights?${queries}`;
+	const highlightsUrl = `/league/${props.leagueId}/highlights?${queries}`;
 
 	const removeClip = (removeClip: Clip) => {
 		props.setSelectedClips((clips) =>
