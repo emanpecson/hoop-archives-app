@@ -1,4 +1,3 @@
-import { createHmac } from "crypto";
 import {
 	CognitoIdentityProviderClient,
 	InitiateAuthCommand,
@@ -22,7 +21,7 @@ export async function refreshCognitoTokens(
 	};
 
 	if (process.env.AUTH_COGNITO_CLIENT_SECRET) {
-		input.AuthParameters!.SECRET_HASH = generateSecretHash(
+		input.AuthParameters!.SECRET_HASH = await generateSecretHashEdge(
 			process.env.AUTH_COGNITO_CLIENT_ID!,
 			process.env.AUTH_COGNITO_CLIENT_SECRET,
 			username
@@ -47,12 +46,23 @@ export async function refreshCognitoTokens(
 	}
 }
 
-function generateSecretHash(
+async function generateSecretHashEdge(
 	clientId: string,
 	clientSecret: string,
 	username: string
-): string {
-	return createHmac("sha256", clientSecret)
-		.update(username + clientId)
-		.digest("base64");
+): Promise<string> {
+	const enc = new TextEncoder();
+	const key = await crypto.subtle.importKey(
+		"raw",
+		enc.encode(clientSecret),
+		{ name: "HMAC", hash: "SHA-256" },
+		false,
+		["sign"]
+	);
+
+	const data = enc.encode(username + clientId);
+	const signature = await crypto.subtle.sign("HMAC", key, data);
+
+	// Convert ArrayBuffer to base64
+	return btoa(String.fromCharCode(...new Uint8Array(signature)));
 }

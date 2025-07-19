@@ -1,6 +1,6 @@
 "use client";
 
-import { PageRouter } from "@/data/routes";
+import { PageRouter } from "@/lib/page-router";
 import DashboardCard from "./dashboard-card";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

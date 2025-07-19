@@ -44,4 +44,14 @@ export class PageRouter {
 	public getRoute = (pageKey: PageKey) => {
 		return this.routes[pageKey];
 	};
+
+	public containsProtectedRoutes = (pathname: string): boolean => {
+		return this.getProtectedRoutes().some((route) =>
+			pathname.startsWith(route.path)
+		);
+	};
+
+	private getProtectedRoutes = () => {
+		return [this.routes["draft"], this.routes["players"]];
+	};
 }
