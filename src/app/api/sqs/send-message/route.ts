@@ -1,10 +1,9 @@
 import { SqsUploadRequest } from "@/types/api/sqs-message";
-import { SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
-import { NextRequest, NextResponse } from "next/server";
+import { apiHandler } from "@/utils/server/api-handler";
+import { SendMessageCommand } from "@aws-sdk/client-sqs";
+import { NextResponse } from "next/server";
 
-const client = new SQSClient({});
-
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req, _params, aws) => {
 	const body: SqsUploadRequest = await req.json();
 
 	try {
@@ -14,11 +13,11 @@ export async function POST(req: NextRequest) {
 			MessageBody: JSON.stringify(body),
 		});
 
-		await client.send(command);
+		await aws.sqs.send(command);
 
 		return new NextResponse(null, { status: 200 });
 	} catch (error) {
 		console.error(error);
 		return NextResponse.json({ error: "Server error" }, { status: 500 });
 	}
-}
+});
