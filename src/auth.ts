@@ -3,6 +3,7 @@ import Cognito from "next-auth/providers/cognito";
 import { jwtDecode } from "jwt-decode";
 import { IdTokenPayload } from "./types/token";
 import { Credentials } from "@aws-sdk/client-cognito-identity";
+import { refreshCognitoTokens } from "./utils/token";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
@@ -40,9 +41,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 			token.iss = decodedIdToken.iss;
 
+			console.log("token:", token);
 			return token;
 		},
 		async session({ session, token }) {
+			// copy token data into session
 			session.user.givenName = token.given_name as string;
 			session.user.familyName = token.given_name as string;
 			session.user.groups = (token.groups as string[]) ?? [];
@@ -52,6 +55,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			session.user.username = token.username as string;
 
 			try {
+				// refresh id-token on expiration
+				const decodedIdToken: IdTokenPayload = jwtDecode(session.idToken);
+				const now = Math.floor(Date.now() / 1000); // convert to seconds
+
+				if (!!decodedIdToken.exp && now < decodedIdToken.exp) {
+					console.log("Token expired, refreshing...");
+					const { id_token, access_token } = await refreshCognitoTokens(
+						session.refreshToken,
+						session.user.username
+					);
+					session.idToken = id_token;
+					session.accessToken = access_token;
+				}
+
+				// fetch aws credentials and add to session object
 				const credsEndpoint = `${process.env.APP_URL}/api/cognito?idToken=${session.idToken}`;
 				const res = await fetch(credsEndpoint);
 
@@ -62,7 +80,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					throw Error("Could not fetch AWS credentials");
 				}
 			} catch (error) {
-				console.log("Error fetching AWS credentials:", error);
+				console.log("Error modifying session token", error);
 			}
 
 			return session;
