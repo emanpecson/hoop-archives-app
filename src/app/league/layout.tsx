@@ -1,6 +1,6 @@
 import Navbar from "@/components/dashboard/navbar";
 
-export default async function DashboardLayout({
+export default async function LeagueLayout({
 	children,
 	params,
 }: {
