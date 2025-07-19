@@ -3,7 +3,7 @@ import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
 
-export const GET = apiHandler(async (req, _params, aws) => {
+export const GET = apiHandler(async (req, _, aws) => {
 	const oneHourInSeconds = 60 * 60;
 	const oneDayInSeconds = oneHourInSeconds * 24;
 

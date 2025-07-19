@@ -3,7 +3,7 @@ import { apiHandler } from "@/utils/server/api-handler";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 import { NextResponse } from "next/server";
 
-export const POST = apiHandler(async (req, _params, aws) => {
+export const POST = apiHandler(async (req, _, aws) => {
 	const body: SqsUploadRequest = await req.json();
 
 	try {

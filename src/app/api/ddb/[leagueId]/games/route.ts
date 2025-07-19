@@ -10,13 +10,12 @@ import processExclusiveStartKey from "@/utils/server/process-exclusive-start-key
 import { PaginatedGamesResponse } from "@/types/api/paginated-games";
 import { filterGames } from "@/utils/server/filter-content";
 
-export const GET = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+type Context = {
+	leagueId: string;
+};
+
+export const GET = apiHandler<Context>(
+	async (req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		const { searchParams } = req.nextUrl;
 		const query = {
 			exclusiveStartKey: searchParams.get("exclusiveStartKey"),
@@ -68,7 +67,7 @@ export const GET = apiHandler(
 	}
 );
 
-export const POST = apiHandler(async (req, _params, aws) => {
+export const POST = apiHandler(async (req, _, aws) => {
 	const { game }: NewGameRequestBody = await req.json();
 
 	if (!game) {

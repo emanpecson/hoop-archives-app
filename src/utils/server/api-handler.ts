@@ -22,7 +22,7 @@ type Handler<T> = (
 
 // wrapper function that injects aws clients + performs existence checks
 export function apiHandler<T>(handler: Handler<T>) {
-	return async (req: NextRequest, context: { params: T }) => {
+	return async (req: NextRequest, context: { params: T | Promise<T> }) => {
 		const ddb = await getDdbClient();
 		if (!ddb) {
 			return NextResponse.json(
@@ -48,6 +48,8 @@ export function apiHandler<T>(handler: Handler<T>) {
 			);
 		}
 
-		return handler(req, context.params, { ddb, ddbDoc, s3, sqs });
+		const params = await context.params;
+
+		return handler(req, params, { ddb, ddbDoc, s3, sqs });
 	};
 }

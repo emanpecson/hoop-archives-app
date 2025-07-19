@@ -4,13 +4,14 @@ import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string; draftId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId, draftId } = await params;
+type Context = {
+	leagueId: string;
+	draftId: string;
+};
+
+export const POST = apiHandler<Context>(
+	async (req: NextRequest, ctx: Context, aws: AwsClient) => {
+		const { leagueId, draftId } = ctx;
 		const clip: ClipDraft = await req.json();
 
 		if (!clip)
@@ -42,13 +43,9 @@ export const POST = apiHandler(
 	}
 );
 
-export const PUT = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string; draftId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId, draftId } = await params;
+export const PUT = apiHandler<Context>(
+	async (req: NextRequest, ctx: Context, aws: AwsClient) => {
+		const { leagueId, draftId } = ctx;
 		const query = { clipIndex: req.nextUrl.searchParams.get("clipIndex") };
 		const clip: ClipDraft = await req.json();
 
@@ -83,13 +80,9 @@ export const PUT = apiHandler(
 	}
 );
 
-export const DELETE = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string; draftId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId, draftId } = await params;
+export const DELETE = apiHandler<Context>(
+	async (req: NextRequest, ctx: Context, aws: AwsClient) => {
+		const { leagueId, draftId } = ctx;
 		const query = { clipIndex: req.nextUrl.searchParams.get("clipIndex") };
 
 		if (!query.clipIndex)

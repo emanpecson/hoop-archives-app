@@ -3,13 +3,14 @@ import { DeleteItemCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = apiHandler(
-	async (
-		_req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string; draftId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId, draftId } = await params;
+type Context = {
+	leagueId: string;
+	draftId: string;
+};
+
+export const GET = apiHandler<Context>(
+	async (_req: NextRequest, ctx: Context, aws: AwsClient) => {
+		const { leagueId, draftId } = ctx;
 
 		try {
 			const command = new GetItemCommand({
@@ -35,13 +36,9 @@ export const GET = apiHandler(
 	}
 );
 
-export const DELETE = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string; draftId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId, draftId } = await params;
+export const DELETE = apiHandler<Context>(
+	async (req: NextRequest, ctx: Context, aws: AwsClient) => {
+		const { leagueId, draftId } = ctx;
 
 		try {
 			const command = new DeleteItemCommand({

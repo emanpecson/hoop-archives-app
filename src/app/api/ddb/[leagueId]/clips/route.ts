@@ -3,13 +3,12 @@ import { filterClips } from "@/utils/server/filter-content";
 import { QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+type Context = {
+	leagueId: string;
+};
+
+export const GET = apiHandler<Context>(
+	async (req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		const query = req.nextUrl.searchParams;
 
 		try {

@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 
 const oneHourInSeconds = 60 * 60;
 
-export const POST = apiHandler(async (req, _params, aws) => {
+export const POST = apiHandler(async (req, _, aws) => {
 	const { key, fileSize, partSize } = await req.json();
 
 	if (!key || !fileSize || !partSize) {

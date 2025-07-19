@@ -1,8 +1,8 @@
 import { apiHandler } from "@/utils/server/api-handler";
 import { CompleteMultipartUploadCommand } from "@aws-sdk/client-s3";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const POST = apiHandler(async (req: NextRequest, _params, aws) => {
+export const POST = apiHandler(async (req, _, aws) => {
 	const body = await req.json();
 
 	if (

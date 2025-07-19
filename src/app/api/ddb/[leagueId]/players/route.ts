@@ -9,14 +9,12 @@ import { Player } from "@/types/model/player";
 import { generateId } from "@/utils/generate-id";
 import { apiHandler, AwsClient } from "@/utils/server/api-handler";
 
-export const GET = apiHandler(
-	async (
-		_req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+type Context = {
+	leagueId: string;
+};
 
+export const GET = apiHandler<Context>(
+	async (_req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		try {
 			const queryInput: QueryCommandInput = {
 				TableName: process.env.AWS_DDB_PLAYERS_TABLE,
@@ -34,13 +32,8 @@ export const GET = apiHandler(
 	}
 );
 
-export const POST = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+export const POST = apiHandler<Context>(
+	async (req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		const { firstName, lastName, imageUrl }: NewPlayerRequestBody =
 			await req.json();
 

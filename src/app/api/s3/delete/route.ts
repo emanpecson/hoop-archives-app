@@ -2,7 +2,7 @@ import { apiHandler } from "@/utils/server/api-handler";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 
-export const DELETE = apiHandler(async (req, _params, aws) => {
+export const DELETE = apiHandler(async (req, _, aws) => {
 	const key = req.nextUrl.searchParams.get("key");
 
 	if (!key) {

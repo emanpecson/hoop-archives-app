@@ -3,13 +3,12 @@ import processExclusiveStartKey from "@/utils/server/process-exclusive-start-key
 import { QueryCommandInput, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
+type Context = {
+	leagueId: string;
+};
+
 export const GET = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+	async (req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		const query = {
 			exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
 			search: req.nextUrl.searchParams.get("search"),

@@ -7,13 +7,12 @@ import processExclusiveStartKey from "@/utils/server/process-exclusive-start-key
 import { PaginatedDraftsResponse } from "@/types/api/paginated-drafts";
 import { apiHandler, AwsClient } from "@/utils/server/api-handler";
 
-export const GET = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+type Context = {
+	leagueId: string;
+};
+
+export const GET = apiHandler<Context>(
+	async (req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		const query = {
 			exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
 		};
@@ -50,13 +49,8 @@ export const GET = apiHandler(
 	}
 );
 
-export const POST = apiHandler(
-	async (
-		req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string }> },
-		aws: AwsClient
-	) => {
-		const { leagueId } = await params;
+export const POST = apiHandler<Context>(
+	async (req: NextRequest, { leagueId }: Context, aws: AwsClient) => {
 		const draft: Draft = await req.json();
 		console.log("Draft body request:", draft);
 

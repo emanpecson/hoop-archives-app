@@ -2,13 +2,14 @@ import { apiHandler, AwsClient } from "@/utils/server/api-handler";
 import { QueryCommand, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = apiHandler(
-	async (
-		_req: NextRequest,
-		{ params }: { params: Promise<{ leagueId: string; gameId: string }> },
-		aws: AwsClient
-	) => {
-		const { gameId, leagueId } = await params;
+type Context = {
+	leagueId: string;
+	gameId: string;
+};
+
+export const GET = apiHandler<Context>(
+	async (_req: NextRequest, ctx: Context, aws: AwsClient) => {
+		const { gameId, leagueId } = ctx;
 
 		try {
 			const queryInput: QueryCommandInput = {
