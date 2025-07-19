@@ -1,15 +1,8 @@
-import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { NextRequest, NextResponse } from "next/server";
+import { apiHandler } from "@/utils/server/api-handler";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { NextResponse } from "next/server";
 
-const s3 = new S3Client({
-	region: process.env.AWS_REGION,
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-	},
-});
-
-export async function DELETE(req: NextRequest) {
+export const DELETE = apiHandler(async (req, _params, aws) => {
 	const key = req.nextUrl.searchParams.get("key");
 
 	if (!key) {
@@ -25,11 +18,11 @@ export async function DELETE(req: NextRequest) {
 			Key: key,
 		});
 
-		const res = await s3.send(command);
+		const res = await aws.s3.send(command);
 		console.log("S3 delete response:", res);
 		return NextResponse.json(null, { status: 204 });
 	} catch (error) {
 		console.error(error);
 		return NextResponse.json({ error: "Server error" }, { status: 500 });
 	}
-}
+});

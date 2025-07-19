@@ -1,20 +1,9 @@
-import {
-	GetObjectCommand,
-	PutObjectCommand,
-	S3Client,
-} from "@aws-sdk/client-s3";
+import { apiHandler } from "@/utils/server/api-handler";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-const s3 = new S3Client({
-	region: process.env.AWS_REGION!,
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-	},
-});
-
-export async function GET(req: NextRequest) {
+export const GET = apiHandler(async (req, _params, aws) => {
 	const oneHourInSeconds = 60 * 60;
 	const oneDayInSeconds = oneHourInSeconds * 24;
 
@@ -43,7 +32,7 @@ export async function GET(req: NextRequest) {
 				Bucket: process.env.AWS_S3_BUCKET,
 				Key: query.key,
 			});
-			const presignedUrl = await getSignedUrl(s3, command, {
+			const presignedUrl = await getSignedUrl(aws.s3, command, {
 				expiresIn: oneHourInSeconds,
 			});
 
@@ -55,16 +44,21 @@ export async function GET(req: NextRequest) {
 				Bucket: process.env.AWS_S3_BUCKET,
 				Key: query.key,
 			});
-			const presignedUrl = await getSignedUrl(s3, command, {
+			const presignedUrl = await getSignedUrl(aws.s3, command, {
 				expiresIn: oneDayInSeconds,
 			});
 
 			return NextResponse.json({ presignedUrl }, { status: 200 });
 		}
+
+		return NextResponse.json(
+			{ error: "Bucket method does not match a path" },
+			{ status: 400 }
+		);
 	} catch (error) {
 		return NextResponse.json(
 			{ error, message: "Server error" },
 			{ status: 500 }
 		);
 	}
-}
+});

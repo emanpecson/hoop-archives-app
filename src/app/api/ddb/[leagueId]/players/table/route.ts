@@ -1,58 +1,54 @@
+import { apiHandler, AwsClient } from "@/utils/server/api-handler";
 import processExclusiveStartKey from "@/utils/server/process-exclusive-start-key";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-	DynamoDBDocumentClient,
-	QueryCommandInput,
-	QueryCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { QueryCommandInput, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { NextRequest, NextResponse } from "next/server";
 
-const client = new DynamoDBClient({ region: process.env.AWS_REGION });
-const docClient = DynamoDBDocumentClient.from(client);
-
-export async function GET(
-	req: NextRequest,
-	{ params }: { params: Promise<{ leagueId: string }> }
-) {
-	const { leagueId } = await params;
-	const query = {
-		exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
-		search: req.nextUrl.searchParams.get("search"),
-	};
-
-	if (!query.exclusiveStartKey) {
-		return NextResponse.json(
-			{ error: "Missing query parameter: exclusiveStartKey" },
-			{ status: 400 }
-		);
-	}
-
-	try {
-		const input: QueryCommandInput = {
-			TableName: process.env.AWS_DDB_PLAYERS_TABLE,
-			Limit: 4,
-			ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
+export const GET = apiHandler(
+	async (
+		req: NextRequest,
+		{ params }: { params: Promise<{ leagueId: string }> },
+		aws: AwsClient
+	) => {
+		const { leagueId } = await params;
+		const query = {
+			exclusiveStartKey: req.nextUrl.searchParams.get("exclusiveStartKey"),
+			search: req.nextUrl.searchParams.get("search"),
 		};
 
-		// if query provided, search entire table for full name
-		if (query.search) {
-			input.KeyConditionExpression =
-				"leagueId = :leagueId AND begins_with(fullName, :fullName)";
-			input.ExpressionAttributeValues = {
-				":leagueId": leagueId,
-				":fullName": query.search,
-			};
-		} else {
-			input.KeyConditionExpression = "leagueId = :leagueId";
-			input.ExpressionAttributeValues = { ":leagueId": leagueId };
+		if (!query.exclusiveStartKey) {
+			return NextResponse.json(
+				{ error: "Missing query parameter: exclusiveStartKey" },
+				{ status: 400 }
+			);
 		}
 
-		const { Items, LastEvaluatedKey } = await docClient.send(
-			new QueryCommand(input)
-		);
-		return NextResponse.json({ Items, LastEvaluatedKey }, { status: 200 });
-	} catch (err) {
-		console.log(err);
-		return NextResponse.json({ error: "Server error" }, { status: 500 });
+		try {
+			const input: QueryCommandInput = {
+				TableName: process.env.AWS_DDB_PLAYERS_TABLE,
+				Limit: 4,
+				ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
+			};
+
+			// if query provided, search entire table for full name
+			if (query.search) {
+				input.KeyConditionExpression =
+					"leagueId = :leagueId AND begins_with(fullName, :fullName)";
+				input.ExpressionAttributeValues = {
+					":leagueId": leagueId,
+					":fullName": query.search,
+				};
+			} else {
+				input.KeyConditionExpression = "leagueId = :leagueId";
+				input.ExpressionAttributeValues = { ":leagueId": leagueId };
+			}
+
+			const { Items, LastEvaluatedKey } = await aws.ddbDoc.send(
+				new QueryCommand(input)
+			);
+			return NextResponse.json({ Items, LastEvaluatedKey }, { status: 200 });
+		} catch (err) {
+			console.log(err);
+			return NextResponse.json({ error: "Server error" }, { status: 500 });
+		}
 	}
-}
+);

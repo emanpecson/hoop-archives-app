@@ -1,15 +1,8 @@
-import { CompleteMultipartUploadCommand, S3Client } from "@aws-sdk/client-s3";
+import { apiHandler } from "@/utils/server/api-handler";
+import { CompleteMultipartUploadCommand } from "@aws-sdk/client-s3";
 import { NextRequest, NextResponse } from "next/server";
 
-const s3 = new S3Client({
-	region: process.env.AWS_REGION,
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-	},
-});
-
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest, _params, aws) => {
 	const body = await req.json();
 
 	if (
@@ -33,10 +26,10 @@ export async function POST(req: NextRequest) {
 			},
 		});
 
-		const res = await s3.send(command);
+		const res = await aws.s3.send(command);
 		return NextResponse.json({ location: res.Location }, { status: 200 });
 	} catch (err) {
 		console.log(err);
 		return NextResponse.json({ error: "Server error" }, { status: 500 });
 	}
-}
+});

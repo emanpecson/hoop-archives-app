@@ -1,22 +1,14 @@
+import { apiHandler } from "@/utils/server/api-handler";
 import {
 	CreateMultipartUploadCommand,
-	S3Client,
 	UploadPartCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { NextRequest, NextResponse } from "next/server";
-
-const s3 = new S3Client({
-	region: process.env.AWS_REGION,
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-	},
-});
+import { NextResponse } from "next/server";
 
 const oneHourInSeconds = 60 * 60;
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req, _params, aws) => {
 	const { key, fileSize, partSize } = await req.json();
 
 	if (!key || !fileSize || !partSize) {
@@ -29,7 +21,7 @@ export async function POST(req: NextRequest) {
 			Key: key,
 		});
 
-		const res = await s3.send(command);
+		const res = await aws.s3.send(command);
 
 		const partsCount = Math.ceil(fileSize / partSize);
 
@@ -44,7 +36,7 @@ export async function POST(req: NextRequest) {
 				PartNumber: partNumber,
 			});
 
-			const url = await getSignedUrl(s3, command, {
+			const url = await getSignedUrl(aws.s3, command, {
 				expiresIn: oneHourInSeconds,
 			});
 
@@ -60,4 +52,4 @@ export async function POST(req: NextRequest) {
 		console.log(err);
 		return NextResponse.json({ error: "Server error" }, { status: 500 });
 	}
-}
+});
