@@ -8,6 +8,8 @@ export const getSqsClient = async (): Promise<SQSClient | null> => {
 
 	const { awsCredentials: creds } = session;
 
+	if (!creds) return null;
+
 	const sqs = new SQSClient({
 		region: process.env.AWS_REGION,
 		credentials: {

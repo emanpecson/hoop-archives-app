@@ -8,6 +8,8 @@ export const getDdbClient = async (): Promise<DynamoDBClient | null> => {
 
 	const { awsCredentials: creds } = session;
 
+	if (!creds) return null;
+
 	const ddb = new DynamoDBClient({
 		region: process.env.AWS_REGION,
 		credentials: {

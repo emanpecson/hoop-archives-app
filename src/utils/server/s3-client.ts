@@ -8,6 +8,8 @@ export const getS3Client = async (): Promise<S3Client | null> => {
 
 	const { awsCredentials: creds } = session;
 
+	if (!creds) return null;
+
 	const s3 = new S3Client({
 		region: process.env.AWS_REGION,
 		credentials: {
