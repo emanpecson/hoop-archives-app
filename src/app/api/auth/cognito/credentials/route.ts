@@ -7,14 +7,14 @@ import {
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
 
-const client = new CognitoIdentityClient({ region: "us-west-2" });
+const client = new CognitoIdentityClient({ region: process.env.AWS_REGION });
 
-export async function GET(req: NextRequest) {
-	const idToken = req.nextUrl.searchParams.get("idToken");
+export async function POST(req: NextRequest) {
+	const { idToken } = await req.json();
 
 	if (!idToken) {
 		return NextResponse.json(
-			{ error: "Missing query param: idToken" },
+			{ error: "Missing body: idToken" },
 			{ status: 400 }
 		);
 	}

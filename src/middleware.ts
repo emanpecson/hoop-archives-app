@@ -1,17 +1,12 @@
 import { NextURL } from "next/dist/server/web/next-url";
 import { NextResponse } from "next/server";
-
 import { auth } from "@/auth";
-import { Session } from "next-auth";
 import { PageRouter } from "./lib/page-router";
-
-const isUserRole = (session: Session) => {
-	const { groups } = session.user;
-	return groups && groups.some((x) => x === "UserRole");
-};
+import { tokenIsExpired } from "./utils/auth/token";
 
 export default auth((req) => {
 	const { pathname, origin } = req.nextUrl;
+	const signInUrl = new NextURL("/api/auth/signin", origin);
 
 	// protect api routes
 	if (pathname.startsWith("/api")) {
@@ -23,11 +18,16 @@ export default auth((req) => {
 				{ status: 401 }
 			);
 		}
+
+		// on id-token expiration or aws-cred expiration, force re-authentication
+		if (tokenIsExpired(req.auth)) {
+			console.log("Middleware: Token expired. Redirecting to sign-in.");
+			return NextResponse.redirect(signInUrl);
+		}
 	}
 
 	// protect page routes
 	else {
-		const signInUrl = new NextURL("/api/auth/signin", origin);
 		const unauthorizedUrl = new NextURL("/unauthorized", origin);
 
 		if (!req.auth) {
@@ -40,12 +40,9 @@ export default auth((req) => {
 			const pathSegments = pathname.split("/").slice(1);
 			if (pathSegments.length >= 2 && pathSegments[0] === "league") {
 				const leagueId = pathSegments[1];
-				const pageRouter = new PageRouter(leagueId);
+				const pageRouter = new PageRouter(leagueId, req.auth);
 
-				if (
-					pageRouter.containsProtectedRoutes(pathname) &&
-					!isUserRole(req.auth)
-				) {
+				if (pageRouter.isViolatingRouteAccess(pathname)) {
 					console.log("Middleware: 403 - Unauthorized (Invalid permissions)");
 					return NextResponse.redirect(unauthorizedUrl);
 				}

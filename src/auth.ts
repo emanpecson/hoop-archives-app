@@ -1,7 +1,12 @@
-import NextAuth from "next-auth";
+import { fetchAwsCredentials } from "./utils/auth/credentials";
+import NextAuth, { JWT } from "next-auth";
 import Cognito from "next-auth/providers/cognito";
 import { Credentials } from "@aws-sdk/client-cognito-identity";
-import { refreshCognitoTokens } from "./utils/auth/token";
+import { tokenIsExpired } from "./utils/auth/token";
+import {
+	CognitoTokenRefreshBodyRequest,
+	CognitoTokenRefreshResponse,
+} from "./types/api/cognito-token-refresh";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
@@ -19,7 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		},
 
 		// * account, profile, user -> provided on sign-in
-		// * token -> provided on subsequent requests
+		// * token -> provided on subsequent requests (session created/updated)
 		async jwt({ token, account, profile }) {
 			// set token data (only available on sign-in)
 			if (account && profile) {
@@ -29,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 				// decoded id-token data
 				token.iss = profile.iss;
-				token.exp = profile.exp as number;
+				token.idTokenExpiration = profile.exp as number;
 				token.email = profile.email;
 				if (profile["cognito:groups"]) token.groups = profile["cognito:groups"];
 				if (profile["cognito:username"])
@@ -37,52 +42,56 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 
 			try {
-				// refresh id-token on expiration
-				const now = Math.floor(Date.now() / 1000); // current time converted to seconds
+				// refresh on expiration
+				if (tokenIsExpired(token as JWT)) {
+					console.log("JWT: Token expired, refreshing...");
 
-				if (token.exp && now > token.exp) {
-					const expires = new Date(token.exp * 1000).toLocaleTimeString();
-					console.log("Expires:", expires);
+					const refreshEndpoint = `${process.env.APP_URL}/api/auth/cognito/refresh`;
+					const res = await fetch(refreshEndpoint, {
+						method: "POST",
+						body: JSON.stringify({
+							refreshToken: token.refreshToken,
+							username: token.username,
+						} as CognitoTokenRefreshBodyRequest),
+					});
 
-					console.log("Token expired, refreshing...");
-					const { id_token, access_token } = await refreshCognitoTokens(
-						token.refreshToken as string,
-						token.username as string
-					);
-					token.idToken = id_token;
-					token.accessToken = access_token;
+					if (res.ok) {
+						const newTokens: CognitoTokenRefreshResponse = await res.json();
+						token.idToken = newTokens.idToken;
+						token.accessToken = newTokens.accessToken;
 
-					const newExpires = new Date(token.exp * 1000).toLocaleTimeString();
-					console.log("Refreshed id token expires:", newExpires);
+						// with the new token, we have to get the new aws creds
+						const creds = await fetchAwsCredentials(token as JWT);
+						token.awsCredentials = creds;
+					} else {
+						const { error } = await res.json();
+						console.log("JWT Error:", error);
+					}
 				}
 
 				// todo: if refresh token expires, log the user out
 
 				if (!token.awsCredentials) {
-					// fetch aws credentials and add to session object
-					const credsEndpoint = `${process.env.APP_URL}/api/auth/cognito?idToken=${token.idToken}`;
-					const res = await fetch(credsEndpoint);
+					console.log("No AWS credentials, fetching...");
 
-					if (res.ok) {
-						const creds: Credentials = await res.json();
-						token.awsCredentials = creds;
-					} else {
-						throw new Error("Error fetching user AWS credentials");
-					}
+					const creds = await fetchAwsCredentials(token as JWT);
+					token.awsCredentials = creds;
 				}
 			} catch (error) {
-				console.error(error);
+				console.error("JWT Error:", error);
 			}
 
 			return token;
 		},
 
+		// * data changes persist via token only
 		async session({ session, token }) {
 			// copy token data into session
 			session.user.groups = (token.groups as string[]) ?? [];
 			session.accessToken = token.accessToken as string;
 			session.refreshToken = token.refreshToken as string;
 			session.idToken = token.idToken as string;
+			session.idTokenExpiration = token.idTokenExpiration as number;
 			session.user.username = token.username as string;
 			session.awsCredentials = token.awsCredentials as Credentials;
 

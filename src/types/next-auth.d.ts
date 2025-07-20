@@ -9,11 +9,23 @@ declare module "next-auth" {
 		accessToken?: string;
 		refreshToken?: string;
 		idToken?: string;
+		idTokenExpiration?: number;
 		awsCredentials?: Credentials;
 	}
 
 	interface User {
 		username?: string;
 		groups?: string[];
+	}
+
+	interface JWT {
+		idToken?: string;
+		accessToken?: string;
+		refreshToken?: string;
+		awsCredentials?: Credentials;
+		username?: string;
+		email?: string;
+		groups?: string[];
+		exp?: number;
 	}
 }
