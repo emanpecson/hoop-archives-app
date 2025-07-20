@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PageRoute } from "@/types/page-route";
 import {
 	HouseIcon,
@@ -5,29 +6,42 @@ import {
 	SquareScissorsIcon,
 	UsersIcon,
 } from "lucide-react";
+import { Session, User } from "next-auth";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const pageKeys = ["home", "draft", "highlightBuilder", "players"] as const;
-type PageKey = (typeof pageKeys)[number];
+// * using this method so that I can access a specific page-route by name
+const publicPageKeys = ["home", "highlightBuilder"] as const;
+type PublicPageKey = (typeof publicPageKeys)[number];
+
+const protectedPageKeys = ["draft", "players"] as const;
+type ProtectedPageKey = (typeof protectedPageKeys)[number];
 
 export class PageRouter {
-	leagueId: string;
-	routes: Record<PageKey, PageRoute>;
+	private static betaRoleName: string = "BetaUserRole";
 
-	constructor(leagueId: string) {
-		this.leagueId = leagueId;
+	private publicRoutes: Record<PublicPageKey, PageRoute>;
+	private protectedRoutes: Record<ProtectedPageKey, PageRoute>;
+	private isBetaUser: boolean = true;
 
-		this.routes = {
+	// * ------------------------------------------------ *
+
+	constructor(leagueId: string, session: Session | null) {
+		if (session && session.user)
+			this.isBetaUser = this.checkIsBetaUser(session.user);
+
+		this.publicRoutes = {
 			home: { name: "Home", path: `/league/${leagueId}`, Icon: HouseIcon },
-			draft: {
-				name: "Draft",
-				path: `/league/${leagueId}/draft`,
-				Icon: SquareScissorsIcon,
-			},
 			highlightBuilder: {
 				name: "Highlight Builder",
 				path: `/league/${leagueId}/highlight-builder`,
 				Icon: PaperclipIcon,
+			},
+		};
+
+		this.protectedRoutes = {
+			draft: {
+				name: "Draft",
+				path: `/league/${leagueId}/draft`,
+				Icon: SquareScissorsIcon,
 			},
 			players: {
 				name: "Players",
@@ -37,21 +51,37 @@ export class PageRouter {
 		};
 	}
 
-	public getAllRoutes = () => {
-		return Object.values(this.routes);
-	};
+	// * ------------------------------------------------ *
 
-	public getRoute = (pageKey: PageKey) => {
-		return this.routes[pageKey];
-	};
+	public getAccessibleRoutes = (): PageRoute[] => {
+		if (this.isBetaUser) return Object.values(this.publicRoutes);
 
-	public containsProtectedRoutes = (pathname: string): boolean => {
-		return this.getProtectedRoutes().some((route) =>
-			pathname.startsWith(route.path)
+		return Object.values(this.publicRoutes).concat(
+			Object.values(this.protectedRoutes)
 		);
 	};
 
-	private getProtectedRoutes = () => {
-		return [this.routes["draft"], this.routes["players"]];
+	public getRoute = (key: PublicPageKey | ProtectedPageKey): PageRoute => {
+		if (key in this.publicRoutes) {
+			return this.publicRoutes[key as PublicPageKey];
+		}
+		return this.protectedRoutes[key as ProtectedPageKey];
+	};
+
+	public isViolatingRouteAccess = (pathname: string): boolean => {
+		return this.containsProtectedRoutes(pathname) && !this.isBetaUser;
+	};
+
+	// * ------------------------------------------------ *
+
+	private checkIsBetaUser = (user: User) => {
+		const { groups } = user;
+		return !!groups && groups.some((x) => x === PageRouter.betaRoleName);
+	};
+
+	private containsProtectedRoutes = (pathname: string): boolean => {
+		return Object.values(this.protectedRoutes).some((route) =>
+			pathname.startsWith(route.path)
+		);
 	};
 }

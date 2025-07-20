@@ -15,10 +15,10 @@ interface NarbarProps {
 }
 
 export default function Navbar(props: NarbarProps) {
-	const pageRouter = new PageRouter(props.leagueId);
-	const pathname = usePathname();
-
 	const { data: session } = useSession();
+
+	const pageRouter = new PageRouter(props.leagueId, session);
+	const pathname = usePathname();
 
 	return (
 		<DashboardCard className="h-20 flex justify-between place-items-center px-8">
@@ -30,7 +30,7 @@ export default function Navbar(props: NarbarProps) {
 				</span>
 
 				<nav className="flex space-x-2 font-medium text-base">
-					{pageRouter.getAllRoutes().map((route, i) => {
+					{pageRouter.getAccessibleRoutes().map((route, i) => {
 						const active = pathname === route.path;
 						return (
 							<Link
@@ -61,7 +61,7 @@ export default function Navbar(props: NarbarProps) {
 								alt="user-image"
 								width={32}
 								height={32}
-								className="object-cover rounded-full w-9 h-9 border"
+								className="object-cover rounded-full w-9 h-9 border border-neutral-600"
 								unoptimized
 							/>
 							<p>{session.user.email}</p>
