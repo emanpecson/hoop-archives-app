@@ -36,21 +36,28 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
 					<DialogDivider />
 
 					<DialogFooter>
-						<DialogClose>
-							<Button type="button" variant="input" size="sm" className="w-fit">
-								Cancel
-							</Button>
-						</DialogClose>
+						<div className="w-full flex justify-end space-x-2">
+							<DialogClose>
+								<Button
+									type="button"
+									variant="input"
+									size="sm"
+									className="w-fit"
+								>
+									Cancel
+								</Button>
+							</DialogClose>
 
-						<Button
-							type="button"
-							variant="input"
-							size="sm"
-							className="w-fit"
-							onClick={props.onConfirm}
-						>
-							Confirm
-						</Button>
+							<Button
+								type="button"
+								variant="input"
+								size="sm"
+								className="w-fit"
+								onClick={props.onConfirm}
+							>
+								Confirm
+							</Button>
+						</div>
 					</DialogFooter>
 				</DialogHeader>
 			</DialogContent>

@@ -6,9 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import SignInButton from "../auth/sign-in-button";
-import { SignOutButton } from "../auth/sign-out-button";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
+import { SignOutButton } from "../auth/sign-out-button";
 
 interface NarbarProps {
 	leagueId: string;
@@ -52,24 +51,7 @@ export default function Navbar(props: NarbarProps) {
 			</div>
 
 			<div className="flex place-items-center space-x-8">
-				{session ? (
-					<>
-						<SignOutButton />
-						<div className="flex place-items-center space-x-3">
-							<Image
-								src={session.user.image || "/user-placeholder.png"}
-								alt="user-image"
-								width={32}
-								height={32}
-								className="object-cover rounded-full w-9 h-9 border border-neutral-600"
-								unoptimized
-							/>
-							<p>{session.user.email}</p>
-						</div>
-					</>
-				) : (
-					<SignInButton />
-				)}
+				{session ? <SignOutButton session={session} /> : <SignInButton />}
 			</div>
 		</DashboardCard>
 	);
