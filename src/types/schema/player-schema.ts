@@ -6,4 +6,5 @@ export const playerSchema = z.object({
 	lastName: z.string(),
 	fullName: z.string(),
 	leagueId: z.string(),
+	imageUrl: z.string(),
 });

@@ -23,7 +23,7 @@ type Handler<T> = (
 // wrapper function that injects aws clients + performs existence checks
 // * note: does not trigger errors for invalid creds, only on command "send"
 export function apiHandler<T>(handler: Handler<T>) {
-	return async (req: NextRequest, context: { params: T | Promise<T> }) => {
+	return async (req: NextRequest, context: { params: Promise<T> }) => {
 		const ddb = await getDdbClient();
 		if (!ddb) {
 			return NextResponse.json(

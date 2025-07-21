@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { tempLeagueId } from "@/data/temp";
 import Link from "next/link";
 
-const session = await auth();
-
-export default function LandingPage() {
+export default async function LandingPage() {
+	const session = await auth();
 	const tempLeagueUrl = `/league/${tempLeagueId}`;
 
 	return (
