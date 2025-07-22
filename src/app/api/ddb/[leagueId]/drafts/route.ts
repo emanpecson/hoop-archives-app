@@ -68,6 +68,7 @@ export const POST = apiHandler<Context>(
 					firstName: { S: player.firstName },
 					lastName: { S: player.lastName },
 					fullName: { S: player.fullName },
+					imageUrl: { S: player.imageUrl },
 					leagueId: { S: leagueId },
 				},
 			})),
