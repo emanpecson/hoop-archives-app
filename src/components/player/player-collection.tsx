@@ -43,7 +43,7 @@ export default function PlayerCollection(props: PlayerCollectionProps) {
 					{isLoading ? (
 						<LoadingPrompt text="Loading players. Please wait..." />
 					) : players.length > 0 ? (
-						<div className="flex flex-row gap-8 justify-center">
+						<div className="flex flex-row flex-wrap gap-8 justify-center">
 							{players.map((player, i) => (
 								<PlayerCard player={player} key={i} />
 							))}
