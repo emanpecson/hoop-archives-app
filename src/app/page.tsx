@@ -16,16 +16,14 @@ export default async function LandingPage() {
 					Beta
 				</p>
 			</div>
-			<h2 className="font-medium text-2xl text-neutral-500">
+			<h2 className="font-medium text-lg text-neutral-500">
 				Turn your basketball videos into searchable clips
 			</h2>
 
 			<div className="">
 				{session ? (
 					<Link href={tempLeagueUrl}>
-						<Button size="lg" variant="input" className="text-lg">
-							Demo
-						</Button>
+						<Button variant="input">Demo</Button>
 					</Link>
 				) : (
 					<SignInButton />
