@@ -39,8 +39,8 @@ export default function PlayerCard(props: PlayerCardProps) {
 				</div>
 
 				<div className="-space-y-1.5 text-base font-semibold">
-					<p>{props.player.firstName}</p>
-					<p>{props.player.lastName}</p>
+					<p className="truncate">{props.player.firstName}</p>
+					<p className="truncate">{props.player.lastName}</p>
 				</div>
 			</div>
 		</div>
