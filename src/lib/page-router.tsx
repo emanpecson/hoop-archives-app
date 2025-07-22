@@ -16,7 +16,7 @@ const protectedPageKeys = ["draft", "players"] as const;
 type ProtectedPageKey = (typeof protectedPageKeys)[number];
 
 export class PageRouter {
-	private static betaRoleName: string = "BetaUserRole";
+	private static betaRoleName: string = "BetaUser";
 
 	private publicRoutes: Record<PublicPageKey, PageRoute>;
 	private protectedRoutes: Record<ProtectedPageKey, PageRoute>;
@@ -56,6 +56,7 @@ export class PageRouter {
 	public getAccessibleRoutes = (): PageRoute[] => {
 		if (this.isBetaUser) return Object.values(this.publicRoutes);
 
+		console.log("not beta user", this.isBetaUser);
 		return Object.values(this.publicRoutes).concat(
 			Object.values(this.protectedRoutes)
 		);
@@ -69,14 +70,19 @@ export class PageRouter {
 	};
 
 	public isViolatingRouteAccess = (pathname: string): boolean => {
-		return this.containsProtectedRoutes(pathname) && !this.isBetaUser;
+		return this.containsProtectedRoutes(pathname) && this.isBetaUser;
 	};
 
 	// * ------------------------------------------------ *
 
 	private checkIsBetaUser = (user: User) => {
 		const { groups } = user;
-		return !!groups && groups.some((x) => x === PageRouter.betaRoleName);
+
+		// defualt role is beta user
+		if (!groups || groups.length === 0) return true;
+
+		// otherwise, check if user belongs in beta group
+		return groups.some((x) => x === PageRouter.betaRoleName);
 	};
 
 	private containsProtectedRoutes = (pathname: string): boolean => {
