@@ -22,8 +22,8 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 
 	const s3Upload = async (key: string, vid: File) => {
 		try {
-			// 10 MB part size (i.e. 5 GB upload -> ~500 parts)
-			const partSize = 10 * 1024 * 1024;
+			// 30 MB part size (i.e. 1-2 GB upload -> ~60 parts)
+			const partSize = 30 * 1024 * 1024;
 
 			const { uploadId, presignedUrls } = await s3Uploader.startUpload(
 				key,
@@ -58,7 +58,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 			});
 
 			if (res.ok) {
-				router.push(`/league/${tempLeagueId}/draft/${draftId}`);
+				router.push(`/league/${tempLeagueId}/draft/${draftId.current}`);
 			} else {
 				throw new Error("Failed to save game");
 			}
@@ -68,6 +68,7 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 		}
 	};
 
+	// todo: should probably move this logic to the parent so all sections can see the uploader; and therer's no risk of re-upload
 	useEffect(() => {
 		const vid: File = props.form.videoFile;
 		if (vid) {
@@ -77,8 +78,10 @@ export function ConfirmSection(props: NewGameFormSectionProps) {
 			bucketKey.current = draftId.current + fileExtension;
 			s3Upload(bucketKey.current, props.form.videoFile);
 		}
+
+		// * automatically start-up
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.form.videoFile, props.form]);
+	}, [props.form.videoFile]);
 
 	return (
 		<FormSection {...props} handleSubmit={undefined}>
