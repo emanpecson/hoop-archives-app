@@ -24,6 +24,7 @@ export const GET = apiHandler(
 		try {
 			const input: QueryCommandInput = {
 				TableName: process.env.AWS_DDB_PLAYERS_TABLE,
+				IndexName: process.env.AWS_DDB_PLAYERS_GSI_FULL_NAME,
 				Limit: 4,
 				ExclusiveStartKey: processExclusiveStartKey(query.exclusiveStartKey),
 			};
