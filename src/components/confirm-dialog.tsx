@@ -37,7 +37,7 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
 
 					<DialogFooter>
 						<div className="w-full flex justify-end space-x-2">
-							<DialogClose>
+							<DialogClose asChild>
 								<Button
 									type="button"
 									variant="input"
