@@ -56,7 +56,6 @@ export class PageRouter {
 	public getAccessibleRoutes = (): PageRoute[] => {
 		if (this.isBetaUser) return Object.values(this.publicRoutes);
 
-		console.log("not beta user", this.isBetaUser);
 		return Object.values(this.publicRoutes).concat(
 			Object.values(this.protectedRoutes)
 		);
