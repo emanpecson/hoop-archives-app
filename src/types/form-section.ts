@@ -33,6 +33,10 @@ export interface FormSection {
 export interface NewGameFormSectionProps
 	extends Omit<FormSectionProps, "sections"> {
 	sections: NewGameFormSection[];
+	progress: number;
+	draftId: string;
+	bucketKey: string;
+	setVideoFile: Dispatch<SetStateAction<File | null>>;
 }
 
 // override component
