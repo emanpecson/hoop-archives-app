@@ -61,10 +61,10 @@ export default function Statboard(props: StatboardProps) {
 							<td className="text-left py-0.5 px-0.5 flex place-items-center gap-1.5">
 								<Image
 									src={p.imageUrl}
-									className="w-5 h-5 rounded-full object-cover"
+									className="w-6 h-6 rounded-full object-cover"
 									alt="headshot"
-									width={20}
-									height={20}
+									width={24}
+									height={24}
 								/>
 								<span className="text-xs">{`${p.firstName[0]}. ${p.lastName}`}</span>
 							</td>

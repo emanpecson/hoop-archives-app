@@ -25,6 +25,7 @@ import { SqsClipRequest, SqsUploadRequest } from "@/types/api/sqs-message";
 import { ClipDraft } from "@/types/clip-draft";
 import { generateId } from "@/utils/generate-id";
 import { Stats } from "@/types/model/stats";
+import Image from "next/image";
 
 export default function GameDetails() {
 	const router = useRouter();
@@ -104,15 +105,21 @@ export default function GameDetails() {
 		players: Player[];
 	}) => {
 		return (
-			<div>
+			<div className="space-y-2">
 				<h3 className="text-neutral-400">{label}</h3>
-				<ul className="space-y-1">
+				<ul className="space-y-1.5">
 					{players.map((p, i) => (
 						<li
 							className="text-neutral-400 flex place-items-center gap-2"
 							key={i}
 						>
-							<div className="rounded-full h-6 w-6 bg-neutral-800" />
+							<Image
+								src={p.imageUrl}
+								className="w-6 h-6 rounded-full object-cover"
+								alt="headshot"
+								width={24}
+								height={24}
+							/>
 							<span>
 								{p.firstName} {p.lastName}
 							</span>
