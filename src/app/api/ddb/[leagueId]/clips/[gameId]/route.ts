@@ -14,7 +14,7 @@ export const GET = apiHandler<Context>(
 		try {
 			const queryInput: QueryCommandInput = {
 				TableName: process.env.AWS_DDB_CLIPS_TABLE,
-				IndexName: process.env.AWS_DDB_CLIPS_GSI_GAME_TITLE,
+				IndexName: process.env.AWS_DDB_CLIPS_GSI_GAME_ID,
 				KeyConditionExpression: "leagueId = :leagueId AND gameId = :gameId",
 				ExpressionAttributeValues: { ":gameId": gameId, ":leagueId": leagueId },
 			};
