@@ -26,12 +26,14 @@ import { ClipDraft } from "@/types/clip-draft";
 import { generateId } from "@/utils/generate-id";
 import { Stats } from "@/types/model/stats";
 import Image from "next/image";
+import ConfirmDialog from "@/components/confirm-dialog";
 
 export default function GameDetails() {
 	const router = useRouter();
 	const draft = useVideoClipperStore((state) => state.draft);
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
-	const stats = useVideoClipperStore((state) => state.stats);
+	const homeStats = useVideoClipperStore((state) => state.homeStats);
+	const awayStats = useVideoClipperStore((state) => state.awayStats);
 	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
 
 	// prevent re-render from triggering unless draft changes
@@ -55,7 +57,9 @@ export default function GameDetails() {
 						title: draft.title,
 						type: draft.type,
 						status: GameStatus.PENDING,
-						stats: stats.map((stat) => ({ ...stat, gameId })) as Stats[],
+						stats: homeStats
+							.concat(awayStats)
+							.map((stat) => ({ ...stat, gameId })) as Stats[],
 					} as Game,
 				} as NewGameRequestBody),
 			});
@@ -88,12 +92,13 @@ export default function GameDetails() {
 				toast.success(
 					`${draft.title} upload initiated. This may take a few minutes.`
 				);
-				router.push(`/`); // games dashboard
+				router.push(`/league/${tempLeagueId}`); // games dashboard
 			} else {
 				throw Error("Failed to create game");
 			}
 		} catch (error) {
 			console.log(error);
+			toast.error(error instanceof Error ? error.message : "Unknown error");
 		}
 	};
 
@@ -194,13 +199,14 @@ export default function GameDetails() {
 					)}
 					<span>Preview clips</span>
 				</CardButton>
-				<CardButton
-					onClick={() => startUpload(draft!)}
-					disabled={!draft || draft.clipDrafts.length === 0}
-					className="text-center py-2"
-				>
-					Complete game
-				</CardButton>
+				<ConfirmDialog onConfirm={() => startUpload(draft!)}>
+					<CardButton
+						disabled={!draft || draft.clipDrafts.length === 0}
+						className="text-center py-2"
+					>
+						Complete game
+					</CardButton>
+				</ConfirmDialog>
 			</div>
 		</DashboardCard>
 	);

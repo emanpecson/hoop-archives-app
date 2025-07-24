@@ -29,8 +29,11 @@ type VideoClipperStore = {
 
 	previewClips: (i: number) => void;
 
-	stats: TempStats[];
-	setStats: (stats: TempStats[]) => void;
+	homeStats: TempStats[];
+	setHomeStats: (stats: TempStats[]) => void;
+
+	awayStats: TempStats[];
+	setAwayStats: (stats: TempStats[]) => void;
 };
 
 const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
@@ -92,8 +95,11 @@ const useVideoClipperStore = create<VideoClipperStore>((set, get) => {
 		sortClips,
 		previewClips,
 
-		stats: [],
-		setStats: (stats: TempStats[]) => set({ stats }),
+		homeStats: [],
+		setHomeStats: (homeStats: TempStats[]) => set({ homeStats }),
+
+		awayStats: [],
+		setAwayStats: (awayStats: TempStats[]) => set({ awayStats }),
 	};
 });
 

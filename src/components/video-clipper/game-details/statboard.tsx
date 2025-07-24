@@ -9,14 +9,15 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface StatboardProps {
-	label: string;
+	label: "Home Stats" | "Away Stats";
 	players: Player[];
 	clips: { offense?: OffensivePlay; defense?: DefensivePlay }[];
 }
 
 export default function Statboard(props: StatboardProps) {
-	const stats = useVideoClipperStore((state) => state.stats);
-	const setStats = useVideoClipperStore((state) => state.setStats);
+	const setHomeStats = useVideoClipperStore((state) => state.setHomeStats);
+	const setAwayStats = useVideoClipperStore((state) => state.setAwayStats);
+
 	const [playerStats, setPlayerStats] = useState<{ [id: string]: TempStats }>(
 		{}
 	);
@@ -28,9 +29,15 @@ export default function Statboard(props: StatboardProps) {
 			props.players,
 			props.clips
 		);
+
 		setPlayerStats(playerStats);
-		setStats({ ...stats, ...Object.values(playerStats) });
 		setTeamStats(teamStats);
+		if (props.label === "Home Stats") {
+			setHomeStats(Object.values(playerStats));
+		} else {
+			setAwayStats(Object.values(playerStats));
+		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.clips, props.players]);
 

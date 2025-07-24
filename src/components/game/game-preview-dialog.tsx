@@ -55,8 +55,16 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 						<p>Loading data...</p>
 					) : clips && clips.length > 0 ? (
 						<div className="flex place-items-center justify-between space-x-20">
-							<Statboard label="Home" players={props.game.home} clips={clips} />
-							<Statboard label="Away" players={props.game.away} clips={clips} />
+							<Statboard
+								label="Home Stats"
+								players={props.game.home}
+								clips={clips}
+							/>
+							<Statboard
+								label="Away Stats"
+								players={props.game.away}
+								clips={clips}
+							/>
 						</div>
 					) : (
 						<p>No clips</p>
