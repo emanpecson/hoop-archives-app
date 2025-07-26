@@ -1,6 +1,6 @@
 "use client";
 import { Volume2Icon, VolumeOffIcon } from "lucide-react";
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { Slider } from "./ui/slider";
 
 interface VolumeSliderProps {
@@ -17,6 +17,12 @@ export default function VolumeSlider(props: VolumeSliderProps) {
 			props.videoRef.current.volume = timeValue / 100;
 		}
 	};
+
+	// on initial render, ensure volume is 0
+	useEffect(() => {
+		if (props.videoRef.current) props.videoRef.current.volume = 0;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<div className="flex place-items-center space-x-1">
