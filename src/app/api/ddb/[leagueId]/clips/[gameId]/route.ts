@@ -7,6 +7,15 @@ type Context = {
 	gameId: string;
 };
 
+// since clips aren't stored in the game itself, when we fetch clips of a game,
+// they're not fetched in any particular order; therefore, we must sort on response
+const sortClips = (clips: unknown) => {
+	if (clips && Array.isArray(clips)) {
+		return clips.sort((a, b) => a.startTime - b.endTime);
+	}
+	return [];
+};
+
 export const GET = apiHandler<Context>(
 	async (_req: NextRequest, ctx: Context, aws: AwsClient) => {
 		const { gameId, leagueId } = ctx;
@@ -20,8 +29,7 @@ export const GET = apiHandler<Context>(
 			};
 
 			const { Items } = await aws.ddbDoc.send(new QueryCommand(queryInput));
-
-			return NextResponse.json(Items, { status: 200 });
+			return NextResponse.json(sortClips(Items), { status: 200 });
 		} catch (error) {
 			console.error(error);
 			return NextResponse.json({ error: "Server error" }, { status: 500 });
