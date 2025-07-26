@@ -5,6 +5,7 @@ export enum ClipTag {
 	PUT_BACK = "#putback",
 	ALLEY_OOP = "#alleyoop",
 	CIRCUS = "#circus",
+	REVERSE = "#reverse",
 
 	MID_RANGE = "#midrange",
 	LONG_RANGE = "#longrange",
@@ -13,6 +14,8 @@ export enum ClipTag {
 	FADE_AWAY = "#fadeaway",
 	CATCH_AND_SHOOT = "#catchandshoot",
 	OFF_THE_DRIBBLE = "#offthedribble",
+	STEP_BACK = "#stepback",
+	PUMP_FAKE = "#pumpfake",
 
 	OPEN = "#open",
 	CONTESTED = "#contested",
