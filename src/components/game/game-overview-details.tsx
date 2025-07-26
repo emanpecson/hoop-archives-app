@@ -7,6 +7,7 @@ import Statboard from "../video-clipper/game-details/statboard";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Clip } from "@/types/model/clip";
+import { tempLeagueId } from "@/data/temp";
 
 interface GameOverviewDetailsProps {
 	game: Game;
@@ -54,7 +55,7 @@ export default function GameOverviewDetails(props: GameOverviewDetailsProps) {
 			</div>
 
 			<Button variant="input">
-				<Link href="/">Return to games</Link>
+				<Link href={`/league/${tempLeagueId}`}>Return to games</Link>
 			</Button>
 		</DashboardCard>
 	);
