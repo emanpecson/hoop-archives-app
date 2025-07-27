@@ -21,10 +21,10 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 	const { clips } = props;
 	const [currentTime, setCurrentTime] = useState<number>(0);
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const score = useRealtimeScore(clips, currentTime);
+	const score = useRealtimeScore(clips, currentTime, false);
 	const clipIndex = useRef(0);
 	const vid = useRef<HTMLVideoElement>(null);
-	const globalTime = useRef(0);
+	const globalCurrentTime = useRef(0); // track accumulation of all clip times
 
 	const handlePlayPause = () => {
 		if (vid.current) {
@@ -33,8 +33,10 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 		}
 	};
 
+	// only get clips up to curr pt, calculate global time as all clips together
+	// todo: optimize; avoid re-calculating on all clips over and over
 	const calculateGlobalTime = () => {
-		globalTime.current = clips
+		globalCurrentTime.current = clips
 			.slice(0, clipIndex.current)
 			.reduce((acc, clip) => acc + (clip.endTime - clip.startTime), 0);
 	};
@@ -75,7 +77,8 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 
 	const handleTimeUpdate = () => {
 		if (vid.current) {
-			setCurrentTime(globalTime.current + vid.current.currentTime);
+			calculateGlobalTime();
+			setCurrentTime(globalCurrentTime.current + vid.current.currentTime);
 		}
 	};
 

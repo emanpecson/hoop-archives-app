@@ -21,7 +21,7 @@ export default function VideoPlayer() {
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const score = useRealtimeScore(draft?.clipDrafts, currentTime);
+	const score = useRealtimeScore(draft?.clipDrafts, currentTime, true);
 
 	const handleLoadedMetadata = () => {
 		if (videoRef.current) {
