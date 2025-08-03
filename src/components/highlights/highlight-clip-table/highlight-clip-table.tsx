@@ -35,7 +35,7 @@ export default function HighlightClipTable(props: HighlightClipTableProps) {
 	};
 
 	return (
-		<DashboardCard className="p-0 h-full">
+		<DashboardCard className="p-0 h-full min-h-0 overflow-y-auto">
 			{props.isLoading || props.clips.length > 0 ? (
 				<table className="w-full">
 					<thead>

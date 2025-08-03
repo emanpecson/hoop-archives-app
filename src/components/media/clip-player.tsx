@@ -7,38 +7,25 @@ import {
 	PauseIcon,
 	PlayIcon,
 } from "lucide-react";
-import { useRealtimeScore } from "@/hooks/use-realtime-score";
 import { cn } from "@/lib/utils";
 import VolumeSlider from "@/components/volume-slider";
 
 interface ClipPlayerProps {
 	clips: Clip[];
-	hideScore?: boolean;
 	onClipPlaying?: (clipId: string) => void;
 }
 
 export default function ClipPlayer(props: ClipPlayerProps) {
 	const { clips } = props;
-	const [currentTime, setCurrentTime] = useState<number>(0);
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const score = useRealtimeScore(clips, currentTime, false);
 	const clipIndex = useRef(0);
 	const vid = useRef<HTMLVideoElement>(null);
-	const globalCurrentTime = useRef(0); // track accumulation of all clip times
 
 	const handlePlayPause = () => {
 		if (vid.current) {
 			if (vid.current.paused) vid.current.play();
 			else vid.current.pause();
 		}
-	};
-
-	// only get clips up to curr pt, calculate global time as all clips together
-	// todo: optimize; avoid re-calculating on all clips over and over
-	const calculateGlobalTime = () => {
-		globalCurrentTime.current = clips
-			.slice(0, clipIndex.current)
-			.reduce((acc, clip) => acc + (clip.endTime - clip.startTime), 0);
 	};
 
 	const handlePrevClip = () => {
@@ -48,8 +35,6 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 
 			if (currClip) {
 				if (props.onClipPlaying) props.onClipPlaying(currClip.clipId);
-
-				calculateGlobalTime();
 
 				vid.current.src = currClip.url;
 				vid.current.load();
@@ -66,19 +51,10 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 			if (currClip) {
 				if (props.onClipPlaying) props.onClipPlaying(currClip.clipId);
 
-				calculateGlobalTime();
-
 				vid.current.src = currClip.url;
 				vid.current.load();
 				vid.current.play();
 			}
-		}
-	};
-
-	const handleTimeUpdate = () => {
-		if (vid.current) {
-			calculateGlobalTime();
-			setCurrentTime(globalCurrentTime.current + vid.current.currentTime);
 		}
 	};
 
@@ -100,12 +76,7 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 			onMouseOver={() => setShowOverlayController(true)}
 			onMouseLeave={() => setShowOverlayController(false)}
 		>
-			<video
-				ref={vid}
-				onEnded={handleNextClip}
-				onTimeUpdate={handleTimeUpdate}
-				className="h-full w-full"
-			/>
+			<video ref={vid} onEnded={handleNextClip} className="h-full w-full" />
 
 			{/* video controller */}
 			{vid.current && clips && clips.length > 0 && (
@@ -142,13 +113,6 @@ export default function ClipPlayer(props: ClipPlayerProps) {
 							)}
 						</button>
 					</VideoOverlayWrapper>
-
-					{!props.hideScore && (
-						<>
-							<VideoOverlayWrapper>{`Home: ${score.home}`}</VideoOverlayWrapper>
-							<VideoOverlayWrapper>{`Away: ${score.away}`}</VideoOverlayWrapper>
-						</>
-					)}
 				</div>
 			)}
 		</div>

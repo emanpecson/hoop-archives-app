@@ -60,7 +60,6 @@ export default function HighlightBuilder(props: HighlightBuilderProps) {
 						<div className="h-2/3">
 							<ClipPlayer
 								clips={selectedClips}
-								hideScore
 								onClipPlaying={setActiveClipId}
 							/>
 						</div>
