@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import HighlightFilterDialog from "./highlight-builder-dialog";
 import { Clip } from "@/types/model/clip";
 import { toast } from "sonner";
-import ClipPlayer from "@/components/clip-player";
+import ClipPlayer from "@/components/media/clip-player";
 import HighlightClipTable from "@/components/highlights/highlight-clip-table/highlight-clip-table";
 import HighlightClipManager from "@/components/highlights/highlight-builder/highlight-clip-manager";
 import { HighlightsFormFields } from "@/types/schema/highlights-schema";

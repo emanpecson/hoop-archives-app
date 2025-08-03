@@ -1,6 +1,6 @@
 import { Clip } from "@/types/model/clip";
 import { useEffect, useRef, useState } from "react";
-import VideoOverlayWrapper from "./video-clipper/video-player/overlay/video-overlay-wrapper";
+import VideoOverlayWrapper from "@/components/media/overlay/video-overlay-wrapper";
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useRealtimeScore } from "@/hooks/use-realtime-score";
 import { cn } from "@/lib/utils";
-import VolumeSlider from "./volume-slider";
+import VolumeSlider from "@/components/volume-slider";
 
 interface ClipPlayerProps {
 	clips: Clip[];

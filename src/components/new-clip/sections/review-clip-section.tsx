@@ -2,9 +2,9 @@ import { NewClipFormSectionProps } from "@/types/form-section";
 import FormSection from "@/components/form-section";
 import { useRef, useState } from "react";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
-import VideoOverlaySlider from "@/components/video-clipper/video-player/overlay/video-overlay-slider";
-import VideoOverlayController from "@/components/video-clipper/video-player/overlay/video-overlay-controller";
-import VideoOverlayWrapper from "@/components/video-clipper/video-player/overlay/video-overlay-wrapper";
+import VideoOverlaySlider from "@/components/media/overlay/video-overlay-slider";
+import VideoOverlayController from "@/components/media/overlay/video-overlay-controller";
+import VideoOverlayWrapper from "@/components/media/overlay/video-overlay-wrapper";
 import { useForm } from "react-hook-form";
 import {
 	ReviewClipFormFields,

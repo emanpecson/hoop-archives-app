@@ -8,7 +8,7 @@ import VideoOverlayController from "./overlay/video-overlay-controller";
 import VideoOverlaySlider from "./overlay/video-overlay-slider";
 import { useRealtimeScore } from "@/hooks/use-realtime-score";
 
-export default function VideoPlayer() {
+export default function DraftPlayer() {
 	const draft = useVideoClipperStore((state) => state.draft);
 	const duration = useVideoClipperStore((state) => state.duration);
 	const setDuration = useVideoClipperStore((state) => state.setDuration);

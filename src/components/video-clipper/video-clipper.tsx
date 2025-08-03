@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ClipController from "./clip-controller/clip-controller";
 import GameDetails from "./game-details/game-details";
 import VideoController from "./video-controller/video-controller";
-import VideoPlayer from "./video-player/video-player";
+import DraftPlayer from "../media/draft-player";
 import { ClipTime } from "@/types/clip-time";
 import NewClipDialog from "../new-clip/new-clip-dialog";
 import { ClipDraft } from "@/types/clip-draft";
@@ -52,7 +52,7 @@ export default function VideoClipper(props: VideoClipperProps) {
 			<div className="flex w-full h-full gap-dashboard">
 				<div className="flex flex-col w-full h-full gap-dashboard min-w-0">
 					<div className="flex w-full gap-dashboard h-full min-h-0">
-						<VideoPlayer />
+						<DraftPlayer />
 					</div>
 					<div className="h-fit flex flex-col gap-dashboard">
 						{draft && <VideoController onClipTime={handleClipTime} />}
