@@ -24,11 +24,11 @@ export default function Navbar(props: NarbarProps) {
 			<div className="flex place-items-center space-x-8">
 				<h1 className="font-bold text-2xl">Hoop Archives</h1>
 
-				<span className="px-4 py-1 rounded-xl bg-neutral-800 text-neutral-500 font-semibold text-base">
+				<span className="px-4 py-1 rounded-xl bg-neutral-800 text-neutral-500 font-semibold text-sm">
 					{props.leagueId}
 				</span>
 
-				<nav className="flex space-x-2 font-medium text-base">
+				<nav className="flex space-x-2 font-medium text-sm">
 					{pageRouter.getAccessibleRoutes().map((route, i) => {
 						const active = pathname === route.path;
 						return (
@@ -51,7 +51,7 @@ export default function Navbar(props: NarbarProps) {
 			</div>
 
 			<div className="flex place-items-center space-x-8">
-				{session ? <SignOutButton session={session} /> : <SignInButton />}
+				{session ? <SignOutButton /> : <SignInButton />}
 			</div>
 		</DashboardCard>
 	);
