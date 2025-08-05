@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import VideoOverlayController from "./overlay/video-overlay-controller";
 import VideoOverlaySlider from "./overlay/video-overlay-slider";
-import { useRealtimeScore } from "@/hooks/use-realtime-score";
+import { useDraftRealtimeScore } from "@/hooks/use-realtime-score";
 
 export default function DraftPlayer() {
 	const draft = useVideoClipperStore((state) => state.draft);
@@ -21,7 +21,7 @@ export default function DraftPlayer() {
 	const previewClips = useVideoClipperStore((state) => state.previewClips);
 
 	const [showOverlayController, setShowOverlayController] = useState(false);
-	const score = useRealtimeScore(draft?.clipDrafts, currentTime, true);
+	const score = useDraftRealtimeScore(draft?.clipDrafts, currentTime);
 
 	const handleLoadedMetadata = () => {
 		if (videoRef.current) {

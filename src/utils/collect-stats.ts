@@ -5,14 +5,14 @@ import { DefensivePlay, OffensivePlay } from "@/types/play";
 type PlayerStats = { [id: string]: TempStats };
 export type CollectStatsOutput = {
 	playerStats: PlayerStats;
-	teamStats: Stats;
+	teamStats: TempStats;
 };
 
-export const collectStats = (
+export const collectStatsFromClips = (
 	leagueId: string,
 	players: Player[],
 	clips: { offense?: OffensivePlay; defense?: DefensivePlay }[]
-) => {
+): CollectStatsOutput => {
 	// setup init stats for each player
 	const statlines: PlayerStats = Object.fromEntries(
 		players.map((p) => [p.playerId, initStats(leagueId, p.playerId)])
@@ -51,6 +51,32 @@ export const collectStats = (
 			}
 		}
 	}
+
+	return { playerStats: statlines, teamStats: totals };
+};
+
+export const collectStatsFromGame = (
+	stats: Stats[],
+	players: Player[]
+): CollectStatsOutput => {
+	const totals = initStats("n/a", "n/a");
+
+	const statlines: PlayerStats = Object.fromEntries(
+		stats
+			// filter stats that match the given players (to filter by team)
+			.filter((playerStat) =>
+				players.some((p) => p.playerId === playerStat.playerId)
+			)
+			.map((playerStat) => {
+				totals.points += playerStat.points;
+				totals.assists += playerStat.assists;
+				totals.blocks += playerStat.blocks;
+				totals.twoPointers += playerStat.twoPointers;
+				totals.threePointers += playerStat.threePointers;
+
+				return [playerStat.playerId, { ...playerStat } as TempStats];
+			})
+	);
 
 	return { playerStats: statlines, teamStats: totals };
 };

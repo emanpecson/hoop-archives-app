@@ -2,16 +2,20 @@ import DashboardCardHeader from "@/components/dashboard/dashboard-card-header";
 import { tempLeagueId } from "@/data/temp";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { Player } from "@/types/model/player";
-import { initStats, TempStats } from "@/types/model/stats";
+import { initStats, Stats, TempStats } from "@/types/model/stats";
 import { DefensivePlay, OffensivePlay } from "@/types/play";
-import { collectStats } from "@/utils/collect-stats";
+import {
+	collectStatsFromClips,
+	collectStatsFromGame,
+} from "@/utils/collect-stats";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface StatboardProps {
 	label: "Home Stats" | "Away Stats";
 	players: Player[];
-	clips: { offense?: OffensivePlay; defense?: DefensivePlay }[];
+	clips?: { offense?: OffensivePlay; defense?: DefensivePlay }[];
+	gameStats?: Stats[];
 }
 
 export default function Statboard(props: StatboardProps) {
@@ -24,18 +28,39 @@ export default function Statboard(props: StatboardProps) {
 	const [teamStats, setTeamStats] = useState<TempStats>(initStats("", ""));
 
 	useEffect(() => {
-		const { playerStats, teamStats } = collectStats(
-			tempLeagueId,
-			props.players,
-			props.clips
-		);
+		// use if game stats have already been statically calculated
+		if (props.gameStats) {
+			const { playerStats, teamStats } = collectStatsFromGame(
+				props.gameStats,
+				props.players
+			);
 
-		setPlayerStats(playerStats);
-		setTeamStats(teamStats);
-		if (props.label === "Home Stats") {
-			setHomeStats(Object.values(playerStats));
-		} else {
-			setAwayStats(Object.values(playerStats));
+			setPlayerStats(playerStats);
+			setTeamStats(teamStats);
+
+			if (props.label === "Home Stats") {
+				setHomeStats(Object.values(playerStats));
+			} else {
+				setAwayStats(Object.values(playerStats));
+			}
+		}
+
+		// otherwise, collect stats from clips
+		else if (props.clips && props.clips.length > 0) {
+			const { playerStats, teamStats } = collectStatsFromClips(
+				tempLeagueId,
+				props.players,
+				props.clips
+			);
+
+			setPlayerStats(playerStats);
+			setTeamStats(teamStats);
+
+			if (props.label === "Home Stats") {
+				setHomeStats(Object.values(playerStats));
+			} else {
+				setAwayStats(Object.values(playerStats));
+			}
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,7 +94,7 @@ export default function Statboard(props: StatboardProps) {
 								<Image
 									src={p.imageUrl}
 									className="w-6 h-6 rounded-full object-cover"
-									alt="headshot"
+									alt="pfp"
 									width={24}
 									height={24}
 								/>

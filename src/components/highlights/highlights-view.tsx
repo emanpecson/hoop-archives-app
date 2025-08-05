@@ -4,7 +4,9 @@ import { Clip } from "@/types/model/clip";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import ClipPlayer from "../clip-player";
+import ClipPlayer from "@/components/media/clip-player";
+import LoadingPrompt from "../loading-prompt";
+import { tempLeagueId } from "@/data/temp";
 
 interface HighlightsViewProps {
 	leagueId: string;
@@ -38,9 +40,12 @@ export default function HighlightsView(props: HighlightsViewProps) {
 	return (
 		<div className="h-full">
 			{isFetching ? (
-				<p>fetching clips</p>
+				<LoadingPrompt
+					text={`Loading clips. Please wait...`}
+					goBackUrl={`/league/${tempLeagueId}`}
+				/>
 			) : (
-				<ClipPlayer clips={clips} hideScore />
+				<ClipPlayer clips={clips} />
 			)}
 		</div>
 	);

@@ -11,7 +11,6 @@ import DashboardCardHeader from "../../dashboard/dashboard-card-header";
 import { Input } from "../../ui/input";
 import { Draft } from "@/types/model/draft";
 import CardButton from "../../card-button";
-import { Player } from "@/types/model/player";
 import Statboard from "./statboard";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
 import { useMemo } from "react";
@@ -19,13 +18,12 @@ import { NewGameRequestBody } from "@/types/api/new-game";
 import { tempLeagueId } from "@/data/temp";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Game } from "@/types/model/game";
+import { Game, PlayTimestamp } from "@/types/model/game";
 import { GameStatus } from "@/types/enum/game-status";
 import { SqsClipRequest, SqsUploadRequest } from "@/types/api/sqs-message";
 import { ClipDraft } from "@/types/clip-draft";
 import { generateId } from "@/utils/generate-id";
 import { Stats } from "@/types/model/stats";
-import Image from "next/image";
 import ConfirmDialog from "@/components/confirm-dialog";
 
 export default function GameDetails() {
@@ -41,6 +39,36 @@ export default function GameDetails() {
 	const memoHomePlayers = useMemo(() => (draft ? draft.home : []), [draft]);
 	const memoAwayPlayers = useMemo(() => (draft ? draft.away : []), [draft]);
 
+	// convert clip global timestamps into timestamps relative to the
+	// concatenated clips as a whole
+	const calculatePlayTimestmaps = (draft: Draft) => {
+		const playTimestamps: PlayTimestamp[] = [];
+
+		let concatTime = 0; // concatenated time of all clips
+		for (const clip of draft.clipDrafts) {
+			const duration = clip.endTime - clip.startTime;
+
+			if (clip.offense) {
+				// calculate time it takes to reach the highlight timestamp
+				// in relation to the overall video
+				const relativeHighlightTime = clip.highlightTime - clip.startTime;
+				const concatHighlightTime = concatTime + relativeHighlightTime;
+
+				playTimestamps.push({
+					player: clip.offense.playerScoring,
+					pointsAdded: clip.offense.pointsAdded,
+					teamBeneficiary: clip.teamBeneficiary,
+					time: concatHighlightTime,
+				});
+			}
+
+			concatTime += duration;
+		}
+
+		console.log(playTimestamps);
+		return playTimestamps;
+	};
+
 	const startUpload = async (draft: Draft) => {
 		try {
 			// create Game
@@ -54,8 +82,10 @@ export default function GameDetails() {
 						home: draft.home,
 						away: draft.away,
 						date: new Date(draft.date),
+						created: new Date(),
 						title: draft.title,
 						type: draft.type,
+						playTimestamps: calculatePlayTimestmaps(draft),
 						status: GameStatus.PENDING,
 						stats: homeStats
 							.concat(awayStats)
@@ -102,39 +132,6 @@ export default function GameDetails() {
 		}
 	};
 
-	const ListPlayers = ({
-		label,
-		players,
-	}: {
-		label: string;
-		players: Player[];
-	}) => {
-		return (
-			<div className="space-y-2">
-				<h3 className="text-neutral-400">{label}</h3>
-				<ul className="space-y-1.5">
-					{players.map((p, i) => (
-						<li
-							className="text-neutral-400 flex place-items-center gap-2"
-							key={i}
-						>
-							<Image
-								src={p.imageUrl}
-								className="w-6 h-6 rounded-full object-cover"
-								alt="headshot"
-								width={24}
-								height={24}
-							/>
-							<span>
-								{p.firstName} {p.lastName}
-							</span>
-						</li>
-					))}
-				</ul>
-			</div>
-		);
-	};
-
 	return (
 		<DashboardCard className="w-72 h-full space-y-4 overflow-y-auto">
 			<DashboardCardHeader text="Game Details" />
@@ -154,22 +151,12 @@ export default function GameDetails() {
 					}
 					className="pointer-events-none"
 				/>
-				<CardButton>
-					<div className="divide-y divide-neutral-800 w-full">
-						<h3 className="pb-2 flex place-items-center gap-2">
-							<SwordsIcon size={20} className="text-input-muted" />
-							<span className="text-foreground font-medium">
-								{draft ? draft.type : "Loading..."}
-							</span>
-						</h3>
-						{draft && (
-							<div className="space-y-2">
-								<ListPlayers label="Home" players={draft.home} />
-								<ListPlayers label="Away" players={draft.away} />
-							</div>
-						)}
-					</div>
-				</CardButton>
+				<Input
+					readOnly
+					Icon={SwordsIcon}
+					value={draft ? draft.type : "Loading..."}
+					className="pointer-events-none"
+				/>
 			</div>
 
 			<hr className="text-neutral-800" />

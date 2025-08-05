@@ -6,12 +6,10 @@ import { Game } from "@/types/model/game";
 import Statboard from "../video-clipper/game-details/statboard";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { Clip } from "@/types/model/clip";
 import { tempLeagueId } from "@/data/temp";
 
 interface GameOverviewDetailsProps {
 	game: Game;
-	clips: Clip[];
 }
 
 export default function GameOverviewDetails(props: GameOverviewDetailsProps) {
@@ -41,7 +39,7 @@ export default function GameOverviewDetails(props: GameOverviewDetailsProps) {
 
 				<Statboard
 					label="Home Stats"
-					clips={props.clips}
+					gameStats={props.game.stats}
 					players={props.game.home}
 				/>
 
@@ -49,7 +47,7 @@ export default function GameOverviewDetails(props: GameOverviewDetailsProps) {
 
 				<Statboard
 					label="Away Stats"
-					clips={props.clips}
+					gameStats={props.game.stats}
 					players={props.game.away}
 				/>
 			</div>
