@@ -13,7 +13,7 @@ export default function EmptyPrompt(props: EmptyPromptProps) {
 			<p className="font-medium text-base">{props.text}</p>
 			{props.goBackUrl && (
 				<Button variant="input" className="w-fit mt-3">
-					<Link href="/">Go back</Link>
+					<Link href={props.goBackUrl || "/"}>Go back</Link>
 				</Button>
 			)}
 		</div>
