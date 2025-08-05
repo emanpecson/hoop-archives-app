@@ -114,7 +114,7 @@ export default function PlayerList(props: PlayerListProps) {
 									className="rounded-full w-6 h-6 object-cover"
 									width={24}
 									height={24}
-									alt="headshot"
+									alt="pfp"
 								/>
 								<p className="text-sm flex gap-2">
 									<span>

@@ -18,7 +18,7 @@ export default function ConfirmSection(props: FormSectionProps) {
 	const imageExtension = imageFile
 		? `.${(imageFile as File).name.split(".")[1]}`
 		: undefined;
-	const s3PlayerImageKey = `${lastName}${firstName}_headshot${imageExtension}`;
+	const s3PlayerImageKey = `pfp_${lastName}${firstName}${imageExtension}`;
 	const imageRef = useRef<HTMLImageElement>(null);
 
 	const s3Upload = async (key: string, image: File) => {
