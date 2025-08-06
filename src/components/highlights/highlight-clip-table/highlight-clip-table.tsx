@@ -37,10 +37,10 @@ export default function HighlightClipTable(props: HighlightClipTableProps) {
 	return (
 		<DashboardCard className="p-0 h-full min-h-0 overflow-y-auto">
 			{props.isLoading || props.clips.length > 0 ? (
-				<table className="w-full">
+				<table className="w-full table-fixed">
 					<thead>
-						<tr>
-							<th className="px-4 py-2 border-b border-input-border">
+						<tr className="bg-card-background/50 backdrop-blur-2xl shadow-2xs shadow-input-border sticky top-0 inset-shadow-sm inset-shadow-neutral-800/60">
+							<th className="px-4 py-2">
 								<div className="flex justify-center place-items-center">
 									<Checkbox
 										onCheckedChange={selectAll}
@@ -51,7 +51,7 @@ export default function HighlightClipTable(props: HighlightClipTableProps) {
 							{headers.map((h) => (
 								<th
 									key={h}
-									className="text-left last:text-right uppercase font-bold text-xs text-neutral-400 border-b border-input-border px-4 py-2.5"
+									className="z-10 text-left last:text-right uppercase font-bold text-xs text-neutral-400 px-4 py-2.5"
 								>
 									{h}
 								</th>
@@ -62,7 +62,7 @@ export default function HighlightClipTable(props: HighlightClipTableProps) {
 					<tbody
 						className={cn(
 							props.isLoading ? "overflow-hidden" : "overflow-y-auto",
-							"w-full"
+							"w-full divide-y divide-input-border"
 						)}
 					>
 						{props.isLoading
