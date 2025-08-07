@@ -3,7 +3,7 @@ import { EllipsisIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import GamePreviewDialog from "./game-preview-dialog";
 import Image from "next/image";
-import { GameStatus } from "@/types/enum/game-status";
+import { UploadStatus } from "@/types/enum/upload-status";
 import { displayPlayers } from "@/utils/player-info";
 
 interface GamePreviewProps {
@@ -12,14 +12,14 @@ interface GamePreviewProps {
 
 export default function GamePreview({ game }: GamePreviewProps) {
 	const url =
-		game.status === GameStatus.COMPLETE
+		game.status === UploadStatus.COMPLETE
 			? `/league/${game.leagueId}/game/${game.gameId}`
 			: undefined;
 
 	return (
 		<div className="space-y-1">
 			<div className="flex justify-center">
-				{game.status === GameStatus.COMPLETE && game.thumbnailUrl && url ? (
+				{game.status === UploadStatus.COMPLETE && game.thumbnailUrl && url ? (
 					<Link href={url}>
 						<Image
 							src={game.thumbnailUrl}
@@ -32,7 +32,7 @@ export default function GamePreview({ game }: GamePreviewProps) {
 					</Link>
 				) : (
 					<div className="w-80 h-40 rounded-lg bg-neutral-700/50 flex justify-center place-items-center pointer-events-none">
-						{game.status === GameStatus.UPLOADING ? (
+						{game.status === UploadStatus.UPLOADING ? (
 							<Loader2Icon className="animate-spin text-neutral-500/50" />
 						) : (
 							<p className="text-neutral-500/50">Unavailable</p>

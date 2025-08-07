@@ -4,7 +4,6 @@ import {
 	DialogClose,
 	DialogContent,
 	DialogDescription,
-	DialogDivider,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -32,8 +31,6 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
 					<DialogDescription>
 						{props.description || "Are you sure you want to continue?"}
 					</DialogDescription>
-
-					<DialogDivider />
 
 					<DialogFooter>
 						<div className="w-full flex justify-end space-x-2">

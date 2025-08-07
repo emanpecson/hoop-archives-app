@@ -1,24 +1,19 @@
 "use client";
 
-import { useGameRealtimeScore } from "@/hooks/use-realtime-score";
-import { PlayTimestamp } from "@/types/model/game";
 import { useRef, useState } from "react";
-import VideoOverlayWrapper from "./overlay/video-overlay-wrapper";
 import { cn } from "@/lib/utils";
 import VideoOverlayController from "./overlay/video-overlay-controller";
 import VideoOverlaySlider from "./overlay/video-overlay-slider";
 
-interface GamePlayerProps {
+interface ReelPlayerProps {
 	src: string;
-	playTimestamps: PlayTimestamp[];
 }
 
-export default function GamePlayer(props: GamePlayerProps) {
+export default function ReelPlayer(props: ReelPlayerProps) {
 	const [showOverlayController, setShowOverlayController] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const videoRef = useRef<HTMLVideoElement>(null);
-	const score = useGameRealtimeScore(props.playTimestamps, currentTime);
 
 	const handleTimeUpdate = () => {
 		if (videoRef.current) setCurrentTime(videoRef.current.currentTime);
@@ -69,8 +64,6 @@ export default function GamePlayer(props: GamePlayerProps) {
 							currentTime={currentTime}
 						/>
 					</div>
-					<VideoOverlayWrapper>{`Home: ${score.home}`}</VideoOverlayWrapper>
-					<VideoOverlayWrapper>{`Away: ${score.away}`}</VideoOverlayWrapper>
 				</div>
 			)}
 		</div>

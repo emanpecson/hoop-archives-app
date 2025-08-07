@@ -1,5 +1,6 @@
 import { Clip } from "@/types/model/clip";
 import { Game } from "@/types/model/game";
+import { Reel } from "@/types/model/reel";
 
 export const filterClips = (
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -124,6 +125,23 @@ export const filterGames = (
 					.concat(g.home)
 					.some((player) => playerIds.includes(player.playerId))
 			);
+		}
+
+		return filtered;
+	}
+	return [];
+};
+
+export const filterReels = (
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	items: Record<string, any>[] | undefined,
+	title: string | null
+) => {
+	if (items) {
+		let filtered = items as Reel[];
+
+		if (title && title !== "undefined") {
+			filtered = filtered.filter((g) => g.title.startsWith(title));
 		}
 
 		return filtered;

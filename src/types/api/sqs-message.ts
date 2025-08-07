@@ -1,6 +1,6 @@
 import { DefensivePlay, OffensivePlay } from "../play";
 
-export type SqsUploadRequest = {
+export type SqsGameRequest = {
 	leagueId: string;
 	gameId: string;
 	key: string; // game title + extention
@@ -18,4 +18,12 @@ export type SqsClipRequest = {
 	teamBeneficiary: string;
 	offense?: OffensivePlay;
 	defense?: DefensivePlay;
+};
+
+// ---
+
+export type SqsReelRequest = {
+	leagueId: string;
+	reelId: string;
+	clipKeys: string[]; // clip ids
 };

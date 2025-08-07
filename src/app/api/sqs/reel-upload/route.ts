@@ -1,14 +1,14 @@
-import { SqsUploadRequest } from "@/types/api/sqs-message";
+import { SqsReelRequest } from "@/types/api/sqs-message";
 import { apiHandler } from "@/utils/server/api-handler";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 import { NextResponse } from "next/server";
 
 export const POST = apiHandler(async (req, _, aws) => {
-	const body: SqsUploadRequest = await req.json();
+	const body: SqsReelRequest = await req.json();
 
 	try {
 		const command = new SendMessageCommand({
-			QueueUrl: process.env.AWS_SQS_QUEUE_URL,
+			QueueUrl: process.env.AWS_SQS_REEL_CLIPPER_QUEUE_URL,
 			DelaySeconds: 10,
 			MessageBody: JSON.stringify(body),
 		});

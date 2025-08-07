@@ -7,6 +7,7 @@ export interface Clip {
 	gameId: string;
 	date: Date; // ! is this coming back as a string in ddb?
 
+	bucketKey: string;
 	tags: string[];
 	startTime: number;
 	endTime: number;

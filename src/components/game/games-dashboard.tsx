@@ -41,7 +41,7 @@ export default function GamesDashboard(props: GamesDashboardProps) {
 				</NewGameDialog>
 			</div>
 			<GamesGallery
-				leaugeId={props.leagueId}
+				leagueId={props.leagueId}
 				title={title}
 				startDate={startDate}
 				endDate={endDate}

@@ -33,10 +33,10 @@ export default function GameOverview({ leagueId, gameId }: GameOverviewProps) {
 					text={`Loading "${gameId}". Please wait...`}
 					goBackUrl={`/league/${tempLeagueId}`}
 				/>
-			) : game && game.gameClipsUrl ? (
+			) : game && game.sourceUrl ? (
 				<div className="flex h-full gap-2">
 					<GamePlayer
-						gameClipsUrl={game.gameClipsUrl}
+						src={game.sourceUrl}
 						playTimestamps={game.playTimestamps}
 					/>
 					<GameOverviewDetails game={game} />

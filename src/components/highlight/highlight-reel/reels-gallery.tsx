@@ -1,51 +1,46 @@
 "use client";
 
-import { Game } from "@/types/model/game";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import GamePreview from "./game-preview";
+import { tempLeagueId } from "@/data/temp";
+import LoadingPrompt from "@/components/loading-prompt";
+import { Reel } from "@/types/model/reel";
 import {
-	GamePrimaryKey,
-	PaginatedGamesResponse,
-} from "@/types/api/paginated-games";
-import { Player } from "@/types/model/player";
-import LoadingPrompt from "../loading-prompt";
-import EmptyPrompt from "../empty-prompt";
-import Pagination from "../pagination";
+	PaginatedReelsResponse,
+	ReelPrimaryKey,
+} from "@/types/api/paginated-reels";
+import EmptyPrompt from "@/components/empty-prompt";
+import Pagination from "@/components/pagination";
+import ReelPreview from "./reel-preview";
 
-interface GamesGalleryProps {
+interface ReelsGalleryProps {
 	leagueId: string;
 	title: string | undefined;
-	startDate: Date | undefined;
-	endDate: Date | undefined;
-	players: Player[];
 }
 
-export default function GamesGallery(props: GamesGalleryProps) {
-	const [games, setGames] = useState<Game[]>([]);
+export default function ReelsGallery(props: ReelsGalleryProps) {
+	const [reels, setReels] = useState<Reel[]>([]);
 	const [isFetching, setIsFetching] = useState(true);
 	const [page, setPage] = useState(0);
-	const [pageKeys, setPageKeys] = useState<(GamePrimaryKey | undefined)[]>([
+	const [pageKeys, setPageKeys] = useState<(ReelPrimaryKey | undefined)[]>([
 		undefined,
 	]);
 
-	const fetchGames = async (key: GamePrimaryKey | undefined) => {
+	const fetchReels = async (key: ReelPrimaryKey | undefined) => {
 		try {
 			setIsFetching(true);
 			const res = await fetch(
 				`/api/ddb/${
 					props.leagueId
-				}/games?exclusiveStartKey=${encodeURIComponent(
+				}/reels?exclusiveStartKey=${encodeURIComponent(
 					JSON.stringify(key)
-				)}&title=${props.title}&startDate=${props.startDate}&endDate=${
-					props.endDate
-				}&${props.players.map((p) => `playerIds[]=${p.playerId}`).join("&")}`
+				)}&title=${props.title}`
 			);
 
-			const { games, lastEvaluatedKey }: PaginatedGamesResponse =
+			const { reels, lastEvaluatedKey }: PaginatedReelsResponse =
 				await res.json();
 
-			setGames(games);
+			setReels(reels);
 			setPageKeys((prevKeys) => {
 				// case 1: if we're at the last item, append to end
 				if (page === prevKeys.length - 1) {
@@ -69,20 +64,23 @@ export default function GamesGallery(props: GamesGalleryProps) {
 	};
 
 	useEffect(() => {
-		fetchGames(pageKeys[page]);
+		fetchReels(pageKeys[page]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [page, props]);
 
 	return (
 		<div className="w-full">
 			{isFetching ? (
-				<LoadingPrompt text="Loading Games" />
-			) : games && games.length > 0 ? (
+				<LoadingPrompt
+					text={`Loading clips. Please wait...`}
+					goBackUrl={`/league/${tempLeagueId}`}
+				/>
+			) : reels && reels.length > 0 ? (
 				<div className="w-full space-y-4">
 					{/* games */}
 					<div className="grid grid-cols-4 gap-3">
-						{games.map((game, i) => (
-							<GamePreview game={game} key={i} />
+						{reels.map((reel, i) => (
+							<ReelPreview reel={reel} key={i} />
 						))}
 					</div>
 
@@ -94,7 +92,7 @@ export default function GamesGallery(props: GamesGalleryProps) {
 					/>
 				</div>
 			) : (
-				<EmptyPrompt text="No games to display" />
+				<EmptyPrompt text="No reels to display" />
 			)}
 		</div>
 	);

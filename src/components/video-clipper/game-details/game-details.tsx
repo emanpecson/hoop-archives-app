@@ -19,8 +19,8 @@ import { tempLeagueId } from "@/data/temp";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Game, PlayTimestamp } from "@/types/model/game";
-import { GameStatus } from "@/types/enum/game-status";
-import { SqsClipRequest, SqsUploadRequest } from "@/types/api/sqs-message";
+import { UploadStatus } from "@/types/enum/upload-status";
+import { SqsClipRequest, SqsGameRequest } from "@/types/api/sqs-message";
 import { ClipDraft } from "@/types/clip-draft";
 import { generateId } from "@/utils/generate-id";
 import { Stats } from "@/types/model/stats";
@@ -86,7 +86,7 @@ export default function GameDetails() {
 						title: draft.title,
 						type: draft.type,
 						playTimestamps: calculatePlayTimestmaps(draft),
-						status: GameStatus.PENDING,
+						status: UploadStatus.PENDING,
 						stats: homeStats
 							.concat(awayStats)
 							.map((stat) => ({ ...stat, gameId })) as Stats[],
@@ -95,8 +95,8 @@ export default function GameDetails() {
 			});
 
 			if (createGameResponse.ok) {
-				// send SQS message (upload request)
-				await fetch(`/api/sqs/send-message`, {
+				// send SQS message (game upload request)
+				const enqueueResponse = await fetch("/api/sqs/game-upload", {
 					method: "POST",
 					body: JSON.stringify({
 						leagueId: tempLeagueId,
@@ -116,13 +116,17 @@ export default function GameDetails() {
 									defense: clip.defense,
 								} as SqsClipRequest)
 						),
-					} as SqsUploadRequest),
+					} as SqsGameRequest),
 				});
 
-				toast.success(
-					`${draft.title} upload initiated. This may take a few minutes.`
-				);
-				router.push(`/league/${tempLeagueId}`); // games dashboard
+				if (enqueueResponse.ok) {
+					toast.success(
+						`${draft.title} upload initiated. This may take a few minutes.`
+					);
+					router.push(`/league/${tempLeagueId}`); // games dashboard
+				} else {
+					throw Error("Failed to queue upload");
+				}
 			} else {
 				throw Error("Failed to create game");
 			}

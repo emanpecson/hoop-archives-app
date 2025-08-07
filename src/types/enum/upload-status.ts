@@ -1,4 +1,4 @@
-export enum GameStatus {
+export enum UploadStatus {
 	PENDING = "pending",
 	UPLOADING = "uploading",
 	COMPLETE = "complete",

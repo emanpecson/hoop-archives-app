@@ -1,5 +1,5 @@
-import { GameStatus } from "../enum/game-status";
 import { GameType } from "../enum/game-type";
+import { UploadStatus } from "../enum/upload-status";
 import { Player } from "./player";
 import { Stats } from "./stats";
 
@@ -19,9 +19,9 @@ export type Game = {
 	created: Date;
 	type: GameType;
 	thumbnailUrl?: string; // undefined until upload-request completed
-	gameClipsUrl?: string; // undefined until upload-request completed
+	sourceUrl?: string; // undefined until upload-request completed
 	playTimestamps: PlayTimestamp[];
-	status: GameStatus;
+	status: UploadStatus;
 
 	home: Player[];
 	away: Player[];

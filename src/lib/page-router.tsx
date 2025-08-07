@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PageRoute } from "@/types/page-route";
 import {
+	FilmIcon,
 	HouseIcon,
 	PaperclipIcon,
 	SquareScissorsIcon,
@@ -9,7 +10,7 @@ import {
 import { Session, User } from "next-auth";
 
 // * using this method so that I can access a specific page-route by name
-const publicPageKeys = ["home", "highlightBuilder"] as const;
+const publicPageKeys = ["home", "highlightBuilder", "highlightReel"] as const;
 type PublicPageKey = (typeof publicPageKeys)[number];
 
 const protectedPageKeys = ["draft", "players"] as const;
@@ -34,6 +35,11 @@ export class PageRouter {
 				name: "Highlight Builder",
 				path: `/league/${leagueId}/highlight-builder`,
 				Icon: PaperclipIcon,
+			},
+			highlightReel: {
+				name: "Highlight Reel",
+				path: `/league/${leagueId}/highlight-reel`,
+				Icon: FilmIcon,
 			},
 		};
 
