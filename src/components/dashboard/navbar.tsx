@@ -22,7 +22,9 @@ export default function Navbar(props: NarbarProps) {
 	return (
 		<DashboardCard className="h-20 flex justify-between place-items-center px-8">
 			<div className="flex place-items-center space-x-8">
-				<h1 className="font-bold text-2xl">Hoop Archives</h1>
+				<Link href="/">
+					<h1 className="font-bold text-2xl">Hoop Archives</h1>
+				</Link>
 
 				<span className="px-4 py-1 rounded-xl bg-neutral-800 text-neutral-500 font-semibold text-sm">
 					{props.leagueId}
