@@ -61,7 +61,7 @@ export default function HighlightClipRow(props: HighlightClipRowProps) {
 					/>
 				</div>
 			</td>
-			<td className="px-4 py-1.5 text-left">{clip.clipId}</td>
+			<td className="px-4 py-1.5 text-left truncate">{clip.clipId}</td>
 			<td className="px-4 py-1.5 text-left">{date}</td>
 			<td className="px-4 py-1.5 text-left">{length}</td>
 			<td className="px-4 py-1.5 text-left max-w-[16rem]">

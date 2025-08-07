@@ -1,6 +1,6 @@
 "use client";
 
-import OffenseHighlights from "@/components/highlights/highlight-builder/offense-highlights";
+import OffenseHighlights from "@/components/highlight/highlight-builder/offense-highlights";
 import { useLoadData } from "@/hooks/use-load-data";
 import { Player } from "@/types/model/player";
 import {

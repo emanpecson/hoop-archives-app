@@ -5,8 +5,8 @@ import HighlightFilterDialog from "./highlight-builder-dialog";
 import { Clip } from "@/types/model/clip";
 import { toast } from "sonner";
 import ClipPlayer from "@/components/media/clip-player";
-import HighlightClipTable from "@/components/highlights/highlight-clip-table/highlight-clip-table";
-import HighlightClipManager from "@/components/highlights/highlight-builder/highlight-clip-manager";
+import HighlightClipTable from "@/components/highlight/highlight-clip-table/highlight-clip-table";
+import HighlightClipManager from "@/components/highlight/highlight-builder/highlight-clip-manager";
 import { HighlightsFormFields } from "@/types/schema/highlights-schema";
 
 interface HighlightBuilderProps {
@@ -36,9 +36,9 @@ export default function HighlightBuilder(props: HighlightBuilderProps) {
 				setIsFetchingClips(true);
 
 				const queryString = filters.join("&");
-				const url = `/api/ddb/${props.leagueId}/clips?${queryString}`;
+				const endpoint = `/api/ddb/${props.leagueId}/clips?${queryString}`;
 
-				const res = await fetch(url);
+				const res = await fetch(endpoint);
 				const data = await res.json();
 
 				setClips(data);
