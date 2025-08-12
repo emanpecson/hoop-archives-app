@@ -5,6 +5,7 @@ import Link from "next/link";
 import ConfirmDialog from "../confirm-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface DraftPreviewProps {
 	leagueId: string;
@@ -41,7 +42,12 @@ export default function DraftPreview(props: DraftPreviewProps) {
 	};
 
 	return (
-		<div className="space-y-1.5">
+		<div
+			className={cn(
+				"space-y-1.5 border rounded-lg border-input-border p-4",
+				"inset-shadow-sm inset-shadow-neutral-800/60"
+			)}
+		>
 			<div className="font-semibold text-center text-sm">
 				{isDeleting ? (
 					<p>{`Deleting ${props.draft.title}`}</p>
@@ -57,14 +63,17 @@ export default function DraftPreview(props: DraftPreviewProps) {
 					{new Date(props.draft.date).toLocaleDateString()}
 				</span>
 
-				<ConfirmDialog onConfirm={deleteDraft}>
+				<ConfirmDialog
+					onConfirm={deleteDraft}
+					title={`Delete "${props.draft.title}"`}
+				>
 					<button className="p-0.5 bg-neutral-800 rounded-full cursor-pointer">
 						<XIcon size={16} strokeWidth={1.5} className="text-neutral-400" />
 					</button>
 				</ConfirmDialog>
 			</div>
 
-			<div className="flex flex-col place-items-center text-neutral-400">
+			<div className="flex flex-col place-items-center text-neutral-400 text-center">
 				<p className="text-xs">{displayPlayers(props.draft.home)}</p>
 				<p className="text-xs">{displayPlayers(props.draft.away)}</p>
 			</div>
