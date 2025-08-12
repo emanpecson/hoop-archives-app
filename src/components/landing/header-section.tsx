@@ -17,6 +17,7 @@ import {
 	ScissorsIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AppTitle from "../app-title";
 
 interface HeaderSectionProps {
 	session: Session | null;
@@ -57,12 +58,7 @@ export default function HeaderSection(props: HeaderSectionProps) {
 
 	return (
 		<div className="w-full flex justify-between place-items-center pt-8">
-			<div className="flex place-items-center space-x-2">
-				<p className="font-bold text-xl">Hoop Archives</p>
-				<p className="rounded-md bg-neutral-600/50 text-neutral-300/50 text-sm font-semibold px-2 py-0.5">
-					Beta
-				</p>
-			</div>
+			<AppTitle />
 
 			<div className="flex place-items-center space-x-4">
 				<Dialog>

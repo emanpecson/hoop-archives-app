@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import SignInButton from "../auth/sign-in-button";
 import { useSession } from "next-auth/react";
 import { SignOutButton } from "../auth/sign-out-button";
+import AppTitle from "../app-title";
 
 interface NarbarProps {
 	leagueId: string;
@@ -21,16 +22,10 @@ export default function Navbar(props: NarbarProps) {
 
 	return (
 		<DashboardCard className="h-20 flex justify-between place-items-center px-8">
-			<div className="flex place-items-center space-x-8">
-				<Link href="/">
-					<h1 className="font-bold text-2xl">Hoop Archives</h1>
-				</Link>
+			<div className="flex place-items-center space-x-12">
+				<AppTitle redirectUrl="/" />
 
-				<span className="px-4 py-1 rounded-xl bg-neutral-800 text-neutral-500 font-semibold text-sm">
-					{props.leagueId}
-				</span>
-
-				<nav className="flex space-x-2 font-medium text-sm">
+				<nav className="flex space-x-6 font-medium text-sm">
 					{pageRouter.getAccessibleRoutes().map((route, i) => {
 						const active = pathname === route.path;
 						return (
@@ -38,13 +33,10 @@ export default function Navbar(props: NarbarProps) {
 								href={route.path}
 								key={i}
 								className={cn(
-									"flex place-items-center space-x-2 px-3 py-1.5 rounded-xl duration-100",
-									active
-										? "text-white bg-neutral-800/60"
-										: "hover:bg-neutral-800/60 text-neutral-500 hover:text-white"
+									"duration-100",
+									active ? "text-white" : "text-neutral-500 hover:text-white"
 								)}
 							>
-								<route.Icon size={20} />
 								<span>{route.name}</span>
 							</Link>
 						);
