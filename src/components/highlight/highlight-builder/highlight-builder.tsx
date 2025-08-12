@@ -8,6 +8,8 @@ import ClipPlayer from "@/components/media/clip-player";
 import HighlightClipTable from "@/components/highlight/highlight-clip-table/highlight-clip-table";
 import HighlightClipManager from "@/components/highlight/highlight-builder/highlight-clip-manager";
 import { HighlightsFormFields } from "@/types/schema/highlights-schema";
+import EmptyPrompt from "@/components/empty-prompt";
+import DashboardCard from "@/components/dashboard/dashboard-card";
 
 interface HighlightBuilderProps {
 	leagueId: string;
@@ -58,10 +60,16 @@ export default function HighlightBuilder(props: HighlightBuilderProps) {
 				<div className="flex h-full min-h-0 gap-2">
 					<div className="w-full flex flex-col gap-2">
 						<div className="h-2/3">
-							<ClipPlayer
-								clips={selectedClips}
-								onClipPlaying={setActiveClipId}
-							/>
+							{selectedClips.length > 0 ? (
+								<ClipPlayer
+									clips={selectedClips}
+									onClipPlaying={setActiveClipId}
+								/>
+							) : (
+								<DashboardCard className="h-full">
+									<EmptyPrompt text="Select clips for your highlight reel" />
+								</DashboardCard>
+							)}
 						</div>
 						<HighlightClipTable
 							clips={clips}

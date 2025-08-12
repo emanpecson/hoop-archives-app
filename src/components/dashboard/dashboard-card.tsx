@@ -10,7 +10,7 @@ export default function DashboardCard(props: DashboardCardProps) {
 	return (
 		<div
 			className={cn(
-				"border border-card-border bg-card-background px-5 py-4 rounded-2xl inset-shadow-sm inset-shadow-neutral-800/60",
+				"border border-card-border bg-card-background/70 px-5 py-4 rounded-2xl inset-shadow-sm inset-shadow-neutral-800/60",
 				props.className
 			)}
 		>
