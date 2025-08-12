@@ -21,7 +21,7 @@ export default function ReelsDashboard(props: ReelsDashboardProps) {
 					onDebounce={setTitle}
 					onChange={setTempSearch}
 					value={tempSearch}
-					placeholder="Search game title..."
+					placeholder="Search reel title..."
 				/>
 			</div>
 			<ReelsGallery leagueId={props.leagueId} title={title} />
