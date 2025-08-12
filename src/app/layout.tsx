@@ -30,7 +30,9 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<SessionProvider>
-					<div className="w-screen h-screen bg-background-base">{children}</div>
+					<div className="w-screen h-screen bg-background-base bg-gradient-to-tr from-[#0c0c0c] via-[#1e1e1e] to-[#282828]">
+						{children}
+					</div>
 					<Toaster />
 				</SessionProvider>
 			</body>

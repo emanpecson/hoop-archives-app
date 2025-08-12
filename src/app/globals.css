@@ -14,6 +14,7 @@
 	--color-input-border: var(--color-neutral-800);
 	--color-input-muted: oklch(0.5 0 none);
 	--color-error-foreground: var(--color-red-400);
+	--color-highlight: oklch(0.9 0.122 84);
 }
 
 :root {
