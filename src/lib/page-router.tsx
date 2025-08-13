@@ -10,10 +10,10 @@ import {
 import { Session, User } from "next-auth";
 
 // * using this method so that I can access a specific page-route by name
-const publicPageKeys = ["home", "highlightBuilder", "highlightReel"] as const;
+const publicPageKeys = ["home", "highlightReel"] as const;
 type PublicPageKey = (typeof publicPageKeys)[number];
 
-const protectedPageKeys = ["draft", "players"] as const;
+const protectedPageKeys = ["highlightBuilder", "draft", "players"] as const;
 type ProtectedPageKey = (typeof protectedPageKeys)[number];
 
 export class PageRouter {
@@ -31,11 +31,6 @@ export class PageRouter {
 
 		this.publicRoutes = {
 			home: { name: "Home", path: `/league/${leagueId}`, Icon: HouseIcon },
-			highlightBuilder: {
-				name: "Highlight Builder",
-				path: `/league/${leagueId}/highlight-builder`,
-				Icon: PaperclipIcon,
-			},
 			highlightReel: {
 				name: "Highlight Reel",
 				path: `/league/${leagueId}/highlight-reel`,
@@ -44,6 +39,11 @@ export class PageRouter {
 		};
 
 		this.protectedRoutes = {
+			highlightBuilder: {
+				name: "Highlight Builder",
+				path: `/league/${leagueId}/highlight-builder`,
+				Icon: PaperclipIcon,
+			},
 			draft: {
 				name: "Draft",
 				path: `/league/${leagueId}/draft`,
