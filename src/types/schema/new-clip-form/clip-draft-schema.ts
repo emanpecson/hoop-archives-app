@@ -19,6 +19,7 @@ export const defensivePlaySchema = z.object({
 	play: z.literal("defense"),
 	playerDefending: playerSchema,
 	playerStopped: playerSchema,
+	teamBeneficiary: z.string().optional(),
 	tags: z.array(z.string()).min(1, "Required"),
 });
 

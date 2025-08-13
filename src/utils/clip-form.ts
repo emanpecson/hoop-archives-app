@@ -13,7 +13,7 @@ const buildClipDraft = (
 		endTime: clipTime.end,
 		highlightTime: form.highlightTime,
 		tags: form.tags,
-		teamBeneficiary: form.play === "offense" ? form.teamBeneficiary : undefined,
+		teamBeneficiary: form.teamBeneficiary,
 		offense:
 			form.play === "offense"
 				? {
