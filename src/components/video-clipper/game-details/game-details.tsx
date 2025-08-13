@@ -13,7 +13,7 @@ import { Draft } from "@/types/model/draft";
 import CardButton from "../../card-button";
 import Statboard from "./statboard";
 import { useVideoClipperStore } from "@/hooks/use-video-clipper-store";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { NewGameRequestBody } from "@/types/api/new-game";
 import { tempLeagueId } from "@/data/temp";
 import { toast } from "sonner";
@@ -33,6 +33,7 @@ export default function GameDetails() {
 	const homeStats = useVideoClipperStore((state) => state.homeStats);
 	const awayStats = useVideoClipperStore((state) => state.awayStats);
 	const clipIndex = useVideoClipperStore((state) => state.clipIndex);
+	const [uploading, setUploading] = useState(false);
 
 	// prevent re-render from triggering unless draft changes
 	const memoClips = useMemo(() => (draft ? draft.clipDrafts : []), [draft]);
@@ -71,6 +72,8 @@ export default function GameDetails() {
 
 	const startUpload = async (draft: Draft) => {
 		try {
+			setUploading(true);
+
 			// create Game
 			const gameId = generateId("game");
 			const createGameResponse = await fetch(`/api/ddb/${tempLeagueId}/games`, {
@@ -133,6 +136,8 @@ export default function GameDetails() {
 		} catch (error) {
 			console.log(error);
 			toast.error(error instanceof Error ? error.message : "Unknown error");
+		} finally {
+			setUploading(false);
 		}
 	};
 
@@ -190,7 +195,11 @@ export default function GameDetails() {
 					)}
 					<span>Preview clips</span>
 				</CardButton>
-				<ConfirmDialog onConfirm={() => startUpload(draft!)}>
+				<ConfirmDialog
+					onConfirm={() => startUpload(draft!)}
+					loading={uploading}
+					confirmPrompt={uploading ? "Uploading..." : "Upload"}
+				>
 					<CardButton
 						disabled={!draft || draft.clipDrafts.length === 0}
 						className="text-center py-2"

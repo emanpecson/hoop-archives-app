@@ -10,19 +10,28 @@ import {
 	DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { Loader2Icon } from "lucide-react";
 
 interface ConfirmDialogProps {
 	onConfirm: () => void;
 	children: React.ReactNode;
+	confirmPrompt?: string;
 	title?: string;
 	description?: string;
+	loading?: boolean;
 }
 
 export default function ConfirmDialog(props: ConfirmDialogProps) {
 	const [open, setOpen] = useState(false);
 
+	const handleClose = (flag: boolean) => {
+		if (!props.loading) {
+			setOpen(flag);
+		}
+	};
+
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={handleClose}>
 			<DialogTrigger asChild>{props.children}</DialogTrigger>
 
 			<DialogContent>
@@ -40,6 +49,7 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
 									variant="input"
 									size="sm"
 									className="w-fit"
+									disabled={props.loading}
 								>
 									Cancel
 								</Button>
@@ -51,8 +61,12 @@ export default function ConfirmDialog(props: ConfirmDialogProps) {
 								size="sm"
 								className="w-fit"
 								onClick={props.onConfirm}
+								disabled={props.loading}
 							>
-								Confirm
+								{props.loading && (
+									<Loader2Icon className="animate-spin" strokeWidth={1.5} />
+								)}
+								<span>{props.confirmPrompt ?? "Confirm"}</span>
 							</Button>
 						</div>
 					</DialogFooter>
