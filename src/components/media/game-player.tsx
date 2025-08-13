@@ -40,7 +40,7 @@ export default function GamePlayer(props: GamePlayerProps) {
 				ref={videoRef}
 				onTimeUpdate={handleTimeUpdate}
 				onLoadedMetadata={handleLoadedMetadata}
-				className="h-full w-full object-cover"
+				className="h-full w-full object-contain"
 			>
 				<source src={props.src} type="video/mp4" />
 			</video>

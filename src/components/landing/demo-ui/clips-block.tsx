@@ -17,7 +17,7 @@ export default function ClipsBlock() {
 						"border-input-border inset-shadow-neutral-600/60 bg-[#161616]"
 					)}
 				>
-					<FilmIcon />
+					<FilmIcon className="text-neutral-600" />
 				</div>
 			))}
 		</div>
