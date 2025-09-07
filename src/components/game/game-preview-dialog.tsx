@@ -7,82 +7,117 @@ import { useState } from "react";
 import { Clip } from "@/types/model/clip";
 import { toast } from "sonner";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogDivider,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogDivider,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { tempLeagueId } from "@/data/temp";
+import ConfirmDialog from "../confirm-dialog";
 
 interface GamePreviewDialogProps {
-	game: Game;
-	children: React.ReactNode;
+  game: Game;
+  children: React.ReactNode;
 }
 
 export default function GamePreviewDialog(props: GamePreviewDialogProps) {
-	const [clips, setClips] = useState<Clip[]>([]);
-	const [isFetchingClips, setIsFetchingClips] = useState(true);
-	const [open, setOpen] = useState(false);
-	const gameUrl = `/league/${props.game.leagueId}/game/${props.game.gameId}`;
+  const [clips, setClips] = useState<Clip[]>([]);
+  const [isFetchingClips, setIsFetchingClips] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const gameUrl = `/league/${props.game.leagueId}/game/${props.game.gameId}`;
 
-	useLoadData({
-		endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.gameId}`,
-		onDataLoaded: setClips,
-		setIsLoading: setIsFetchingClips,
-		onError: () => toast.error("Error fetching game clips"),
-	});
+  useLoadData({
+    endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.gameId}`,
+    onDataLoaded: setClips,
+    setIsLoading: setIsFetchingClips,
+    onError: () => toast.error("Error fetching game clips"),
+  });
 
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>{props.children}</DialogTrigger>
+  const deleteGame = async () => {
+    console.log("placeholder: delete game");
 
-			<DialogContent className="sm:max-w-2xl">
-				<DialogHeader>
-					<DialogTitle>{props.game.title}</DialogTitle>
-					<DialogDescription>View game details</DialogDescription>
-				</DialogHeader>
+    try {
+      setDeleting(true);
 
-				<DialogDivider />
+      const res = await fetch(
+        `/api/ddb/${tempLeagueId}/games/${props.game.gameId}`,
+        { method: "DELETE" }
+      );
 
-				<div>
-					{isFetchingClips ? (
-						<p>Loading data...</p>
-					) : clips && clips.length > 0 ? (
-						<div className="flex place-items-center justify-between space-x-20">
-							<Statboard
-								label="Home Stats"
-								players={props.game.home}
-								clips={clips}
-							/>
-							<Statboard
-								label="Away Stats"
-								players={props.game.away}
-								clips={clips}
-							/>
-						</div>
-					) : (
-						<p>No clips</p>
-					)}
-				</div>
+      if (res.ok) {
+        console.log("Successful delete");
+      } else {
+        console.log("Unsuccessful delete");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
-				{clips.length > 0 && (
-					<>
-						<DialogDivider />
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{props.children}</DialogTrigger>
 
-						<DialogFooter className="w-full flex justify-end">
-							<Button variant="outline">
-								<Link href={gameUrl}>Watch game</Link>
-							</Button>
-						</DialogFooter>
-					</>
-				)}
-			</DialogContent>
-		</Dialog>
-	);
+      <DialogContent className="sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{props.game.title}</DialogTitle>
+          <DialogDescription>View game details</DialogDescription>
+        </DialogHeader>
+
+        <DialogDivider />
+
+        <div>
+          {isFetchingClips ? (
+            <p>Loading data...</p>
+          ) : clips && clips.length > 0 ? (
+            <div className="flex place-items-center justify-between space-x-20">
+              <Statboard
+                label="Home Stats"
+                players={props.game.home}
+                clips={clips}
+              />
+              <Statboard
+                label="Away Stats"
+                players={props.game.away}
+                clips={clips}
+              />
+            </div>
+          ) : (
+            <p>No clips</p>
+          )}
+        </div>
+
+        {clips.length > 0 && (
+          <>
+            <DialogDivider />
+
+            <DialogFooter className="w-full flex justify-end">
+              <Button variant="outline">
+                <Link href={gameUrl}>Watch game</Link>
+              </Button>
+
+              <ConfirmDialog
+                onConfirm={deleteGame}
+                title="Confirm Game Deletion"
+                description={`Are you sure you want to delete ${props.game.title}? This cannot be undone.`}
+                loading={deleting}
+                confirmPrompt="Delete"
+              >
+                <Button variant="outline">Delete</Button>
+              </ConfirmDialog>
+            </DialogFooter>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }
