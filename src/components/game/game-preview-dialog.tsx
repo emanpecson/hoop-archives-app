@@ -22,6 +22,8 @@ import { tempLeagueId } from "@/data/temp";
 import ConfirmDialog from "../confirm-dialog";
 import { useSession } from "next-auth/react";
 import useRoleCheck from "@/hooks/use-role-check";
+import LoadingPrompt from "../loading-prompt";
+import EmptyPrompt from "../empty-prompt";
 
 interface GamePreviewDialogProps {
   game: Game;
@@ -58,12 +60,12 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
       );
 
       if (res.ok) {
-        console.log("Successful delete");
+        toast.success(`Successfully deleted ${props.game.title}`);
       } else {
-        console.log("Unsuccessful delete");
+        toast.error(`Failed to delete ${props.game.title}`);
       }
     } catch (error) {
-      console.log("Error:", error);
+      toast.error(`Error deleting ${props.game.title}`);
     } finally {
       setDeleting(false);
     }
@@ -83,7 +85,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 
         <div>
           {isFetchingClips ? (
-            <p>Loading data...</p>
+            <LoadingPrompt text="Loading data" />
           ) : clips && clips.length > 0 ? (
             <div className="flex place-items-center justify-between space-x-20">
               <Statboard
@@ -98,7 +100,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
               />
             </div>
           ) : (
-            <p>No clips</p>
+            <EmptyPrompt text="No data" />
           )}
         </div>
 
