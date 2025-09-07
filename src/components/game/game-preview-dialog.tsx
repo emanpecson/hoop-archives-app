@@ -68,6 +68,7 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
         toast.error(`Failed to delete ${props.game.title}`);
       }
     } catch (error) {
+      console.error(error);
       toast.error(`Error deleting ${props.game.title}`);
     } finally {
       setDeleting(false);
