@@ -20,6 +20,8 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { tempLeagueId } from "@/data/temp";
 import ConfirmDialog from "../confirm-dialog";
+import { useSession } from "next-auth/react";
+import useRoleCheck from "@/hooks/use-role-check";
 
 interface GamePreviewDialogProps {
   game: Game;
@@ -32,6 +34,10 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const gameUrl = `/league/${props.game.leagueId}/game/${props.game.gameId}`;
+
+  // access session variable for role access control
+  const { data: session } = useSession();
+  const { isBetaUser } = useRoleCheck(session);
 
   useLoadData({
     endpoint: `/api/ddb/${tempLeagueId}/clips/${props.game.gameId}`,
@@ -105,15 +111,17 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
                 <Link href={gameUrl}>Watch game</Link>
               </Button>
 
-              <ConfirmDialog
-                onConfirm={deleteGame}
-                title="Confirm Game Deletion"
-                description={`Are you sure you want to delete ${props.game.title}? This cannot be undone.`}
-                loading={deleting}
-                confirmPrompt="Delete"
-              >
-                <Button variant="outline">Delete</Button>
-              </ConfirmDialog>
+              {!isBetaUser() && (
+                <ConfirmDialog
+                  onConfirm={deleteGame}
+                  title="Confirm Game Deletion"
+                  description={`Are you sure you want to delete ${props.game.title}? This cannot be undone.`}
+                  loading={deleting}
+                  confirmPrompt="Delete"
+                >
+                  <Button variant="outline">Delete</Button>
+                </ConfirmDialog>
+              )}
             </DialogFooter>
           </>
         )}
