@@ -28,6 +28,7 @@ import EmptyPrompt from "../empty-prompt";
 interface GamePreviewDialogProps {
   game: Game;
   children: React.ReactNode;
+  onDelete: () => void;
 }
 
 export default function GamePreviewDialog(props: GamePreviewDialogProps) {
@@ -61,6 +62,8 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
 
       if (res.ok) {
         toast.success(`Successfully deleted ${props.game.title}`);
+
+        props.onDelete();
       } else {
         toast.error(`Failed to delete ${props.game.title}`);
       }
