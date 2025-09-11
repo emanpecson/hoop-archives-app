@@ -77,7 +77,6 @@ export default function ClipButton(props: ClipButtonProps) {
   };
 
   const handlePlayPause = () => {
-    console.log("in play pause");
     if (videoRef.current) {
       if (videoRef.current.paused) {
         videoRef.current.play();
