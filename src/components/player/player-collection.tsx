@@ -35,7 +35,7 @@ export default function PlayerCollection(props: PlayerCollectionProps) {
     <>
       <div className="w-full h-full flex-col space-y-4">
         <div className="flex justify-end">
-          {isBetaUser() && (
+          {!isBetaUser() && (
             <Button
               variant="input"
               className="w-fit"
