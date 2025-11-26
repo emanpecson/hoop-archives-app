@@ -12,6 +12,7 @@ import { Player } from "@/types/model/player";
 import LoadingPrompt from "../loading-prompt";
 import EmptyPrompt from "../empty-prompt";
 import Pagination from "../pagination";
+import GamePreviewMobile from "./game-preview-mobile";
 
 interface GamesGalleryProps {
   leagueId: string;
@@ -87,10 +88,20 @@ export default function GamesGallery(props: GamesGalleryProps) {
         <LoadingPrompt text="Loading Games" />
       ) : games && games.length > 0 ? (
         <div className="w-full space-y-4">
-          {/* games */}
-          <div className="grid grid-cols-4 gap-3">
+          <div className="sm:grid hidden grid-cols-4 gap-3">
             {games.map((game, i) => (
               <GamePreview
+                game={game}
+                key={i}
+                onDelete={() => handleDelete(i)}
+              />
+            ))}
+          </div>
+
+          {/* mobile */}
+          <div className="sm:hidden grid grid-cols-3 gap-0.5 max-sm:px-0.5">
+            {games.map((game, i) => (
+              <GamePreviewMobile
                 game={game}
                 key={i}
                 onDelete={() => handleDelete(i)}

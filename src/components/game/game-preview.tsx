@@ -20,7 +20,7 @@ export default function GamePreview({ game, onDelete }: GamePreviewProps) {
   return (
     <div className="space-y-1">
       <div className="flex justify-center">
-        {game.status === UploadStatus.COMPLETE && game.thumbnailUrl && url ? (
+        {game.thumbnailUrl && url ? (
           <Link href={url}>
             <Image
               src={game.thumbnailUrl}

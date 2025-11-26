@@ -9,44 +9,44 @@ import { FolderPlusIcon } from "lucide-react";
 import { useState } from "react";
 
 interface GamesDashboardProps {
-	leagueId: string;
+  leagueId: string;
 }
 
 export default function GamesDashboard(props: GamesDashboardProps) {
-	const [title, setTitle] = useState<string | undefined>(undefined);
-	const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-	const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-	const [players, setPlayers] = useState<Player[]>([]);
+  const [title, setTitle] = useState<string | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [players, setPlayers] = useState<Player[]>([]);
 
-	return (
-		<div className="space-y-4 w-full mx-auto max-w-[100rem]">
-			<div className="flex space-x-2 place-items-center">
-				<GameFilters
-					leagueId={props.leagueId}
-					title={title}
-					setTitle={setTitle}
-					startDate={startDate}
-					setStartDate={setStartDate}
-					endDate={endDate}
-					setEndDate={setEndDate}
-					players={players}
-					setPlayers={setPlayers}
-				/>
+  return (
+    <div className="space-y-4 w-full mx-auto max-w-[100rem]">
+      <div className="flex space-x-2 place-items-center justify-end px-2">
+        <GameFilters
+          leagueId={props.leagueId}
+          title={title}
+          setTitle={setTitle}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          players={players}
+          setPlayers={setPlayers}
+        />
 
-				<NewGameDialog>
-					<Button className="w-fit" variant="input">
-						<FolderPlusIcon />
-						<span>New game</span>
-					</Button>
-				</NewGameDialog>
-			</div>
-			<GamesGallery
-				leagueId={props.leagueId}
-				title={title}
-				startDate={startDate}
-				endDate={endDate}
-				players={players}
-			/>
-		</div>
-	);
+        <NewGameDialog>
+          <Button className="w-fit" variant="input">
+            <FolderPlusIcon />
+            <span>New game</span>
+          </Button>
+        </NewGameDialog>
+      </div>
+      <GamesGallery
+        leagueId={props.leagueId}
+        title={title}
+        startDate={startDate}
+        endDate={endDate}
+        players={players}
+      />
+    </div>
+  );
 }
