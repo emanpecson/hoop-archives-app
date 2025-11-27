@@ -35,7 +35,7 @@ export default function GameOverview({ leagueId, gameId }: GameOverviewProps) {
           goBackUrl={goBackUrl}
         />
       ) : game && game.sourceUrl ? (
-        <div className="flex max-sm:flex-col h-full gap-2">
+        <div className="flex max-sm:flex-col h-full w-full gap-2">
           <GamePlayer
             src={game.sourceUrl}
             playTimestamps={game.playTimestamps}
