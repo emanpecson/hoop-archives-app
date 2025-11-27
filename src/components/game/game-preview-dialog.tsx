@@ -24,6 +24,7 @@ import { useSession } from "next-auth/react";
 import useRoleCheck from "@/hooks/use-role-check";
 import LoadingPrompt from "../loading-prompt";
 import EmptyPrompt from "../empty-prompt";
+import ToggleSelect from "../input/toggle-select";
 
 interface GamePreviewDialogProps {
   game: Game;
@@ -36,7 +37,13 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
   const [isFetchingClips, setIsFetchingClips] = useState(true);
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [selectedStatsOption, setSelectedStatsOption] = useState(0);
+
   const gameUrl = `/league/${props.game.leagueId}/game/${props.game.gameId}`;
+  const statsOptions = [
+    { label: "Home", value: 0 },
+    { label: "Away", value: 1 },
+  ];
 
   // access session variable for role access control
   const { data: session } = useSession();
@@ -79,10 +86,16 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
 
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{props.game.title}</DialogTitle>
           <DialogDescription>View game details</DialogDescription>
+
+          <ToggleSelect
+            options={statsOptions}
+            value={selectedStatsOption}
+            onChange={(x) => setSelectedStatsOption(Number(x))}
+          />
         </DialogHeader>
 
         <DialogDivider />
@@ -92,16 +105,19 @@ export default function GamePreviewDialog(props: GamePreviewDialogProps) {
             <LoadingPrompt text="Loading data" />
           ) : clips && clips.length > 0 ? (
             <div className="flex place-items-center justify-between space-x-20">
-              <Statboard
-                label="Home Stats"
-                players={props.game.home}
-                clips={clips}
-              />
-              <Statboard
-                label="Away Stats"
-                players={props.game.away}
-                clips={clips}
-              />
+              {selectedStatsOption === 0 ? (
+                <Statboard
+                  label="Home Stats"
+                  players={props.game.home}
+                  clips={clips}
+                />
+              ) : (
+                <Statboard
+                  label="Away Stats"
+                  players={props.game.away}
+                  clips={clips}
+                />
+              )}
             </div>
           ) : (
             <EmptyPrompt text="No data" />
