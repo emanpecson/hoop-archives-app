@@ -27,6 +27,7 @@ export default function GamePlayer(props: GamePlayerProps) {
         onTimeUpdate={handleTimeUpdate}
         className="h-full w-full object-contain"
         controls
+        playsInline
       >
         <source src={props.src} type="video/mp4" />
       </video>
