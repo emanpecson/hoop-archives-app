@@ -109,10 +109,6 @@ export const filterGames = (
 ) => {
   if (items) {
     let filtered = items as Game[];
-    console.log(
-      "date:",
-      filtered.map((g) => new Date(g.date).toLocaleDateString())
-    );
 
     if (title && title !== "undefined") {
       filtered = filtered.filter((g) => g.title.startsWith(title));
