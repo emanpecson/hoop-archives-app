@@ -19,5 +19,5 @@ export default function useKeyboardShortcut(
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [key, callback]);
+  }, [key, callback, useModifierKey]);
 }
