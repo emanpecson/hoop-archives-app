@@ -25,7 +25,7 @@ export default function GamePlayer(props: GamePlayerProps) {
       <video
         ref={videoRef}
         onTimeUpdate={handleTimeUpdate}
-        className="h-full w-full object-contain"
+        className="max-sm:h-auto h-full w-full object-contain"
         controls
       >
         <source src={props.src} type="video/mp4" />
