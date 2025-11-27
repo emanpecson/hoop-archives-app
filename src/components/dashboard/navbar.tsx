@@ -27,7 +27,7 @@ export default function Navbar(props: NarbarProps) {
     session && session.user.email ? session.user.email.split("@")[0] : "You";
 
   return (
-    <DashboardCard className="sm:h-20 h-12 flex justify-between place-items-center sm:px-8 px-2 max-sm:rounded-none">
+    <DashboardCard className="sm:h-20 h-16 flex justify-between place-items-center sm:px-8 px-4 max-sm:rounded-none">
       <div className="flex place-items-center justify-between w-full">
         <AppTitle redirectUrl="/" />
 

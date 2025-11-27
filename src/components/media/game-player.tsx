@@ -21,7 +21,7 @@ export default function GamePlayer(props: GamePlayerProps) {
   };
 
   return (
-    <div className="h-full w-full rounded-2xl bg-black border border-input-border relative overflow-clip">
+    <div className="h-full w-full max-sm:aspect-video rounded-2xl bg-black border border-input-border relative overflow-clip">
       <video
         ref={videoRef}
         onTimeUpdate={handleTimeUpdate}

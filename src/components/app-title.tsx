@@ -7,7 +7,7 @@ interface AppTitleProps {
 export default function AppTitle(props: AppTitleProps) {
   return (
     <div className="flex place-items-center space-x-2">
-      <p className="font-bold sm:text-xl text-sm text-nowrap">
+      <p className="font-bold sm:text-xl text-base text-nowrap">
         {props.redirectUrl ? (
           <Link href={props.redirectUrl}>Hoop Archives</Link>
         ) : (
