@@ -13,7 +13,6 @@ interface GamePlayerProps {
 
 export default function GamePlayer(props: GamePlayerProps) {
   const [currentTime, setCurrentTime] = useState(0);
-  const [_, setDuration] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const score = useGameRealtimeScore(props.playTimestamps, currentTime);
 
@@ -21,18 +20,11 @@ export default function GamePlayer(props: GamePlayerProps) {
     if (videoRef.current) setCurrentTime(videoRef.current.currentTime);
   };
 
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration);
-    }
-  };
-
   return (
     <div className="h-full w-full rounded-2xl bg-black border border-input-border relative overflow-clip">
       <video
         ref={videoRef}
         onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
         className="h-full w-full object-contain"
         controls
       >
