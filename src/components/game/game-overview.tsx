@@ -36,10 +36,12 @@ export default function GameOverview({ leagueId, gameId }: GameOverviewProps) {
         />
       ) : game && game.sourceUrl ? (
         <div className="flex max-sm:flex-col h-full w-full gap-2">
-          <GamePlayer
-            src={game.sourceUrl}
-            playTimestamps={game.playTimestamps}
-          />
+          <div className="max-sm:h-[60vh] max-sm:flex-shrink-0 h-full w-full">
+            <GamePlayer
+              src={game.sourceUrl}
+              playTimestamps={game.playTimestamps}
+            />
+          </div>
           <GameOverviewDetails game={game} />
         </div>
       ) : (

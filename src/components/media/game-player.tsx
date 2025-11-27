@@ -21,11 +21,11 @@ export default function GamePlayer(props: GamePlayerProps) {
   };
 
   return (
-    <div className="h-full max-sm:h-[60vh] w-full rounded-2xl bg-black border border-input-border relative overflow-clip">
+    <div className="h-full w-full rounded-2xl bg-black border border-input-border relative overflow-clip">
       <video
         ref={videoRef}
         onTimeUpdate={handleTimeUpdate}
-        className="max-sm:h-auto h-full w-full object-contain"
+        className="h-full w-full object-contain"
         controls
       >
         <source src={props.src} type="video/mp4" />
