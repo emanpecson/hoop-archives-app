@@ -26,3 +26,8 @@ Basketball game video management app: upload full games → create clips with me
 - Game types defined in `types/enum/game-type.ts`
 - Player data includes jersey number, position, and profile images
 - Clips categorize plays as offensive or defensive with specific play types
+
+## Notion
+
+- DO NOT modify/delete any Notion pages without the user's explicit permission.
+- You should only ever reference pages that explicitly have a relation property to the Hoop Archives @project page.
