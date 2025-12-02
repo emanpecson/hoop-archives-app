@@ -1,18 +1,28 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { Button } from "../ui/button";
 import { tempLeagueId } from "@/data/temp";
+import { createAuthClient } from "better-auth/client";
 
 export default function SignInButton({ disabled }: { disabled?: boolean }) {
-	return (
-		<Button
-			disabled={disabled}
-			onClick={() =>
-				signIn("cognito", { redirectTo: `/league/${tempLeagueId}` })
-			}
-		>
-			Sign in
-		</Button>
-	);
+  const authClient = createAuthClient();
+
+  const signIn = async () => {
+    const { data, error } = await authClient.signIn.social({
+      provider: "cognito",
+      callbackURL: `/league/${tempLeagueId}`,
+    });
+
+    if (error) {
+      console.error("Sign-in error:", error);
+    } else {
+      console.log("Sign-in successful:", data);
+    }
+  };
+
+  return (
+    <Button disabled={disabled} onClick={signIn}>
+      Sign in
+    </Button>
+  );
 }
