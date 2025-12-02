@@ -2,11 +2,9 @@
 
 import { Button } from "../ui/button";
 import { tempLeagueId } from "@/data/temp";
-import { createAuthClient } from "better-auth/client";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignInButton({ disabled }: { disabled?: boolean }) {
-  const authClient = createAuthClient();
-
   const signIn = async () => {
     const { data, error } = await authClient.signIn.social({
       provider: "cognito",
