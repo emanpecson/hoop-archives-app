@@ -1,13 +1,20 @@
 import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { prisma } from "@/lib/prisma-client";
 
 export const auth = betterAuth({
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+
   socialProviders: {
-    cognito: {
-      clientId: process.env.AUTH_COGNITO_CLIENT_ID as string,
-      clientSecret: process.env.AUTH_COGNITO_CLIENT_SECRET as string,
-      domain: process.env.AUTH_COGNITO_DOMAIN as string, // e.g. "your-app.auth.us-east-1.amazoncognito.com"
-      region: process.env.AWS_REGION as string, // e.g. "us-east-1"
-      userPoolId: process.env.AWS_COGNITO_USER_POOL_ID as string,
+    google: {
+      clientId: String(process.env.GOOGLE_CLIENT_ID),
+      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
+
+      // always include refresh token
+      accessType: "offline",
+      prompt: "select_account",
     },
   },
 });
