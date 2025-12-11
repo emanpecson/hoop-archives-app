@@ -19,4 +19,14 @@ export const auth = betterAuth({
       prompt: "select_account",
     },
   },
+
+  session: {
+    expiresIn: 60 * 30, // exp: 30min
+    updateAge: 60 * 29, // auto-refresh @ 29min
+
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5, // cache: 5min
+    },
+  },
 });
